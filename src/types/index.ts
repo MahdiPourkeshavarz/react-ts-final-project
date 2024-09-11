@@ -8,7 +8,7 @@ export interface CartState {
   cartQuantity: number;
   addItem: (item: Product) => void;
   removeItem: (name: string) => void;
-  updateItem: (name: string, updatedItem: Partial<Item>) => void;
+  updateItem: (name: string, updatedItem: Partial<Product>) => void;
   adjustQuantity: (name: string, quantity: number) => void;
 }
 
