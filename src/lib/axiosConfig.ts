@@ -1,6 +1,8 @@
 import axios from "axios";
-import { BASE_URL, API_ROUTES } from "../constants";
-import { getRefreshToken } from "../api/getRefreshToken";
+
+import { BASE_URL } from "../constants";
+import { getRefreshToken } from "../api/getRfreshToken";
+
 
 export const httpRequest = axios.create({
   baseURL: BASE_URL,
