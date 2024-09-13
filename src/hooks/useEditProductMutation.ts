@@ -1,5 +1,5 @@
 import { useMutation } from "@tanstack/react-query";
-import { API_ROUTES } from "../constants";
+import { updateProduct } from "../api/updateProduct";
 
 export function useEditProductMutation() {
   return useMutation({
