@@ -11,6 +11,7 @@ import {
   ProductPage,
   ShoppingCart,
 } from "../pages";
+import { ThemeProvider, useTheme } from "@mui/material";
 
 const router = createBrowserRouter([
   {
@@ -55,5 +56,12 @@ const router = createBrowserRouter([
 ]);
 
 export default function AppRoute() {
-  return <RouterProvider router={router} />;
+  const theme = useTheme();
+  return (
+    <>
+      <ThemeProvider theme={theme}>
+        <RouterProvider router={router} />
+      </ThemeProvider>
+    </>
+  );
 }
