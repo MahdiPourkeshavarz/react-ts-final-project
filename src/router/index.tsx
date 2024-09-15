@@ -11,7 +11,10 @@ import {
   ProductPage,
   ShoppingCart,
 } from "../pages";
-import { ThemeProvider, useTheme } from "@mui/material";
+import { ThemeProvider } from "@mui/material";
+import { useMemo } from "react";
+import { useStore } from "../context/shopStore";
+import { defaultTheme } from "../utils/theme";
 
 const router = createBrowserRouter([
   {
@@ -56,10 +59,12 @@ const router = createBrowserRouter([
 ]);
 
 export default function AppRoute() {
-  const theme = useTheme();
+  const { theme } = useStore();
+  const muiTheme = useMemo(() => defaultTheme(theme), [theme]);
+
   return (
     <>
-      <ThemeProvider theme={theme}>
+      <ThemeProvider theme={muiTheme}>
         <RouterProvider router={router} />
       </ThemeProvider>
     </>

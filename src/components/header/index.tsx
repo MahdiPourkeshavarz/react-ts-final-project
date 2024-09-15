@@ -8,16 +8,17 @@ import MenuIcon from "@mui/icons-material/Menu";
 import Container from "@mui/material/Container";
 import MenuItem from "@mui/material/MenuItem";
 import AdbIcon from "@mui/icons-material/Adb";
-import { useState } from "react";
+import React, { useState } from "react";
 import { Menu } from "@mui/material";
 import Brightness4Icon from "@mui/icons-material/Brightness4";
 import Brightness7Icon from "@mui/icons-material/Brightness7";
+import { useStore } from "../../context/shopStore";
 
 const pages = ["ورود", "فروشگاه"];
 
 export function Header() {
   const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null);
-  const [darkMode, setDarkMode] = useState(false);
+  const { toggleTheme, theme } = useStore();
 
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElNav(event.currentTarget);
@@ -28,7 +29,7 @@ export function Header() {
   };
 
   const toggleDarkMode = () => {
-    setDarkMode((prevMode) => !prevMode);
+    toggleTheme();
   };
 
   return (
@@ -113,14 +114,14 @@ export function Header() {
                 <Button
                   key={page}
                   onClick={handleCloseNavMenu}
-                  sx={{ my: 2, color: "white", display: "block" }}
+                  sx={{ my: 2, display: "block" }}
                 >
                   {page}
                 </Button>
               ))}
             </Box>
             <IconButton sx={{ ml: 1 }} onClick={toggleDarkMode} color="inherit">
-              {darkMode ? <Brightness7Icon /> : <Brightness4Icon />}
+              {theme === "dark" ? <Brightness7Icon /> : <Brightness4Icon />}
             </IconButton>
           </Toolbar>
         </Container>
