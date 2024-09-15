@@ -21,10 +21,10 @@ export async function submitUser(formdata: AuthformData, mode: string) {
       return true;
     } else {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const response = await httpRequest.post(url, {
-        username,
-        password: createpassword,
-      });
+await httpRequest.post(url, {
+  username,
+  password: createpassword,
+});
       toast.success("Account created! Now Login!", {
         position: "top-right",
         autoClose: 5000,

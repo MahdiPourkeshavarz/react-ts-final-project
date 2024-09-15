@@ -23,10 +23,3 @@ export const formSchema = yup
 
 export type AuthSchemaType = yup.InferType<typeof formSchema>;
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const exampleData: AuthSchemaType = {
-  username: "1234567890",
-  password: "password123",
-  createpassword: "password123",
-  repeatpassword: "password123",
-};
