@@ -39,6 +39,14 @@ export interface Product {
   slugname: string;
   __v: number;
 }
+
+export interface AuthformData {
+  password?: string;
+  createpassword?: string;
+  repeatpassword?: string | null;
+  username: string;
+}
+
 export interface Rating {
   rate: number;
   count: number;
