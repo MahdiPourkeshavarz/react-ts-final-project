@@ -1,6 +1,6 @@
 # GadgetHub
 
-A React final for Maktab Sharif bootcamp 113
+A React final project for Maktab Sharif bootcamp 113.
 This project is a shopping website with Admin panel which users can browse through products and order whatever they wish. also the shop manager can controle the products (details, price, quantity), and also view the orders list and submit them
 
 ## Table of Contents
