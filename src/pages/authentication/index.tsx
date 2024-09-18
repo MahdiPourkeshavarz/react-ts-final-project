@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { submitUser } from "../../api/getAccess";
 import { AuthformData } from "../../types";
-import { AuthenticationForm } from "./components/AuthForm";
+import { AuthenticationForm } from "./components/authForm";
 
 export function AuthenticationPage() {
   const [mode, setMode] = useState("login");
