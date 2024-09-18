@@ -14,17 +14,17 @@ export async function submitUser(formdata: AuthformData, mode: string) {
         username,
         password,
       });
-      const accessToken = await response.data.access;
-      const refreshToken = await response.data.refresh;
+      const accessToken = await response.data.token.accessToken;
+      const refreshToken = await response.data.token.refreshToken;
       localStorage.setItem("accessToken", accessToken);
       localStorage.setItem("refreshToken", refreshToken);
       return true;
     } else {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
-await httpRequest.post(url, {
-  username,
-  password: createpassword,
-});
+      await httpRequest.post(url, {
+        username,
+        password: createpassword,
+      });
       toast.success("Account created! Now Login!", {
         position: "top-right",
         autoClose: 5000,

@@ -5,7 +5,7 @@ export const API_ROUTES = {
   AUTH_LOGIN: "/auth/login",
   AUTH_LOGOUT: "/auth/logout",
   AUTH_TOKEN: "/auth/token",
-  PRODUCT_BASE: "/product",
+  PRODUCT_BASE: "/products",
   CATEGORY_BASE: "/categories",
   SUBCATEGORIES_BASE: "/subcategories",
   ORDERS_BASE: "/orders",
