@@ -35,12 +35,11 @@ export function AuthenticationPage() {
             </header>
             <section className="form-block h-fit transition-transform duration-500 ease-in-out">
               <h2 className="text-xl font-semibold text-gray-800 mb-4 text-center">
-                {mode === "login" ? "Log In" : "Sign Up"}
+                {mode === "login" ? "ورود" : "ثبت نام"}
               </h2>
               <div className="text-center mb-4">
                 <span className="text-gray-600">
-                  {mode === "login" ? "Don't" : "Already"} قبلا حساب باز کرده
-                  اید?
+                  {mode === "login" ? "Don't" : "Already"} have an account?
                   <span
                     className="text-blue-500 cursor-pointer"
                     onClick={toggleMode}

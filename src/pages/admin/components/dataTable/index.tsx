@@ -18,24 +18,44 @@ interface TableProps {
 }
 
 export function DataTable({ selected }: TableProps) {
-  const { theme } = useStore();
-  const [page, setPage] = useState(1);
-  const [categoryId, setcategoryId] = useState("");
-  const [subcategoryId, setSubcategoryId] = useState("");
-  const [subEndpoint, setSubEndpoint] = useState("");
-
   const isOrders = selected === "سفارش ها";
   const baseEndpoint = isOrders
     ? API_ROUTES.ORDERS_BASE
     : API_ROUTES.PRODUCT_BASE;
 
+  const { theme } = useStore();
+
+  const [page, setPage] = useState(1);
+  const [categoryId, setcategoryId] = useState("");
+  const [subcategoryId, setSubcategoryId] = useState("");
+  const [subEndpoint, setSubEndpoint] = useState("");
   const [endpoint, setEndpoint] = useState(baseEndpoint);
+
+  const {
+    data: productsData,
+    error: productsError,
+    isLoading: productsLoading,
+  } = useGetData<TAllProductsResponse>(endpoint);
+
+  const {
+    data: ordersData,
+    error: ordersError,
+    isLoading: ordersLoading,
+  } = useGetData<TAllOrderResponse>(endpoint);
+
+  const { data: categoriesList } = useGetData<TResponseGetAllCategories>( // data for showing the categories in the select element
+    API_ROUTES.CATEGORY_BASE
+  );
+
+  const { data: subcategoriesList } =
+    useGetData<TResponseGetAllSubCategories>(subEndpoint); // data for showing the right subcategories in the select element
 
   useEffect(() => {
     // cleanup function for queryParams in url in case the selected tab was سفارش ها
     if (selected === "سفارش ها") {
       setcategoryId("");
       setSubcategoryId("");
+      setPage(1);
     }
   }, [selected]);
 
@@ -58,39 +78,21 @@ export function DataTable({ selected }: TableProps) {
     setEndpoint(`${baseEndpoint}?${queryParams.toString()}`);
   }, [page, selected, categoryId, subcategoryId]);
 
-  const {
-    data: productsData,
-    error: productsError,
-    isLoading: productsLoading,
-  } = useGetData<TAllProductsResponse>(endpoint);
-
-  const {
-    data: ordersData,
-    error: ordersError,
-    isLoading: ordersLoading,
-  } = useGetData<TAllOrderResponse>(endpoint);
-
-  const { data: categoriesList } = useGetData<TResponseGetAllCategories>( // data for showing the categories in the select element
-    API_ROUTES.CATEGORY_BASE
-  );
-
-  const { data: subcategoriesList } =
-    useGetData<TResponseGetAllSubCategories>(subEndpoint); // data for showing the right subcategories in the select element
-
   function handlePageChange(increment: number) {
     setPage((prev) => Math.max(1, prev + increment));
   }
 
   if (productsLoading || ordersLoading) return <div>Loading...</div>;
   if (productsError || ordersError) return <div>your encontering error...</div>;
+
   return (
     <div className="px-4 py-8 flex flex-col">
       {selected !== "سفارش ها" ? (
-        <div className="flex py-3 gap-x-6 items-center">
+        <div className="flex py-3 items-center justify-between px-3">
           <select
             className={
               theme === "dark"
-                ? "bg-slate-900 text-blue-500 px-2 py-1 rounded-lg w-40 "
+                ? "bg-slate-900 text-blue-500 px-2 py-1 rounded-lg w-40"
                 : "bg-slate-200 px-2 py-1 rounded-lg w-40"
             }
             name="categoryList"
@@ -113,7 +115,7 @@ export function DataTable({ selected }: TableProps) {
           <select
             className={
               theme === "dark"
-                ? "bg-slate-900 text-blue-500 px-2 py-1 rounded-lg w-40 "
+                ? "bg-slate-900 text-blue-500 px-2 py-1 rounded-lg w-40"
                 : "bg-slate-200 px-2 py-1 rounded-lg w-40"
             }
             name="subcategoryList"
@@ -132,10 +134,12 @@ export function DataTable({ selected }: TableProps) {
               )
             )}
           </select>
+          <button className="bg-green-500 text-white px-4 py-1 rounded shadow hover:bg-green-600 w-40">
+            ذخیره
+          </button>
         </div>
-      ) : (
-        ""
-      )}
+      ) : null}
+
       <table
         className={
           theme === "dark"
@@ -145,22 +149,24 @@ export function DataTable({ selected }: TableProps) {
       >
         <thead>
           <tr>
-            {selected === "کالاها" && <th className="py-3">Product Name</th>}
+            {selected === "کالاها" && (
+              <th className="py-3 text-left">نام محصول</th>
+            )}
             {selected === "موجودی و قیمت ها" && (
               <>
-                <th className="py-3 ">نام محصول</th>
-                <th className="py-3 ">موجودی</th>
-                <th className="py-3 ">قیمت</th>
+                <th className="py-3 text-right">نام محصول</th>
+                <th className="py-3 text-right">موجودی</th>
+                <th className="py-3 text-right">قیمت</th>
               </>
             )}
             {selected === "سفارش ها" && (
               <>
-                <th className="py-3 ">سفارش دهنده</th>
-                <th className="py-3 ">تاریخ</th>
-                <th className="py-3 ">جمع کل</th>
+                <th className="py-3 text-right">تاریخ ثبت</th>
+                <th className="py-3 text-right">تاریخ تحویل</th>
+                <th className="py-3 text-right">جمع کل</th>
               </>
             )}
-            <th className="py-3 ">عملیات ها</th>
+            <th className="py-3 text-right">عملیات ها</th>
           </tr>
         </thead>
         <tbody>
@@ -173,15 +179,15 @@ export function DataTable({ selected }: TableProps) {
                   )}
                   {selected === "موجودی و قیمت ها" && (
                     <>
-                      <td className="px-1 py-4">{product.name}</td>
-                      <td className="px-1 py-4">
+                      <td className="px-3 py-4">{product.name}</td>
+                      <td className="px-3 py-4">
                         <input
                           type="number"
                           className="rounded px-1 py-1 outline-none focus:outline focus:outline-blue-500 bg-inherit"
                           value={product.quantity}
                         />
                       </td>
-                      <td className="px-1 py-4">
+                      <td className="px-3 py-4">
                         <input
                           type="number"
                           className="rounded px-1 py-1 outline-none focus:outline focus:outline-blue-500 bg-inherit"
@@ -231,7 +237,7 @@ export function DataTable({ selected }: TableProps) {
             ))}
         </tbody>
       </table>
-      <div className="mt-4 flex justify-between">
+      <div className="mt-4 flex justify-between px-3">
         <button
           className="bg-blue-500 text-white px-4 py-2 rounded shadow hover:bg-blue-600"
           onClick={() => handlePageChange(+1)}
@@ -245,10 +251,6 @@ export function DataTable({ selected }: TableProps) {
           قبلی
         </button>
       </div>
-
-      <button className="mt-4 bg-green-500 text-white px-4 py-2 rounded shadow hover:bg-green-600">
-        ذخیره
-      </button>
     </div>
   );
 }

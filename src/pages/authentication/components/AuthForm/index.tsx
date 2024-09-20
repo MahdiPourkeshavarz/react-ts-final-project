@@ -89,7 +89,7 @@ export const AuthenticationForm = ({ mode, onSubmit }: Props) => {
           className="w-full bg-blue-600 text-white font-semibold py-2 rounded transition duration-300 hover:bg-blue-700"
           type="submit"
         >
-          {mode === "login" ? "Log In" : "Sign Up"}
+          {mode === "login" ? "ورود" : "ثبت نام"}
         </button>
       </div>
     </form>
