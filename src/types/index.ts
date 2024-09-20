@@ -39,6 +39,14 @@ export interface Product {
   slugname: string;
   __v: number;
 }
+
+export interface AuthformData {
+  password?: string;
+  createpassword?: string;
+  repeatpassword?: string | null;
+  username: string;
+}
+
 export interface Rating {
   rate: number;
   count: number;
@@ -54,11 +62,11 @@ export interface Subcategory {
   __v: number;
 }
 
-export interface ResponseLogin {
+export type TResponseLogin = {
   status: string;
   token: Token;
   data: LoginData;
-}
+};
 export interface Token {
   accessToken: string;
   refreshToken: string;
@@ -82,22 +90,22 @@ export interface User {
   refreshToken?: string;
 }
 
-export interface ResponseGenerateRefreshToken {
+export type TResponseGenerateRefreshToken = {
   status: string;
   token: Token;
-}
+};
 export interface Token {
   accessToken: string;
 }
 
-export interface ResponseGetAllCategories {
+export type TResponseGetAllCategories = {
   status: string;
   page: number;
   per_page: number;
   total: number;
   total_pages: number;
   data: GetAllCategoriesData;
-}
+};
 
 export interface GetAllCategoriesData {
   categories?: CategoriesEntity[] | null;
@@ -129,12 +137,21 @@ export interface Category {
   __v: number;
 }
 
+export type TResponseGetAllSubCategories = {
+  status: string;
+  page: number;
+  per_page: number;
+  total: number;
+  total_pages: number;
+  data: SubcategoryByIdData;
+};
+
 export interface ResponseGetSubcategoryById {
   status: string;
   data: SubcategoryByIdData;
 }
 export interface SubcategoryByIdData {
-  subcategory: SubcategoryById;
+  subcategories: SubcategoryById[];
 }
 export interface SubcategoryById {
   _id: string;
@@ -162,7 +179,7 @@ export interface ResponseGetOrderById {
   data: OrderData;
 }
 export interface OrderData {
-  order: Order;
+  orders: Order[];
 }
 export interface Order {
   _id: string;
@@ -176,14 +193,42 @@ export interface Order {
   __v?: number;
 }
 
-export interface Root {
+export type TAllProductsResponse = {
   status: string;
   page: number;
   per_page: number;
   total: number;
   total_pages: number;
-  data: Data;
+  data: GetAllProductsData;
+};
+export interface GetAllProductsData {
+  products?: GeneralProductsEntity[] | null;
 }
-export interface Data {
-  orders?: Order[] | null;
+export interface GeneralProductsEntity {
+  rating: Rating;
+  _id: string | undefined;
+  category: Category;
+  subcategory: Subcategory;
+  name: string;
+  price: number;
+  quantity: number;
+  brand: string;
+  discount: number;
+  description: string;
+  thumbnail: string;
+  images?: string[] | null;
+  createdAt: string;
+  updatedAt: string;
+  slugname: string;
 }
+
+export type TAllOrderResponse = {
+  status: string;
+  page: number;
+  per_page: number;
+  total: number;
+  total_pages: number;
+  data: OrderData;
+};
+
+export type TGetData = TAllOrderResponse & TAllProductsResponse;
