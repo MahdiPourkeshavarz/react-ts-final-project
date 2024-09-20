@@ -31,7 +31,7 @@ export const AuthenticationForm = ({ mode, onSubmit }: Props) => {
             <input
               type="string"
               id="string"
-              placeholder="User Name"
+              placeholder="نام کاربری"
               disabled={mode === ("signup" as unknown)}
               className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200 ease-in-out disabled:opacity-50"
               {...register("username")}
@@ -41,7 +41,7 @@ export const AuthenticationForm = ({ mode, onSubmit }: Props) => {
             <input
               type="password"
               id="password"
-              placeholder="Password"
+              placeholder="رمز عبور"
               disabled={mode === ("signup" as unknown)}
               className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200 ease-in-out disabled:opacity-50"
               {...register("password")}
@@ -55,7 +55,7 @@ export const AuthenticationForm = ({ mode, onSubmit }: Props) => {
             <input
               type="string"
               id="name"
-              placeholder="User Name"
+              placeholder="نام کاربری"
               disabled={mode === ("login" as unknown)}
               className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200 ease-in-out disabled:opacity-50"
               {...register("username")}
@@ -64,7 +64,7 @@ export const AuthenticationForm = ({ mode, onSubmit }: Props) => {
 
             <input
               type="password"
-              id="createpassword"
+              id="رمز عبور"
               placeholder="Password"
               disabled={mode === ("login" as unknown)}
               className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200 ease-in-out disabled:opacity-50"
@@ -74,7 +74,7 @@ export const AuthenticationForm = ({ mode, onSubmit }: Props) => {
 
             <input
               type="password"
-              id="repeatpassword"
+              id="تکرار رمز عبور"
               placeholder="Repeat Password"
               disabled={mode === ("login" as unknown)}
               className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200 ease-in-out disabled:opacity-50"

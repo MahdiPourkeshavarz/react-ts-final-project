@@ -1,10 +1,8 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { useEffect, useState } from "react";
 import {
   CategoriesEntity,
   GeneralProductsEntity,
   Order,
-  Product,
   SubcategoryById,
   TAllOrderResponse,
   TAllProductsResponse,
@@ -15,10 +13,6 @@ import { useGetData } from "../../../../hooks/useGetAction";
 import { API_ROUTES } from "../../../../constants";
 import { useStore } from "../../../../context/shopStore";
 
-// const saveProductChanges = async (updatedProduct: Product) => {
-//   await httpRequest.put(`/api/products/${updatedProduct._id}`, updatedProduct);
-// };
-
 interface TableProps {
   selected: string;
 }
@@ -26,21 +20,43 @@ interface TableProps {
 export function DataTable({ selected }: TableProps) {
   const { theme } = useStore();
   const [page, setPage] = useState(1);
-  const [editingProduct, setEditingProduct] = useState<Product | null>(null);
-
-  const [endpoint, setEndpoint] = useState(
-    `${
-      selected === "کالاها"
-        ? API_ROUTES.PRODUCT_BASE
-        : selected === "سفارش ها"
-        ? API_ROUTES.ORDERS_BASE
-        : API_ROUTES.PRODUCT_BASE
-    }`
-  );
-
   const [categoryId, setcategoryId] = useState("");
   const [subcategoryId, setSubcategoryId] = useState("");
   const [subEndpoint, setSubEndpoint] = useState("");
+
+  const isOrders = selected === "سفارش ها";
+  const baseEndpoint = isOrders
+    ? API_ROUTES.ORDERS_BASE
+    : API_ROUTES.PRODUCT_BASE;
+
+  const [endpoint, setEndpoint] = useState(baseEndpoint);
+
+  useEffect(() => {
+    // cleanup function for queryParams in url in case the selected tab was سفارش ها
+    if (selected === "سفارش ها") {
+      setcategoryId("");
+      setSubcategoryId("");
+    }
+  }, [selected]);
+
+  useEffect(() => {
+    // using queryParams for synced user requested actions
+    const queryParams = new URLSearchParams();
+
+    if (categoryId) {
+      queryParams.append("category", categoryId);
+      setSubEndpoint(`${API_ROUTES.SUBCATEGORIES_BASE}?category=${categoryId}`);
+    }
+
+    if (subcategoryId) {
+      queryParams.append("subcategory", subcategoryId);
+    }
+
+    queryParams.set("page", page.toString());
+    queryParams.set("limit", "4");
+
+    setEndpoint(`${baseEndpoint}?${queryParams.toString()}`);
+  }, [page, selected, categoryId, subcategoryId]);
 
   const {
     data: productsData,
@@ -54,55 +70,15 @@ export function DataTable({ selected }: TableProps) {
     isLoading: ordersLoading,
   } = useGetData<TAllOrderResponse>(endpoint);
 
-  const { data: categoriesList } = useGetData<TResponseGetAllCategories>(
+  const { data: categoriesList } = useGetData<TResponseGetAllCategories>( // data for showing the categories in the select element
     API_ROUTES.CATEGORY_BASE
   );
 
   const { data: subcategoriesList } =
-    useGetData<TResponseGetAllSubCategories>(subEndpoint);
+    useGetData<TResponseGetAllSubCategories>(subEndpoint); // data for showing the right subcategories in the select element
 
-  // const handleSave = () => {
-  //   if (editingProduct) {
-  //     mutation.mutate(editingProduct);
-  //     setEditingProduct(null);
-  //   }
-  // };
-
-  useEffect(() => {
-    const baseEndpoint =
-      selected === "کالاها"
-        ? API_ROUTES.PRODUCT_BASE
-        : selected === "سفارش ها"
-        ? API_ROUTES.ORDERS_BASE
-        : API_ROUTES.PRODUCT_BASE;
-
-    const queryParams = new URLSearchParams();
-
-    if (categoryId) {
-      queryParams.append("category", categoryId);
-      setSubEndpoint(`${API_ROUTES.SUBCATEGORIES_BASE}?category=${categoryId}`);
-    }
-
-    if (subcategoryId) {
-      queryParams.append("subcategory", subcategoryId);
-    }
-
-    const limit = "4";
-
-    if (page) {
-      queryParams.set("page", page.toString());
-      queryParams.set("limit", limit);
-    }
-
-    setEndpoint(`${baseEndpoint}?${queryParams.toString()}`);
-  }, [page, selected, categoryId, subcategoryId]);
-
-  function handleNextPage() {
-    setPage((prev) => (prev == productsData?.total_pages ? prev : prev + 1));
-  }
-
-  function handlePrevPage() {
-    setPage((prev) => (prev == 1 ? prev : prev - 1));
+  function handlePageChange(increment: number) {
+    setPage((prev) => Math.max(1, prev + increment));
   }
 
   if (productsLoading || ordersLoading) return <div>Loading...</div>;
@@ -115,12 +91,13 @@ export function DataTable({ selected }: TableProps) {
             className={
               theme === "dark"
                 ? "bg-slate-900 text-blue-500 px-2 py-1 rounded-lg w-40 "
-                : "bg-slate-200"
+                : "bg-slate-200 px-2 py-1 rounded-lg w-40"
             }
             name="categoryList"
             id="categoryList"
             onChange={(e) => {
               setcategoryId(e.target.value);
+              setSubcategoryId("");
               setPage(1);
             }}
           >
@@ -171,19 +148,19 @@ export function DataTable({ selected }: TableProps) {
             {selected === "کالاها" && <th className="py-3">Product Name</th>}
             {selected === "موجودی و قیمت ها" && (
               <>
-                <th className="py-3 ">Product Name</th>
-                <th className="py-3 ">Quantity</th>
-                <th className="py-3 ">Price</th>
+                <th className="py-3 ">نام محصول</th>
+                <th className="py-3 ">موجودی</th>
+                <th className="py-3 ">قیمت</th>
               </>
             )}
             {selected === "سفارش ها" && (
               <>
-                <th className="py-3 ">Customer Name</th>
-                <th className="py-3 ">Date</th>
-                <th className="py-3 ">Total Price</th>
+                <th className="py-3 ">سفارش دهنده</th>
+                <th className="py-3 ">تاریخ</th>
+                <th className="py-3 ">جمع کل</th>
               </>
             )}
-            <th className="py-3 ">Actions</th>
+            <th className="py-3 ">عملیات ها</th>
           </tr>
         </thead>
         <tbody>
@@ -215,10 +192,10 @@ export function DataTable({ selected }: TableProps) {
                   )}
                   <td className="px-3 py-4">
                     <button className="text-blue-500 hover:underline ml-3">
-                      Edit
+                      ویرایش
                     </button>
                     <button className="text-red-500 hover:underline">
-                      Delete
+                      حذف
                     </button>
                   </td>
                 </tr>
@@ -230,14 +207,24 @@ export function DataTable({ selected }: TableProps) {
                 key={order._id}
                 className="hover:border hover:border-slate-700"
               >
-                <td className="px-3 py-4">{order.updatedAt}</td>
                 <td className="px-3 py-4">
-                  {new Date(order.createdAt).toLocaleDateString()}
+                  {new Date(order.updatedAt).toLocaleDateString("fa-IR", {
+                    hour: "numeric",
+                    minute: "numeric",
+                    second: "numeric",
+                  })}
+                </td>
+                <td className="px-3 py-4">
+                  {new Date(order.createdAt).toLocaleDateString("fa-IR", {
+                    hour: "numeric",
+                    minute: "numeric",
+                    second: "numeric",
+                  })}
                 </td>
                 <td className="px-3 py-4">{order.totalPrice}</td>
                 <td className="px-3 py-4">
                   <button className="text-blue-500 hover:underline">
-                    Edit
+                    ویرایش
                   </button>
                 </td>
               </tr>
@@ -247,22 +234,21 @@ export function DataTable({ selected }: TableProps) {
       <div className="mt-4 flex justify-between">
         <button
           className="bg-blue-500 text-white px-4 py-2 rounded shadow hover:bg-blue-600"
-          onClick={handleNextPage}
+          onClick={() => handlePageChange(+1)}
         >
-          Next
+          بعدی
         </button>
         <button
           className="bg-blue-500 text-white px-4 py-2 rounded shadow hover:bg-blue-600"
-          onClick={handlePrevPage}
+          onClick={() => handlePageChange(-1)}
         >
-          Previous
+          قبلی
         </button>
       </div>
-      {editingProduct && (
-        <button className="mt-4 bg-green-500 text-white px-4 py-2 rounded shadow hover:bg-green-600">
-          Save
-        </button>
-      )}
+
+      <button className="mt-4 bg-green-500 text-white px-4 py-2 rounded shadow hover:bg-green-600">
+        ذخیره
+      </button>
     </div>
   );
 }
