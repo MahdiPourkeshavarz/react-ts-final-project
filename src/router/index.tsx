@@ -15,6 +15,10 @@ import { ThemeProvider } from "@mui/material";
 import { useMemo } from "react";
 import { useStore } from "../context/shopStore";
 import { defaultTheme } from "../utils/theme";
+import { AdminLayout } from "../layout/adminLayout";
+import { InventoryPage } from "../pages/admin/pages/inventory";
+import { ProductsPage } from "../pages/admin/pages/products";
+import { OrdersPage } from "../pages/admin/pages/orders";
 
 const router = createBrowserRouter([
   {
@@ -32,7 +36,25 @@ const router = createBrowserRouter([
       },
       {
         path: "/admin",
-        element: <AdminPage />,
+        element: <AdminLayout />,
+        children: [
+          {
+            index: true,
+            element: <AdminPage />,
+          },
+          {
+            path: "/admin/products",
+            element: <ProductsPage />,
+          },
+          {
+            path: "/admin/inventory",
+            element: <InventoryPage />,
+          },
+          {
+            path: "/admin/orders",
+            element: <OrdersPage />,
+          },
+        ],
       },
       {
         path: "/home/:categoryId",
