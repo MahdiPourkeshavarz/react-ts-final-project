@@ -3,6 +3,7 @@ import { useStore } from "../../context/shopStore";
 import { CategoryItem } from "./components/categoryItem";
 import { PosterCardItem } from "./components/posterCardItem";
 import { FeatureCard } from "./components/featureCard";
+import { OfferCardItem } from "./components/offerCard";
 
 export function HomePage() {
   const [isExpanded, setIsExpanded] = useState(false);
@@ -10,7 +11,7 @@ export function HomePage() {
 
   return (
     <div
-      className={`myContainer flex flex-col py-10 px-5 gap-y-8 ${
+      className={`myContainer flex flex-col py-8 px-5 gap-y-8 ${
         theme === "dark" ? "text-white" : "text-slate-900"
       }`}
     >
@@ -37,7 +38,7 @@ export function HomePage() {
         )}
       </div>
 
-      <div className="flex gap-x-5 px-3 overflow-x-auto whitespace-nowrap scrollbar-hide lg:justify-center md:justify-center">
+      <div className="flex gap-x-7 px-2 overflow-x-auto whitespace-nowrap scrollbar-hide lg:justify-center md:justify-center items-center">
         <CategoryItem
           to="/shop/headphone"
           imgSrc="/headphone.png"
@@ -105,6 +106,19 @@ export function HomePage() {
             text="میتونید سریع تر از یک روز کالای خودتون رو مرجوع کنید"
           />
         </div>
+      </div>
+
+      <div className="pt-6">
+        <p className="text-lg">
+          <span className="text-xl font-semibold">تخفیفات ویژه </span>
+          را برای دوستداران تکنولوژی در نظر گرفته ایم
+        </p>
+      </div>
+
+      <div className="flex gap-x-5 overflow-x-auto whitespace-nowrap scrollbar-hide ml-4">
+        <OfferCardItem imgSrc="/college.png" title="شرایط ویژه دانشجویان" />
+        <OfferCardItem imgSrc="/student.png" title="شرایط ویژه دانش آموزان" />
+        <OfferCardItem imgSrc="/bussinesman.png" title="شرایط ویژه کارمندان" />
       </div>
     </div>
   );
