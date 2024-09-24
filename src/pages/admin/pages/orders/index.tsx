@@ -21,7 +21,7 @@ export function OrdersPage() {
 
   const [endpoint, setEndpoint] = useState(initialEndpoint);
 
-  const { data } = useGetData<TAllOrderResponse>(endpoint);
+  const { data, isLoading } = useGetData<TAllOrderResponse>(endpoint);
 
   useEffect(() => {
     const deliveryStatus =
@@ -75,44 +75,58 @@ export function OrdersPage() {
           <option value="notDelivered">تحویل نشده</option>
         </select>
       </div>
-      <table
-        className={`min-w-full rounded-lg ${
-          theme === "dark"
-            ? "bg-slate-800 text-blue-400"
-            : "bg-slate-200 text-slate-700"
-        }`}
-      >
-        <thead>
-          <tr>
-            <th className="py-3 text-right pr-3">سفارش دهنده</th>
-            <th className="py-3 text-right pr-3">تاریخ ثبت</th>
-            <th className="py-3 text-right pr-3">تاریخ تحویل</th>
-            <th className="py-3 text-right pr-3">جمع کل</th>
-            <th className="py-3 text-right pr-3">عملیات ها</th>
-          </tr>
-        </thead>
-        <tbody className="h-20">
-          {data?.data?.orders?.map((order) => (
-            <tr key={order._id} className="hover:bg-[#bcc3c921]">
-              <td className="px-3 py-4">{order.user.username}</td>
-              <td className="px-3 py-4">
-                {new Date(order.updatedAt).toLocaleDateString("fa-IR")}
-              </td>
-              <td className="px-3 py-4">
-                {new Date(order.createdAt).toLocaleDateString("fa-IR")}
-              </td>
-              <td className="px-3 py-4">
-                {numberWithCommas(order.totalPrice)}
-              </td>
-              <td className="px-3 py-4">
-                <button className="text-blue-500 hover:underline">
-                  ویرایش
-                </button>
-              </td>
+      <div className="relative">
+        <table
+          className={`min-w-full rounded-lg ${
+            theme === "dark"
+              ? "bg-slate-800 text-blue-400"
+              : "bg-slate-200 text-slate-700"
+          }`}
+        >
+          <thead>
+            <tr>
+              <th className="py-3 text-right pr-3">سفارش دهنده</th>
+              <th className="py-3 text-right pr-3">تاریخ ثبت</th>
+              <th className="py-3 text-right pr-3">تاریخ تحویل</th>
+              <th className="py-3 text-right pr-3">جمع کل</th>
+              <th className="py-3 text-right pr-3">عملیات ها</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          {isLoading && (
+            <div className="absolute inset-0 flex items-center justify-center bg-opacity-50">
+              <div
+                className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-current border-e-transparent align-[-0.125em] text-surface motion-reduce:animate-[spin_1.5s_linear_infinite] dark:text-white"
+                role="status"
+              >
+                <span className="!absolute !-m-px !h-px !w-px !overflow-hidden !whitespace-nowrap !border-0 !p-0 ![clip:rect(0,0,0,0)]">
+                  Loading...
+                </span>
+              </div>
+            </div>
+          )}
+          <tbody className="h-20">
+            {data?.data?.orders?.map((order) => (
+              <tr key={order._id} className="hover:bg-[#bcc3c921]">
+                <td className="px-3 py-4">{order.user.username}</td>
+                <td className="px-3 py-4">
+                  {new Date(order.updatedAt).toLocaleDateString("fa-IR")}
+                </td>
+                <td className="px-3 py-4">
+                  {new Date(order.createdAt).toLocaleDateString("fa-IR")}
+                </td>
+                <td className="px-3 py-4">
+                  {numberWithCommas(order.totalPrice)}
+                </td>
+                <td className="px-3 py-4">
+                  <button className="text-blue-500 hover:underline">
+                    ویرایش
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
       <div className="mt-4 flex justify-between px-3">
         <button
           className="bg-blue-500 text-white px-4 py-2 rounded shadow hover:bg-blue-600"

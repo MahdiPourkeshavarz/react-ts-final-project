@@ -9,10 +9,7 @@ import {
   TResponseGetAllCategories,
   TResponseGetAllSubCategories,
 } from "../../../../types";
-import {
-  convertNumberToPersian,
-  numberWithCommas,
-} from "../../../../utils/dataConverter";
+import { numberWithCommas } from "../../../../utils/dataConverter";
 
 export function InventoryPage() {
   const [page, setPage] = useState(1);
@@ -132,8 +129,15 @@ export function InventoryPage() {
             </tr>
           </thead>
           {isLoading && (
-            <div className="absolute inset-0 flex items-center justify-center bg-opacity-50 bg-gray-200">
-              <div>Loading...</div>
+            <div className="absolute inset-0 flex items-center justify-center bg-opacity-50">
+              <div
+                className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-current border-e-transparent align-[-0.125em] text-surface motion-reduce:animate-[spin_1.5s_linear_infinite] dark:text-white"
+                role="status"
+              >
+                <span className="!absolute !-m-px !h-px !w-px !overflow-hidden !whitespace-nowrap !border-0 !p-0 ![clip:rect(0,0,0,0)]">
+                  Loading...
+                </span>
+              </div>
             </div>
           )}
           <tbody className="h-72">
@@ -153,7 +157,7 @@ export function InventoryPage() {
                     type="text"
                     inputMode="numeric"
                     className="rounded px-1 py-1 outline-none focus:outline focus:outline-blue-500 bg-inherit"
-                    value={convertNumberToPersian(product.quantity)}
+                    value={numberWithCommas(product.quantity)}
                   />
                 </td>
                 <td className="px-3 py-4">
@@ -161,9 +165,7 @@ export function InventoryPage() {
                     type="text"
                     inputMode="numeric"
                     className="rounded px-1 py-1 outline-none focus:outline focus:outline-blue-500 bg-inherit"
-                    value={numberWithCommas(
-                      convertNumberToPersian(product.price)
-                    )}
+                    value={numberWithCommas(product.price)}
                   />
                 </td>
                 <td className="px-3 py-4">
