@@ -23,7 +23,7 @@ export function InventoryPage() {
 
   const { theme } = useStore();
 
-  const { data, error, isLoading } = useGetData<TAllProductsResponse>(endpoint);
+  const { data, isLoading } = useGetData<TAllProductsResponse>(endpoint);
 
   const { data: categoriesList } = useGetData<TResponseGetAllCategories>( // data for showing the categories in the select element
     API_ROUTES.CATEGORY_BASE
@@ -50,9 +50,6 @@ export function InventoryPage() {
 
     setEndpoint(`${API_ROUTES.PRODUCT_BASE}?${queryParams.toString()}`);
   }, [page, categoryId, subcategoryId]);
-
-  if (isLoading) return <div>Loading...</div>;
-  if (error) return <div>Encountered an error...</div>;
 
   function handlePageChange(increment: number) {
     if (page == data?.total_pages) {
@@ -117,62 +114,69 @@ export function InventoryPage() {
           ذخیره
         </button>
       </div>
-      <table
-        className={`min-w-full rounded-lg ${
-          theme === "dark"
-            ? "bg-slate-800 text-blue-400"
-            : "bg-slate-200 text-slate-700"
-        }`}
-      >
-        <thead>
-          <tr>
-            <th className="py-3 text-right pr-3">تصویر</th>
-            <th className="py-3 text-right pr-4">نام محصول</th>
-            <th className="py-3 text-right pr-4">موجودی</th>
-            <th className="py-3 text-right pr-4">قیمت</th>
-            <th className="py-3 text-right pr-4">عملیات ها</th>
-          </tr>
-        </thead>
-        <tbody className="h-72">
-          {data?.data?.products?.map((product) => (
-            <tr key={product._id} className="hover:bg-[#bcc3c921]">
-              <td>
-                <img
-                  className="rounded-lg mr-3"
-                  width="40px"
-                  src={`http://${product.images[0]}`}
-                  alt="_"
-                />
-              </td>
-              <td className="px-3 py-4">{product.name}</td>
-              <td className="px-3 py-4">
-                <input
-                  type="text"
-                  inputMode="numeric"
-                  className="rounded px-1 py-1 outline-none focus:outline focus:outline-blue-500 bg-inherit"
-                  value={convertNumberToPersian(product.quantity)}
-                />
-              </td>
-              <td className="px-3 py-4">
-                <input
-                  type="text"
-                  inputMode="numeric"
-                  className="rounded px-1 py-1 outline-none focus:outline focus:outline-blue-500 bg-inherit"
-                  value={numberWithCommas(
-                    convertNumberToPersian(product.price)
-                  )}
-                />
-              </td>
-              <td className="px-3 py-4">
-                <button className="text-blue-500 hover:underline ml-3">
-                  ویرایش
-                </button>
-                <button className="text-red-500 hover:underline">حذف</button>
-              </td>
+      <div className="relative">
+        <table
+          className={`min-w-full rounded-lg ${
+            theme === "dark"
+              ? "bg-slate-800 text-blue-400"
+              : "bg-slate-200 text-slate-700"
+          }`}
+        >
+          <thead>
+            <tr>
+              <th className="py-3 text-right pr-3">تصویر</th>
+              <th className="py-3 text-right pr-4">نام محصول</th>
+              <th className="py-3 text-right pr-4">موجودی</th>
+              <th className="py-3 text-right pr-4">قیمت</th>
+              <th className="py-3 text-right pr-4">عملیات ها</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          {isLoading && (
+            <div className="absolute inset-0 flex items-center justify-center bg-opacity-50 bg-gray-200">
+              <div>Loading...</div>
+            </div>
+          )}
+          <tbody className="h-72">
+            {data?.data?.products?.map((product) => (
+              <tr key={product._id} className="hover:bg-[#bcc3c921]">
+                <td>
+                  <img
+                    className="rounded-lg mr-3"
+                    width="40px"
+                    src={`http://${product.images[0]}`}
+                    alt="_"
+                  />
+                </td>
+                <td className="px-3 py-4">{product.name}</td>
+                <td className="px-3 py-4">
+                  <input
+                    type="text"
+                    inputMode="numeric"
+                    className="rounded px-1 py-1 outline-none focus:outline focus:outline-blue-500 bg-inherit"
+                    value={convertNumberToPersian(product.quantity)}
+                  />
+                </td>
+                <td className="px-3 py-4">
+                  <input
+                    type="text"
+                    inputMode="numeric"
+                    className="rounded px-1 py-1 outline-none focus:outline focus:outline-blue-500 bg-inherit"
+                    value={numberWithCommas(
+                      convertNumberToPersian(product.price)
+                    )}
+                  />
+                </td>
+                <td className="px-3 py-4">
+                  <button className="text-blue-500 hover:underline ml-3">
+                    ویرایش
+                  </button>
+                  <button className="text-red-500 hover:underline">حذف</button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
       <div className="mt-4 flex justify-between px-3">
         <button
           className="bg-blue-500 text-white px-4 py-2 rounded shadow hover:bg-blue-600"

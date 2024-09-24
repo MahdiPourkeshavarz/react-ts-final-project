@@ -3,7 +3,7 @@ import { API_ROUTES } from "../../../../constants";
 import { useStore } from "../../../../context/shopStore";
 import { useGetData } from "../../../../hooks/useGetAction";
 import { TAllOrderResponse } from "../../../../types";
-import { convertNumberToPersian } from "../../../../utils/dataConverter";
+import { numberWithCommas } from "../../../../utils/dataConverter";
 import { useSearchParams } from "react-router-dom";
 
 export function OrdersPage() {
@@ -31,11 +31,13 @@ export function OrdersPage() {
         ? "false"
         : null;
     const newEndpoint = `${API_ROUTES.ORDERS_BASE}${
-      deliveryStatus ? `?deliveryStatus=${deliveryStatus}` : ""
+      deliveryStatus
+        ? `?deliveryStatus=${deliveryStatus}`
+        : `?page=${page}&limit=4`
     }&page=${page}&limit=4`;
     console.log(newEndpoint);
     setEndpoint(newEndpoint);
-  }, [optionValue, page]);
+  }, [optionValue, page, initialEndpoint]);
 
   function handleStatusChange(e: React.ChangeEvent<HTMLSelectElement>) {
     const newStatus = e.target.value;
@@ -94,21 +96,13 @@ export function OrdersPage() {
             <tr key={order._id} className="hover:bg-[#bcc3c921]">
               <td className="px-3 py-4">{order.user.username}</td>
               <td className="px-3 py-4">
-                {new Date(order.updatedAt).toLocaleDateString("fa-IR", {
-                  hour: "numeric",
-                  minute: "numeric",
-                  second: "numeric",
-                })}
+                {new Date(order.updatedAt).toLocaleDateString("fa-IR")}
               </td>
               <td className="px-3 py-4">
-                {new Date(order.createdAt).toLocaleDateString("fa-IR", {
-                  hour: "numeric",
-                  minute: "numeric",
-                  second: "numeric",
-                })}
+                {new Date(order.createdAt).toLocaleDateString("fa-IR")}
               </td>
               <td className="px-3 py-4">
-                {convertNumberToPersian(order.totalPrice)}
+                {numberWithCommas(order.totalPrice)}
               </td>
               <td className="px-3 py-4">
                 <button className="text-blue-500 hover:underline">

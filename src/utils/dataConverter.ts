@@ -1,5 +1,5 @@
-export function numberWithCommas(x: number | string) {
-  return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+export function numberWithCommas(x: number) {
+  return new Intl.NumberFormat("fa-IR").format(x);
 }
 
 export const convertNumberToPersian = (number: number | string) => {
