@@ -21,6 +21,8 @@ export function ProductsPage() {
 
   const { data, isLoading } = useGetData<TAllProductsResponse>(endpoint);
 
+  //products-66df2424e7276341e8446f1f-1725899812607.jpeg
+
   const { data: categoriesList } = useGetData<TResponseGetAllCategories>(
     API_ROUTES.CATEGORY_BASE
   );
@@ -116,7 +118,7 @@ export function ProductsPage() {
           </div>
         )}
         <table
-          className={`min-w-full ${
+          className={`min-w-full rounded-lg ${
             theme === "dark"
               ? "bg-slate-800 text-blue-400"
               : "bg-slate-200 text-slate-700"
@@ -124,13 +126,22 @@ export function ProductsPage() {
         >
           <thead>
             <tr>
+              <th className="py-3 text-right pr-3">تصویر</th>
               <th className="py-3 text-right pr-3">نام محصول</th>
               <th className="py-3 text-right pr-3">عملیات ها</th>
             </tr>
           </thead>
           <tbody className="h-72">
             {data?.data?.products?.map((product) => (
-              <tr key={product._id} className="hover:bg-[#bcc3c921]">
+              <tr key={product._id} className="hover:bg-[#bcc3c921] pr-3">
+                <td>
+                  <img
+                    className="rounded-lg mr-3"
+                    width="40px"
+                    src={`http://${product.images[0]}`}
+                    alt="_"
+                  />
+                </td>
                 <td className="pr-3">{product.name}</td>
                 <td className="px-3 py-4">
                   <button className="text-blue-500 hover:underline ml-3">

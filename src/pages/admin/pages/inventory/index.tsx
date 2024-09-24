@@ -9,6 +9,10 @@ import {
   TResponseGetAllCategories,
   TResponseGetAllSubCategories,
 } from "../../../../types";
+import {
+  convertNumberToPersian,
+  numberWithCommas,
+} from "../../../../utils/dataConverter";
 
 export function InventoryPage() {
   const [page, setPage] = useState(1);
@@ -114,7 +118,7 @@ export function InventoryPage() {
         </button>
       </div>
       <table
-        className={`min-w-full ${
+        className={`min-w-full rounded-lg ${
           theme === "dark"
             ? "bg-slate-800 text-blue-400"
             : "bg-slate-200 text-slate-700"
@@ -122,6 +126,7 @@ export function InventoryPage() {
       >
         <thead>
           <tr>
+            <th className="py-3 text-right pr-3">تصویر</th>
             <th className="py-3 text-right pr-4">نام محصول</th>
             <th className="py-3 text-right pr-4">موجودی</th>
             <th className="py-3 text-right pr-4">قیمت</th>
@@ -131,19 +136,31 @@ export function InventoryPage() {
         <tbody className="h-72">
           {data?.data?.products?.map((product) => (
             <tr key={product._id} className="hover:bg-[#bcc3c921]">
+              <td>
+                <img
+                  className="rounded-lg mr-3"
+                  width="40px"
+                  src={`http://${product.images[0]}`}
+                  alt="_"
+                />
+              </td>
               <td className="px-3 py-4">{product.name}</td>
               <td className="px-3 py-4">
                 <input
-                  type="number"
+                  type="text"
+                  inputMode="numeric"
                   className="rounded px-1 py-1 outline-none focus:outline focus:outline-blue-500 bg-inherit"
-                  value={product.quantity}
+                  value={convertNumberToPersian(product.quantity)}
                 />
               </td>
               <td className="px-3 py-4">
                 <input
-                  type="number"
+                  type="text"
+                  inputMode="numeric"
                   className="rounded px-1 py-1 outline-none focus:outline focus:outline-blue-500 bg-inherit"
-                  value={product.price}
+                  value={numberWithCommas(
+                    convertNumberToPersian(product.price)
+                  )}
                 />
               </td>
               <td className="px-3 py-4">
