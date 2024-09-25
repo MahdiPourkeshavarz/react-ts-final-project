@@ -1,15 +1,18 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useState } from "react";
 import { API_ROUTES } from "../../../../constants";
 import { useStore } from "../../../../context/shopStore";
 import { useGetData } from "../../../../hooks/useGetAction";
 import {
   CategoriesEntity,
+  GeneralProductsEntity,
   SubcategoryById,
   TAllProductsResponse,
   TResponseGetAllCategories,
   TResponseGetAllSubCategories,
 } from "../../../../types";
 import { numberWithCommas } from "../../../../utils/dataConverter";
+import { httpRequest } from "../../../../lib/axiosConfig";
 
 export function InventoryPage() {
   const [page, setPage] = useState(1);
@@ -17,10 +20,22 @@ export function InventoryPage() {
   const [subcategoryId, setSubcategoryId] = useState("");
   const [subEndpoint, setSubEndpoint] = useState("");
   const [endpoint, setEndpoint] = useState(API_ROUTES.PRODUCT_BASE);
+  const [editMode, setEditMode] = useState<{
+    productId: string | undefined;
+    field: string | null;
+  }>({
+    productId: "",
+    field: "",
+  });
+
+  const [currentQuantityValue, setCurrentQuantityValue] = useState<number>();
+  const [currentPriceValue, setCurrentPriceValue] = useState<number>();
+  const [changeList, setChangeList] = useState<any[]>([]);
 
   const { theme } = useStore();
 
-  const { data, isLoading } = useGetData<TAllProductsResponse>(endpoint);
+  const { data, isLoading, refetch } =
+    useGetData<TAllProductsResponse>(endpoint);
 
   const { data: categoriesList } = useGetData<TResponseGetAllCategories>( // data for showing the categories in the select element
     API_ROUTES.CATEGORY_BASE
@@ -47,6 +62,43 @@ export function InventoryPage() {
 
     setEndpoint(`${API_ROUTES.PRODUCT_BASE}?${queryParams.toString()}`);
   }, [page, categoryId, subcategoryId]);
+
+  function handleInputChange(
+    event: React.KeyboardEvent<HTMLInputElement>,
+    product: GeneralProductsEntity,
+    fieldName: string
+  ) {
+    if (event.key === "Enter" && fieldName === "price") {
+      setChangeList([...changeList, { ...product, price: currentPriceValue }]);
+      setEditMode({ productId: "", field: "" });
+      console.log(changeList);
+    } else if (event.key === "Enter" && fieldName === "quantity") {
+      setChangeList([
+        ...changeList,
+        { ...product, quantity: currentQuantityValue },
+      ]);
+      console.log(changeList);
+      setEditMode({ productId: "", field: "" });
+    } else if (event.key === "Escape") {
+      setEditMode({ productId: "", field: "" });
+    }
+  }
+
+  function handleSaveChange() {
+    const promiseList = changeList.map((item: GeneralProductsEntity) =>
+      httpRequest.patch(`${API_ROUTES.PRODUCT_BASE}/${item._id}`, {
+        price: item.price,
+        quantity: item.quantity,
+      })
+    );
+    Promise.all(promiseList)
+      .then(() => {
+        refetch();
+        setEditMode({ productId: "", field: "" });
+        setChangeList([]);
+      })
+      .catch((error) => console.log(error));
+  }
 
   function handlePageChange(increment: number) {
     if (page == data?.total_pages) {
@@ -107,7 +159,11 @@ export function InventoryPage() {
             )}
           </select>
         </div>
-        <button className="bg-green-500 text-white px-4 py-1 rounded shadow hover:bg-green-600 w-40">
+        <button
+          className="bg-green-500 text-white px-4 py-1 rounded shadow hover:bg-green-600 w-40"
+          disabled={changeList.length == 0}
+          onClick={handleSaveChange}
+        >
           ذخیره
         </button>
       </div>
@@ -123,9 +179,8 @@ export function InventoryPage() {
             <tr>
               <th className="py-3 text-right pr-3">تصویر</th>
               <th className="py-3 text-right pr-4">نام محصول</th>
-              <th className="py-3 text-right pr-4">موجودی</th>
-              <th className="py-3 text-right pr-4">قیمت</th>
-              <th className="py-3 text-right pr-4">عملیات ها</th>
+              <th className="py-3 text-right pl-40">موجودی</th>
+              <th className="py-3 text-right pl-44">قیمت</th>
             </tr>
           </thead>
           {isLoading && (
@@ -152,27 +207,59 @@ export function InventoryPage() {
                   />
                 </td>
                 <td className="px-3 py-4">{product.name}</td>
-                <td className="px-3 py-4">
-                  <input
-                    type="text"
-                    inputMode="numeric"
-                    className="rounded px-1 py-1 outline-none focus:outline focus:outline-blue-500 bg-inherit"
-                    value={numberWithCommas(product.quantity)}
-                  />
+                <td
+                  className="px-3 py-4"
+                  onClick={() => {
+                    setEditMode({ productId: product._id, field: "quantity" });
+                    setCurrentQuantityValue(product.quantity);
+                  }}
+                >
+                  {product._id === editMode.productId &&
+                  editMode.field === "quantity" ? (
+                    <input
+                      dir="ltr"
+                      type="number"
+                      className="rounded px-1 py-1 outline-none focus:outline focus:outline-blue-500 bg-inherit"
+                      value={currentQuantityValue}
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                        setCurrentQuantityValue(Number(e.target.value))
+                      }
+                      onKeyDown={(e) => {
+                        handleInputChange(e, product, "quantity");
+                      }}
+                    />
+                  ) : (
+                    <p className="px-1 py-1 bg-inherit">
+                      {numberWithCommas(product.quantity)}
+                    </p>
+                  )}
                 </td>
-                <td className="px-3 py-4">
-                  <input
-                    type="text"
-                    inputMode="numeric"
-                    className="rounded px-1 py-1 outline-none focus:outline focus:outline-blue-500 bg-inherit"
-                    value={numberWithCommas(product.price)}
-                  />
-                </td>
-                <td className="px-3 py-4">
-                  <button className="text-blue-500 hover:underline ml-3">
-                    ویرایش
-                  </button>
-                  <button className="text-red-500 hover:underline">حذف</button>
+                <td
+                  className="px-3 py-4"
+                  onClick={() => {
+                    setEditMode({ productId: product._id, field: "price" });
+                    setCurrentPriceValue(product.price);
+                  }}
+                >
+                  {product._id === editMode.productId &&
+                  editMode.field === "price" ? (
+                    <input
+                      dir="ltr"
+                      type="number"
+                      className="rounded px-1 py-1 outline-none focus:outline focus:outline-blue-500 bg-inherit"
+                      value={currentPriceValue}
+                      onChange={(e) =>
+                        setCurrentPriceValue(Number(e.target.value))
+                      }
+                      onKeyDown={(e) => {
+                        handleInputChange(e, product, "price");
+                      }}
+                    />
+                  ) : (
+                    <p className="px-1 py-1 bg-inherit">
+                      {numberWithCommas(product.price)}
+                    </p>
+                  )}
                 </td>
               </tr>
             ))}

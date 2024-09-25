@@ -152,9 +152,11 @@ export function ProductsPage() {
                 <td className="pr-3">{product.name}</td>
                 <td className="px-3 py-4">
                   <button className="text-blue-500 hover:underline ml-3">
-                    ویرایش
+                    <img width="28px" src="/Edit.png" alt="_" />
                   </button>
-                  <button className="text-red-500 hover:underline">حذف</button>
+                  <button className="text-red-500 hover:underline">
+                    <img width="30px" src="/Delete.png" alt="_" />
+                  </button>
                 </td>
               </tr>
             ))}

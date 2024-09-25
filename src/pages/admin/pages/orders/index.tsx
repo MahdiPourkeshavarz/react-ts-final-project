@@ -118,8 +118,8 @@ export function OrdersPage() {
                   {numberWithCommas(order.totalPrice)}
                 </td>
                 <td className="px-3 py-4">
-                  <button className="text-blue-500 hover:underline">
-                    ویرایش
+                  <button className="text-blue-500 hover:underline ml-3">
+                    <img width="28px" src="/Edit.png" alt="_" />
                   </button>
                 </td>
               </tr>
