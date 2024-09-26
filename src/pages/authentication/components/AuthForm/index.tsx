@@ -64,8 +64,8 @@ export const AuthenticationForm = ({ mode, onSubmit }: Props) => {
 
             <input
               type="password"
-              id="رمز عبور"
-              placeholder="Password"
+              id="password"
+              placeholder="رمز عبور"
               disabled={mode === ("login" as unknown)}
               className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200 ease-in-out disabled:opacity-50"
               {...register("createpassword")}
@@ -74,8 +74,8 @@ export const AuthenticationForm = ({ mode, onSubmit }: Props) => {
 
             <input
               type="password"
-              id="تکرار رمز عبور"
-              placeholder="Repeat Password"
+              id=" repeatPassword"
+              placeholder="تکرار رمز عبور"
               disabled={mode === ("login" as unknown)}
               className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200 ease-in-out disabled:opacity-50"
               {...register("repeatpassword")}

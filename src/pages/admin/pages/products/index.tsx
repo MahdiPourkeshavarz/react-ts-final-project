@@ -4,11 +4,15 @@ import { useStore } from "../../../../context/shopStore";
 import { useGetData } from "../../../../hooks/useGetAction";
 import {
   CategoriesEntity,
+  GeneralProductsEntity,
   SubcategoryById,
   TAllProductsResponse,
   TResponseGetAllCategories,
   TResponseGetAllSubCategories,
 } from "../../../../types";
+import { useDeleteMutation } from "../../../../hooks/useDeleteActionMutation";
+import { DeleteModal } from "./components/deleteModal";
+import { EditModal } from "./components/editModal";
 
 export function ProductsPage() {
   const [page, setPage] = useState(1);
@@ -16,12 +20,29 @@ export function ProductsPage() {
   const [subcategoryId, setSubcategoryId] = useState("");
   const [subEndpoint, setSubEndpoint] = useState("");
   const [endpoint, setEndpoint] = useState(API_ROUTES.PRODUCT_BASE);
+  const [open, setOpen] = useState(false);
+  const [deleteItem, setDeleteItem] = useState({
+    name: "",
+    id: "",
+  });
+
+  const [editModalOpen, setEditModalOpen] = useState(false);
+  const [productToEdit, setProductToEdit] = useState<GeneralProductsEntity>();
+
+  function handleEditModalState() {
+    setEditModalOpen((prev) => !prev);
+  }
+
+  function handleModalState() {
+    setOpen((prev) => !prev);
+  }
 
   const { theme } = useStore();
 
-  const { data, isLoading } = useGetData<TAllProductsResponse>(endpoint);
+  const { data, isLoading, refetch } =
+    useGetData<TAllProductsResponse>(endpoint);
 
-  //products-66df2424e7276341e8446f1f-1725899812607.jpeg
+  const { mutate: deleteMutate } = useDeleteMutation();
 
   const { data: categoriesList } = useGetData<TResponseGetAllCategories>(
     API_ROUTES.CATEGORY_BASE
@@ -48,6 +69,17 @@ export function ProductsPage() {
     setEndpoint(`${API_ROUTES.PRODUCT_BASE}?${queryParams.toString()}`);
   }, [page, categoryId, subcategoryId]);
 
+  function handleDeleteProduct() {
+    setOpen(false);
+    const endpoint = `${API_ROUTES.PRODUCT_BASE}/${deleteItem.id}`;
+    deleteMutate(endpoint);
+    refetch();
+  }
+
+  function handleEditProduct(data: any) {
+    console.log(data);
+  }
+
   function handlePageChange(increment: number) {
     if (page == data?.total_pages) {
       return;
@@ -59,6 +91,18 @@ export function ProductsPage() {
 
   return (
     <div className="px-4 py-8 flex flex-col">
+      <DeleteModal
+        open={open}
+        handleState={handleModalState}
+        productName={deleteItem.name}
+        handleDeleteProduct={handleDeleteProduct}
+      />
+      <EditModal
+        open={editModalOpen}
+        handleState={handleEditModalState}
+        product={productToEdit}
+        handleEditProduct={handleEditProduct}
+      />
       <div className="flex py-3 items-center justify-between px-3">
         <div className="flex gap-x-6">
           <select
@@ -107,9 +151,6 @@ export function ProductsPage() {
             )}
           </select>
         </div>
-        <button className="bg-green-500 text-white px-4 py-1 rounded shadow hover:bg-green-600 w-40">
-          ذخیره
-        </button>
       </div>
       <div className="relative">
         {isLoading && (
@@ -151,10 +192,25 @@ export function ProductsPage() {
                 </td>
                 <td className="pr-3">{product.name}</td>
                 <td className="px-3 py-4">
-                  <button className="text-blue-500 hover:underline ml-3">
+                  <button
+                    className="text-blue-500 hover:underline ml-3"
+                    onClick={() => {
+                      setProductToEdit(product);
+                      handleEditModalState();
+                    }}
+                  >
                     <img width="28px" src="/Edit.png" alt="_" />
                   </button>
-                  <button className="text-red-500 hover:underline">
+                  <button
+                    className="text-red-500 hover:underline"
+                    onClick={() => {
+                      setDeleteItem({
+                        name: product.name,
+                        id: product._id,
+                      });
+                      handleModalState();
+                    }}
+                  >
                     <img width="30px" src="/Delete.png" alt="_" />
                   </button>
                 </td>

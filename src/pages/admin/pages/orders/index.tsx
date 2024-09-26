@@ -2,9 +2,18 @@ import { useEffect, useState } from "react";
 import { API_ROUTES } from "../../../../constants";
 import { useStore } from "../../../../context/shopStore";
 import { useGetData } from "../../../../hooks/useGetAction";
-import { TAllOrderResponse } from "../../../../types";
+import { Order, TAllOrderResponse } from "../../../../types";
 import { numberWithCommas } from "../../../../utils/dataConverter";
 import { useSearchParams } from "react-router-dom";
+import { EditOrderModal } from "./components/editModal";
+import { useEditOrderMutation } from "../../../../hooks/useEditOrderMutation";
+
+interface Props {
+  open: boolean;
+  handleState: () => void;
+  order: Order;
+  handleDelivered: (id: string) => void;
+}
 
 export function OrdersPage() {
   const [page, setPage] = useState(1);
@@ -15,20 +24,25 @@ export function OrdersPage() {
     searchParams.get("status") || ""
   );
 
+  const [open, setOpen] = useState(false);
+  const [orderToEdit, setOrderToEdit] = useState<Order>();
+
   const { theme } = useStore();
 
   const initialEndpoint = `${API_ROUTES.ORDERS_BASE}?page=${page}&limit=4`;
 
   const [endpoint, setEndpoint] = useState(initialEndpoint);
 
-  const { data, isLoading } = useGetData<TAllOrderResponse>(endpoint);
+  const { data, isLoading, refetch } = useGetData<TAllOrderResponse>(endpoint);
+
+  const { mutate: editMutate } = useEditOrderMutation();
 
   useEffect(() => {
     const deliveryStatus =
       optionValue === "delivered"
-        ? "true"
-        : optionValue === "notDelivered"
         ? "false"
+        : optionValue === "notDelivered"
+        ? "true"
         : null;
     const newEndpoint = `${API_ROUTES.ORDERS_BASE}${
       deliveryStatus
@@ -38,6 +52,19 @@ export function OrdersPage() {
     console.log(newEndpoint);
     setEndpoint(newEndpoint);
   }, [optionValue, page, initialEndpoint]);
+
+  function handleModalState() {
+    setOpen((prev) => !prev);
+  }
+
+  function handleEditOrder(orderId: string) {
+    editMutate({
+      endpoint: `${API_ROUTES.ORDERS_BASE}/${orderId}`,
+      deliveryStatus: false,
+    });
+    handleModalState();
+    refetch();
+  }
 
   function handleStatusChange(e: React.ChangeEvent<HTMLSelectElement>) {
     const newStatus = e.target.value;
@@ -57,6 +84,12 @@ export function OrdersPage() {
 
   return (
     <div className="px-4 py-8 flex flex-col">
+      <EditOrderModal
+        open={open}
+        handleState={handleModalState}
+        order={orderToEdit}
+        handleDelivered={handleEditOrder}
+      />
       <div className="py-2">
         <select
           className={
@@ -118,7 +151,13 @@ export function OrdersPage() {
                   {numberWithCommas(order.totalPrice)}
                 </td>
                 <td className="px-3 py-4">
-                  <button className="text-blue-500 hover:underline ml-3">
+                  <button
+                    className="text-blue-500 hover:underline ml-3"
+                    onClick={() => {
+                      setOrderToEdit(order);
+                      handleModalState();
+                    }}
+                  >
                     <img width="28px" src="/Edit.png" alt="_" />
                   </button>
                 </td>
