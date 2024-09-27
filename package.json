@@ -10,6 +10,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@emotion/react": "^11.13.3",
+    "@emotion/styled": "^11.13.0",
     "@fontsource/roboto": "^5.0.15",
     "@hookform/resolvers": "^3.9.0",
     "@mui/icons-material": "^6.1.0",
@@ -23,6 +25,7 @@
     "react-router-dom": "^6.26.2",
     "react-toastify": "^10.0.5",
     "styled-components": "^6.1.13",
+    "tailwind-scrollbar-hide": "^1.1.7",
     "yup": "^1.4.0",
     "zustand": "^4.5.5"
   },
