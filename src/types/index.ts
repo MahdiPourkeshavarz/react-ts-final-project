@@ -204,6 +204,7 @@ export type TAllProductsResponse = {
 export interface GetAllProductsData {
   products?: GeneralProductsEntity[] | null;
 }
+
 export interface GeneralProductsEntity {
   rating: Rating;
   _id: string | undefined;
