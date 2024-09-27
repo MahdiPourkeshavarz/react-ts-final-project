@@ -4,11 +4,17 @@ import { useStore } from "../../../../context/shopStore";
 import { useGetData } from "../../../../hooks/useGetAction";
 import {
   CategoriesEntity,
+  GeneralProductsEntity,
   SubcategoryById,
   TAllProductsResponse,
   TResponseGetAllCategories,
   TResponseGetAllSubCategories,
 } from "../../../../types";
+import { useDeleteMutation } from "../../../../hooks/useDeleteActionMutation";
+import { DeleteModal } from "./components/deleteModal";
+import { EditModal } from "./components/editModal";
+import { useMutation } from "@tanstack/react-query";
+import { editProduct } from "../../../../api/editProduct";
 
 export function ProductsPage() {
   const [page, setPage] = useState(1);
@@ -16,12 +22,29 @@ export function ProductsPage() {
   const [subcategoryId, setSubcategoryId] = useState("");
   const [subEndpoint, setSubEndpoint] = useState("");
   const [endpoint, setEndpoint] = useState(API_ROUTES.PRODUCT_BASE);
+  const [open, setOpen] = useState(false);
+  const [deleteItem, setDeleteItem] = useState({
+    name: "",
+    id: "",
+  });
+
+  const [editModalOpen, setEditModalOpen] = useState(false);
+  const [productToEdit, setProductToEdit] = useState<GeneralProductsEntity>();
+
+  function handleEditModalState() {
+    setEditModalOpen((prev) => !prev);
+  }
+
+  function handleModalState() {
+    setOpen((prev) => !prev);
+  }
 
   const { theme } = useStore();
 
-  const { data, isLoading } = useGetData<TAllProductsResponse>(endpoint);
+  const { data, isLoading, refetch } =
+    useGetData<TAllProductsResponse>(endpoint);
 
-  //products-66df2424e7276341e8446f1f-1725899812607.jpeg
+  const { mutate: deleteMutate } = useDeleteMutation();
 
   const { data: categoriesList } = useGetData<TResponseGetAllCategories>(
     API_ROUTES.CATEGORY_BASE
@@ -48,6 +71,21 @@ export function ProductsPage() {
     setEndpoint(`${API_ROUTES.PRODUCT_BASE}?${queryParams.toString()}`);
   }, [page, categoryId, subcategoryId]);
 
+  function handleDeleteProduct() {
+    setOpen(false);
+    const endpoint = `${API_ROUTES.PRODUCT_BASE}/${deleteItem.id}`;
+    deleteMutate(endpoint);
+    refetch();
+  }
+
+  const editMutation = useMutation({
+    mutationFn: (product) => editProduct(product, productToEdit?._id),
+  });
+
+  function handleEditProduct(data: any) {
+    editMutation.mutate(data);
+  }
+
   function handlePageChange(increment: number) {
     if (page == data?.total_pages) {
       return;
@@ -59,6 +97,18 @@ export function ProductsPage() {
 
   return (
     <div className="px-4 py-8 flex flex-col">
+      <DeleteModal
+        open={open}
+        handleState={handleModalState}
+        productName={deleteItem.name}
+        handleDeleteProduct={handleDeleteProduct}
+      />
+      <EditModal
+        open={editModalOpen}
+        handleState={handleEditModalState}
+        product={productToEdit}
+        handleEditProduct={handleEditProduct}
+      />
       <div className="flex py-3 items-center justify-between px-3">
         <div className="flex gap-x-6">
           <select
@@ -107,14 +157,18 @@ export function ProductsPage() {
             )}
           </select>
         </div>
-        <button className="bg-green-500 text-white px-4 py-1 rounded shadow hover:bg-green-600 w-40">
-          ذخیره
-        </button>
       </div>
       <div className="relative">
         {isLoading && (
-          <div className="absolute inset-0 flex items-center justify-center bg-opacity-50 bg-gray-200">
-            <div>Loading...</div>
+          <div className="absolute inset-0 flex items-center justify-center bg-opacity-50">
+            <div
+              className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-current border-e-transparent align-[-0.125em] text-surface motion-reduce:animate-[spin_1.5s_linear_infinite] dark:text-white"
+              role="status"
+            >
+              <span className="!absolute !-m-px !h-px !w-px !overflow-hidden !whitespace-nowrap !border-0 !p-0 ![clip:rect(0,0,0,0)]">
+                Loading...
+              </span>
+            </div>
           </div>
         )}
         <table
@@ -137,17 +191,34 @@ export function ProductsPage() {
                 <td>
                   <img
                     className="rounded-lg mr-3"
-                    width="40px"
+                    width="50px"
                     src={`http://${product.images[0]}`}
                     alt="_"
                   />
                 </td>
                 <td className="pr-3">{product.name}</td>
                 <td className="px-3 py-4">
-                  <button className="text-blue-500 hover:underline ml-3">
-                    ویرایش
+                  <button
+                    className="text-blue-500 hover:underline ml-3"
+                    onClick={() => {
+                      setProductToEdit(product);
+                      handleEditModalState();
+                    }}
+                  >
+                    <img width="28px" src="/Edit.png" alt="_" />
                   </button>
-                  <button className="text-red-500 hover:underline">حذف</button>
+                  <button
+                    className="text-red-500 hover:underline"
+                    onClick={() => {
+                      setDeleteItem({
+                        name: product.name,
+                        id: product._id,
+                      });
+                      handleModalState();
+                    }}
+                  >
+                    <img width="30px" src="/Delete.png" alt="_" />
+                  </button>
                 </td>
               </tr>
             ))}
