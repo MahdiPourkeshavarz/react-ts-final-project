@@ -27,7 +27,7 @@ export const AuthenticationForm = ({ mode, onSubmit }: Props) => {
     >
       <div className="space-y-4">
         {mode === "login" && (
-          <div className="form-group transition-opacity duration-500 space-y-4">
+          <div className="form-group transition-opacity duration-500 space-y-4 text-black">
             <input
               type="string"
               id="string"

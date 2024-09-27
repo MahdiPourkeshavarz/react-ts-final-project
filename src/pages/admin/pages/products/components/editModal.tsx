@@ -31,11 +31,30 @@ export function EditModal({
         onSubmit: (event: React.FormEvent<HTMLFormElement>) => {
           event.preventDefault();
           const formData = new FormData(event.currentTarget);
-          const formJson = Object.fromEntries(formData.entries());
-          handleEditProduct({
-            ...formJson,
-          } as Partial<GeneralProductsEntity>);
-          handleState();
+
+          // Get the FileList from the input for images (multiple files)
+          const images = event.currentTarget["images"].files;
+          const thumbnail = event.currentTarget["thumbnail"].files[0]; // Single file
+          formData.delete("images");
+          formData.delete("thumbnail");
+          // Append each image file individually to FormData
+          for (let i = 0; i < images.length; i++) {
+            formData.append("images", images[i]);
+          }
+
+          // Append the single thumbnail file
+          formData.append("thumbnail", thumbnail);
+
+          formData.append("category", product?.category?._id);
+
+          formData.append("subcategory", product?.subcategory?._id);
+
+          // If your backend expects the rest of the fields, they are already in `formData`
+          console.log(formData);
+          // Send formData to your backend directly
+          handleEditProduct(formData); // Adjust your backend logic to accept FormData
+
+          handleState(); // Close the modal
         },
       }}
     >
@@ -43,7 +62,7 @@ export function EditModal({
       <DialogContent>
         <div className="flex flex-col gap-y-4 mx-auto">
           <img
-            src={`http://${product?.images[0]}`}
+            src={`http://${product?.images[1]}`}
             alt="Product Preview"
             style={{
               width: "120px",
@@ -53,9 +72,18 @@ export function EditModal({
             }}
           />
           <input
+            id="img"
+            name="images"
             accept="image/*"
             type="file"
-            onChange={(e) => console.log(e)}
+            multiple
+            className="bg-inherit border-none w-full py-2 pr-56"
+          />
+          <input
+            id="thumb"
+            name="thumbnail"
+            accept="image/*"
+            type="file"
             className="bg-inherit border-none w-full py-2 pr-56"
           />
         </div>
@@ -132,3 +160,4 @@ export function EditModal({
     </Dialog>
   );
 }
+// react-dropzone

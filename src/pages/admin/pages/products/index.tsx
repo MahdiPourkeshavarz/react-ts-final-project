@@ -13,6 +13,8 @@ import {
 import { useDeleteMutation } from "../../../../hooks/useDeleteActionMutation";
 import { DeleteModal } from "./components/deleteModal";
 import { EditModal } from "./components/editModal";
+import { useMutation } from "@tanstack/react-query";
+import { editProduct } from "../../../../api/editProduct";
 
 export function ProductsPage() {
   const [page, setPage] = useState(1);
@@ -76,8 +78,12 @@ export function ProductsPage() {
     refetch();
   }
 
+  const editMutation = useMutation({
+    mutationFn: (product) => editProduct(product, productToEdit?._id),
+  });
+
   function handleEditProduct(data: any) {
-    console.log(data);
+    editMutation.mutate(data);
   }
 
   function handlePageChange(increment: number) {
@@ -185,7 +191,7 @@ export function ProductsPage() {
                 <td>
                   <img
                     className="rounded-lg mr-3"
-                    width="40px"
+                    width="50px"
                     src={`http://${product.images[0]}`}
                     alt="_"
                   />

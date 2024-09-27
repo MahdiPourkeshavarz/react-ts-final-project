@@ -201,7 +201,7 @@ export function InventoryPage() {
                 <td>
                   <img
                     className="rounded-lg mr-3"
-                    width="40px"
+                    width="50px"
                     src={`http://${product.images[0]}`}
                     alt="_"
                   />
