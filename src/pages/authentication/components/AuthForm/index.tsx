@@ -27,7 +27,7 @@ export const AuthenticationForm = ({ mode, onSubmit }: Props) => {
     >
       <div className="space-y-4">
         {mode === "login" && (
-          <div className="form-group transition-opacity duration-500 space-y-4">
+          <div className="form-group transition-opacity duration-500 space-y-4 text-black">
             <input
               type="string"
               id="string"
@@ -64,8 +64,8 @@ export const AuthenticationForm = ({ mode, onSubmit }: Props) => {
 
             <input
               type="password"
-              id="رمز عبور"
-              placeholder="Password"
+              id="password"
+              placeholder="رمز عبور"
               disabled={mode === ("login" as unknown)}
               className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200 ease-in-out disabled:opacity-50"
               {...register("createpassword")}
@@ -74,8 +74,8 @@ export const AuthenticationForm = ({ mode, onSubmit }: Props) => {
 
             <input
               type="password"
-              id="تکرار رمز عبور"
-              placeholder="Repeat Password"
+              id=" repeatPassword"
+              placeholder="تکرار رمز عبور"
               disabled={mode === ("login" as unknown)}
               className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200 ease-in-out disabled:opacity-50"
               {...register("repeatpassword")}
@@ -89,7 +89,7 @@ export const AuthenticationForm = ({ mode, onSubmit }: Props) => {
           className="w-full bg-blue-600 text-white font-semibold py-2 rounded transition duration-300 hover:bg-blue-700"
           type="submit"
         >
-          {mode === "login" ? "Log In" : "Sign Up"}
+          {mode === "login" ? "ورود" : "ثبت نام"}
         </button>
       </div>
     </form>

@@ -1,24 +1,60 @@
-import { useState } from "react";
-import { ButtonGroup } from "./components/buttonGroup";
-import { DataTable } from "./components/dataTable";
+import {
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
+  Typography,
+} from "@mui/material";
+import Categories from "./components/category";
+import Products from "./components/product";
+import Subcategories from "./components/subcategory";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
 export function AdminPage() {
-  const [selected, setSelected] = useState("کالاها");
-
   return (
     <>
-      <div className="myContainer">
-        <div className="panelContainer flex flex-col h-32 pt-4 w-full justify-center items-center">
-          <p className="text-2xl font-semibold pb-8 text-slate-400">
-            پنل ادمین فروشگاه
-          </p>
-          <ButtonGroup
-            options={["کالاها", "موجودی و قیمت ها", "سفارش ها"]}
-            selected={selected}
-            onSelect={setSelected}
-          />
+      <div className="myContainer mx-auto p-4 lg:px-32 md:px-14">
+        <div className="my-8">
+          <Accordion defaultExpanded>
+            <AccordionSummary
+              expandIcon={<ExpandMoreIcon />}
+              aria-controls="panel1-content"
+              id="panel1-header"
+            >
+              <Typography variant="h5">اضافه کردن دسته بندی</Typography>
+            </AccordionSummary>
+            <AccordionDetails>
+              <Categories />
+            </AccordionDetails>
+          </Accordion>
         </div>
-        <DataTable selected={selected} />
+        <div className="mb-8">
+          <Accordion>
+            <AccordionSummary
+              expandIcon={<ExpandMoreIcon />}
+              aria-controls="panel2-content"
+              id="panel2-header"
+            >
+              <Typography variant="h5">اضافه کردن زیر دسته بندی</Typography>
+            </AccordionSummary>
+            <AccordionDetails>
+              <Subcategories />
+            </AccordionDetails>
+          </Accordion>
+        </div>
+        <div>
+          <Accordion>
+            <AccordionSummary
+              expandIcon={<ExpandMoreIcon />}
+              aria-controls="panel3-content"
+              id="panel3-header"
+            >
+              <Typography variant="h5">اضافه کردن محصول</Typography>
+            </AccordionSummary>
+            <AccordionDetails>
+              <Products />
+            </AccordionDetails>
+          </Accordion>
+        </div>
       </div>
     </>
   );

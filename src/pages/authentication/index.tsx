@@ -3,10 +3,13 @@ import { useNavigate } from "react-router-dom";
 import { submitUser } from "../../api/getAccess";
 import { AuthformData } from "../../types";
 import { AuthenticationForm } from "./components/authForm";
+import { useStore } from "../../context/shopStore";
 
 export function AuthenticationPage() {
   const [mode, setMode] = useState("login");
   const navigate = useNavigate();
+
+  const { theme } = useStore();
 
   const toggleMode = () => {
     setMode(mode === "login" ? "signup" : "login");
@@ -23,36 +26,37 @@ export function AuthenticationPage() {
     <>
       <div
         className="flex min-h-screen bg-cover"
-        style={{ backgroundImage: "url('/windows4.jpg')" }}
+        style={{ backgroundImage: "url('/background.jpg')" }}
       >
         <div className="flex-1 flex items-center justify-center p-8">
-          <div className="bg-white rounded-lg shadow-lg p-8 max-w-md w-full">
+          <div
+            className={`rounded-lg shadow-lg p-8 max-w-md w-full
+            ${
+              theme === "dark"
+                ? "bg-slate-900 text-white"
+                : "bg-slate-100 text-black"
+            }
+            `}
+          >
             <header className="mb-6 text-center">
-              <h1 className="text-2xl font-bold text-gray-800">
-                به گجت هاب خوش آمدید
-              </h1>
-              <p className="text-gray-600 mt-2">همین امروز به ما بپیوندید!</p>
+              <h1 className="text-2xl font-bold">به گجت هاب خوش آمدید</h1>
+              <p className=" mt-2">همین امروز به ما بپیوندید!</p>
             </header>
             <section className="form-block h-fit transition-transform duration-500 ease-in-out">
-              <h2 className="text-xl font-semibold text-gray-800 mb-4 text-center">
-                {mode === "login" ? "Log In" : "Sign Up"}
+              <h2 className="text-xl font-semibold mb-4 text-center">
+                {mode === "login" ? "ورود" : "ثبت نام"}
               </h2>
               <div className="text-center mb-4">
-                <span className="text-gray-600">
-                  {mode === "login" ? "Don't" : "Already"} قبلا حساب باز کرده
-                  اید?
+                <span className="">
+                  {mode === "login"
+                    ? "می خواهید حساب ایجاد کنید؟"
+                    : "آیا قبلا حساب ایجاد کرده اید؟"}
                   <span
                     className="text-blue-500 cursor-pointer"
                     onClick={toggleMode}
                   >
                     {"  "}ایجا را کلیک کنید
                   </span>
-                  <button
-                    className="text-blue-500 ml-1 transition-transform duration-300 transform hover:scale-105"
-                    onClick={toggleMode}
-                  >
-                    &#8594;
-                  </button>
                 </span>
               </div>
               <AuthenticationForm mode={mode} onSubmit={onSubmit} />
@@ -64,7 +68,7 @@ export function AuthenticationPage() {
             <h2 className="text-3xl font-bold">
               به جمع خانواده گجت هاب بپیوندید
             </h2>
-            <p className="mt-4">اینجا کسی دست خالی برنمیگرده!.</p>
+            <p className="mt-4 text-xl">اینجا کسی دست خالی برنمیگرده!.</p>
           </div>
         </div>
       </div>
