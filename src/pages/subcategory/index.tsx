@@ -1,20 +1,20 @@
 import { useLoaderData } from 'react-router-dom'
-import { ProductCard } from '../../components/productCard'
+import { TAllProductsResponse, TResponseGetAllSubCategories } from '../../types'
 import { API_ROUTES } from '../../constants'
 import { httpRequest } from '../../lib/axiosConfig'
-import { TAllProductsResponse, TResponseGetAllCategories } from '../../types'
 import { useGetData } from '../../hooks/useGetAction'
+import { ProductCard } from '../../components/productCard'
 
-export function CategoryPage() {
-  const categoryId = useLoaderData()
+export function SubCategoryPage() {
+  const subcategoryId = useLoaderData()
 
   const { data, isLoading } = useGetData<TAllProductsResponse>(
-    API_ROUTES.PRODUCT_BASE + '?category=' + categoryId,
+    API_ROUTES.PRODUCT_BASE + '?subcategory=' + subcategoryId,
   )
 
   return (
     <>
-      <div className='grid gap-x-4 gap-y-4 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3'>
+      <div className='grid gap-x-3 gap-y-4 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3'>
         {isLoading && (
           <div className='absolute inset-0 flex items-center justify-center bg-opacity-50'>
             <div
@@ -27,21 +27,26 @@ export function CategoryPage() {
             </div>
           </div>
         )}
-        {data?.data?.products?.map(product => (
-          <ProductCard key={product._id} product={product} />
-        ))}
+        {data &&
+          data.data?.products?.map(product => (
+            <>
+              <ProductCard key={product._id} product={product} />
+            </>
+          ))}
       </div>
     </>
   )
 }
 
-export async function loader({ params }): Promise<TResponseGetAllCategories> {
-  const categoryName = params.categoryName
+export async function loader({
+  params,
+}): Promise<TResponseGetAllSubCategories> {
+  const subcategoryName = params.categoryName
   try {
     const response = await httpRequest.get(
-      `${API_ROUTES.CATEGORY_BASE}?name=${categoryName}`,
+      `${API_ROUTES.SUBCATEGORIES_BASE}?name=${subcategoryName}`,
     )
-    return response.data.data.categories[0]._id
+    return response.data.data.subcategories[0]._id
   } catch (e) {
     throw new Error(`something went wrong. ${e}`)
   }
