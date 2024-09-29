@@ -39,11 +39,46 @@ function classNames(...classes) {
 }
 
 export function ShopLayout() {
+  const { theme } = useStore()
+
   const { categoryName } = useParams()
 
   const [name, setName] = useState(categoryName)
 
   const [selectedCategory, setSelectedCategory] = useState('')
+
+  // const [subEndpoint, setSubEndpoint] = useState(API_ROUTES.SUBCATEGORIES_BASE)
+
+  const [subcategoryList, setSubcategoryList] = useState()
+
+  const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false)
+
+  const { data: categoriesList } = useGetData<TResponseGetAllCategories>(
+    API_ROUTES.CATEGORY_BASE,
+  )
+
+  // useEffect(() => {
+  //   getCategoryId()
+  //   // if (selectedCategory) {
+  //   //   setSubEndpoint(
+  //   //     `${API_ROUTES.SUBCATEGORIES_BASE}?category=${selectedCategory}`,
+  //   //   )
+  //   // }
+  // }, [selectedCategory, categoryName])
+
+  useEffect(() => {
+    if (categoryName) {
+      setName(categoryName)
+    }
+
+    getCategoryId()
+  }, [categoryName, selectedCategory])
+
+  useEffect(() => {
+    if (selectedCategory) {
+      getSubcategoryList()
+    }
+  }, [categoryName, selectedCategory])
 
   async function getCategoryId() {
     try {
@@ -56,32 +91,16 @@ export function ShopLayout() {
     }
   }
 
-  useEffect(() => {
-    if (selectedCategory) {
-      setSubEndpoint(
+  async function getSubcategoryList() {
+    try {
+      const response = await httpRequest.get(
         `${API_ROUTES.SUBCATEGORIES_BASE}?category=${selectedCategory}`,
       )
+      setSubcategoryList(response.data.data.subcategories)
+    } catch (e) {
+      console.log(e)
     }
-    if (categoryName) {
-      setName(categoryName)
-    }
-    getCategoryId()
-  }, [selectedCategory, categoryName])
-
-  const { theme } = useStore()
-
-  const [subEndpoint, setSubEndpoint] = useState(
-    API_ROUTES.SUBCATEGORIES_BASE + '?category=' + selectedCategory,
-  )
-
-  const { data: categoriesList } = useGetData<TResponseGetAllCategories>(
-    API_ROUTES.CATEGORY_BASE,
-  )
-
-  const { data: subcategoriesList, isLoading: isLoadingSubcategory } =
-    useGetData<TResponseGetAllSubCategories>(subEndpoint)
-
-  const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false)
+  }
 
   return (
     <div
@@ -98,6 +117,7 @@ export function ShopLayout() {
             transition
             className={`fixed inset-0 ${theme === 'dark' ? 'bg-slate-950 text-slate-100' : 'bg-slate-100 text-slate-900'} bg-opacity-45 transition-opacity duration-300 ease-linear data-[closed]:opacity-0`}
           />
+
           <div className='fixed inset-0 z-40 flex'>
             <DialogPanel
               transition
@@ -119,8 +139,7 @@ export function ShopLayout() {
               <form className='mt-4 border-t border-gray-200'>
                 <h3 className='sr-only'>Categories</h3>
                 <ul role='list' className='px-2 py-3 font-medium'>
-                  {isLoadingSubcategory && <div>loading...</div>}
-                  {subcategoriesList?.data?.subcategories?.map(sub => (
+                  {subcategoryList?.map(sub => (
                     <li key={sub.name}>
                       <Link
                         to={`/home/${encodeURIComponent(sub.name)}/${categoryName}`}
@@ -161,7 +180,6 @@ export function ShopLayout() {
                             to={`/home/${category.name}`}
                             key={category._id}
                             className='flex items-center'
-                            onClick={() => setSelectedCategory('')}
                           >
                             <input
                               checked={selectedCategory === category._id}
@@ -191,9 +209,7 @@ export function ShopLayout() {
 
         <main className='mx-auto max-w-7xl px-4 sm:px-6 lg:px-8'>
           <div className='flex items-baseline justify-between border-b border-gray-200 pb-6 pt-8'>
-            <h1 className='text-4xl font-bold tracking-tight'>
-              {categoryName}
-            </h1>
+            <h1 className='text-4xl font-bold tracking-tight'>{name}</h1>
 
             <div className='flex items-center'>
               <Menu as='div' className='relative inline-block text-left'>
@@ -262,7 +278,7 @@ export function ShopLayout() {
                   role='list'
                   className='space-y-4 border-b border-gray-200 pb-6 text-sm font-medium text-gray-900'
                 >
-                  {subcategoriesList?.data?.subcategories?.map(sub => (
+                  {subcategoryList?.map(sub => (
                     <li key={sub.name}>
                       <Link
                         to={`/home/${encodeURIComponent(sub.name)}/${categoryName}`}
