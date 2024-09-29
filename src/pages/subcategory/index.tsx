@@ -1,16 +1,40 @@
-import { useLoaderData } from 'react-router-dom'
+import { useLoaderData, useSearchParams } from 'react-router-dom'
 import { TAllProductsResponse, TResponseGetAllSubCategories } from '../../types'
 import { API_ROUTES } from '../../constants'
 import { httpRequest } from '../../lib/axiosConfig'
 import { useGetData } from '../../hooks/useGetAction'
 import { ProductCard } from '../../components/productCard'
+import { useEffect, useState } from 'react'
 
 export function SubCategoryPage() {
   const subcategoryId = useLoaderData()
 
-  const { data, isLoading } = useGetData<TAllProductsResponse>(
+  const [searchParams, setSearchParams] = useSearchParams()
+
+  const [currentPage, setCurrentPage] = useState(searchParams.get('page') || 1)
+
+  const [endpoint, setEndpoint] = useState(
     API_ROUTES.PRODUCT_BASE + '?subcategory=' + subcategoryId,
   )
+
+  const { data, isLoading } = useGetData<TAllProductsResponse>(endpoint)
+
+  useEffect(() => {
+    const queryParams = new URLSearchParams()
+
+    if (subcategoryId) {
+      queryParams.append('subcategory', subcategoryId)
+    }
+
+    queryParams.set('page', currentPage.toString())
+    queryParams.set('limit', '7')
+
+    setEndpoint(`${API_ROUTES.PRODUCT_BASE}?${queryParams.toString()}`)
+  }, [currentPage, subcategoryId])
+
+  function handlePageChange(page) {
+    setCurrentPage(page)
+  }
 
   return (
     <>
@@ -33,6 +57,23 @@ export function SubCategoryPage() {
               <ProductCard key={product._id} product={product} />
             </>
           ))}
+      </div>
+      <div className='mt-8 flex justify-center'>
+        {Array.from({ length: data?.total_pages }, (_, index) => (
+          <button
+            key={index}
+            className={`mx-1 px-4 py-2 ${
+              currentPage === index + 1
+                ? 'bg-blue-600 text-white'
+                : 'bg-white text-blue-600'
+            } rounded-full border border-blue-600`}
+            onClick={() => {
+              handlePageChange(index + 1)
+            }}
+          >
+            {index + 1}
+          </button>
+        ))}
       </div>
     </>
   )

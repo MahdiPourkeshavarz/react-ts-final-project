@@ -57,30 +57,28 @@ export function ShopLayout() {
   }
 
   useEffect(() => {
-    getCategoryId()
     if (selectedCategory) {
       setSubEndpoint(
         `${API_ROUTES.SUBCATEGORIES_BASE}?category=${selectedCategory}`,
       )
     }
-  }, [selectedCategory])
-
-  useEffect(() => {
     if (categoryName) {
       setName(categoryName)
-      getCategoryId()
     }
-  }, [categoryName])
+    getCategoryId()
+  }, [selectedCategory, categoryName])
 
   const { theme } = useStore()
 
-  const [subEndpoint, setSubEndpoint] = useState(API_ROUTES.SUBCATEGORIES_BASE)
+  const [subEndpoint, setSubEndpoint] = useState(
+    API_ROUTES.SUBCATEGORIES_BASE + '?category=' + selectedCategory,
+  )
 
   const { data: categoriesList } = useGetData<TResponseGetAllCategories>(
     API_ROUTES.CATEGORY_BASE,
   )
 
-  const { data: subcategoriesList } =
+  const { data: subcategoriesList, isLoading: isLoadingSubcategory } =
     useGetData<TResponseGetAllSubCategories>(subEndpoint)
 
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false)
@@ -100,7 +98,6 @@ export function ShopLayout() {
             transition
             className={`fixed inset-0 ${theme === 'dark' ? 'bg-slate-950 text-slate-100' : 'bg-slate-100 text-slate-900'} bg-opacity-45 transition-opacity duration-300 ease-linear data-[closed]:opacity-0`}
           />
-
           <div className='fixed inset-0 z-40 flex'>
             <DialogPanel
               transition
@@ -122,6 +119,7 @@ export function ShopLayout() {
               <form className='mt-4 border-t border-gray-200'>
                 <h3 className='sr-only'>Categories</h3>
                 <ul role='list' className='px-2 py-3 font-medium'>
+                  {isLoadingSubcategory && <div>loading...</div>}
                   {subcategoriesList?.data?.subcategories?.map(sub => (
                     <li key={sub.name}>
                       <Link
@@ -166,12 +164,11 @@ export function ShopLayout() {
                             onClick={() => setSelectedCategory('')}
                           >
                             <input
-                              defaultValue={category.name}
-                              defaultChecked={selectedCategory === category._id}
+                              checked={selectedCategory === category._id}
                               onChange={() => setSelectedCategory(category._id)}
                               id={category._id}
                               name='category'
-                              type='checkbox'
+                              type='radio'
                               className='h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500'
                             />
                             <label
@@ -306,12 +303,11 @@ export function ShopLayout() {
                             onClick={() => setSelectedCategory('')}
                           >
                             <input
-                              defaultValue={category.name}
-                              defaultChecked={selectedCategory === category._id}
+                              checked={selectedCategory === category._id}
                               onChange={() => setSelectedCategory(category._id)}
                               id={category._id}
                               name='category'
-                              type='checkbox'
+                              type='radio'
                               className='h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500'
                             />
                             <label
