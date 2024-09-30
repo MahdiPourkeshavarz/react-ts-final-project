@@ -3,10 +3,10 @@ import { Layout } from '../layout'
 import {
   AdminPage,
   AuthenticationPage,
+  Categoryloader,
   CategoryPage,
   ErrorPage,
   HomePage,
-  loader as categoryLoader,
   OrderPage,
   OrderStatusPage,
   ProductPage,
@@ -25,6 +25,7 @@ import {
   loader as subcategoryLoader,
   SubCategoryPage,
 } from '../pages/subcategory'
+import { loader as productLoader } from '../pages/product'
 
 const router = createBrowserRouter([
   {
@@ -69,7 +70,7 @@ const router = createBrowserRouter([
           {
             index: true,
             element: <CategoryPage />,
-            loader: categoryLoader,
+            loader: Categoryloader,
           },
           {
             path: '/home/:categoryName/:subcategoryName',
@@ -79,8 +80,9 @@ const router = createBrowserRouter([
         ],
       },
       {
-        path: '/home/:productId',
+        path: '/home/:categoryName/:subcategoryName/:productName',
         element: <ProductPage />,
+        loader: productLoader,
       },
       {
         path: '/home/cart',

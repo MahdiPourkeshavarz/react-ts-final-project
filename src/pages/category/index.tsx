@@ -80,7 +80,9 @@ export function CategoryPage() {
   )
 }
 
-export async function loader({ params }): Promise<TResponseGetAllCategories> {
+export async function Categoryloader({
+  params,
+}): Promise<TResponseGetAllCategories> {
   const categoryName = params.categoryName
   try {
     const response = await httpRequest.get(
