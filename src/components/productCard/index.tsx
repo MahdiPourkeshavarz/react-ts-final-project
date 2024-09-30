@@ -9,7 +9,7 @@ interface props {
 export function ProductCard({ product }: props) {
   return (
     <Link
-      to={`/home/${product?.category?.name}/${product?.subcategory?.name}/${product?.name}`}
+      to={`/home/${product?.name}/${product?.subcategory?.name}/${product?.category?.name}`}
       role='listitem'
       className='mx-auto flex max-w-sm transform flex-col items-center rounded-lg bg-white bg-opacity-75 px-12 py-3 shadow-lg transition-transform duration-300 hover:scale-105 hover:shadow-2xl'
     >

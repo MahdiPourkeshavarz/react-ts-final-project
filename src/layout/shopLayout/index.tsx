@@ -1,4 +1,4 @@
-import { Link, NavLink, Outlet, useParams } from 'react-router-dom'
+import { Link, Outlet, useParams } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 import {
   Dialog,
@@ -23,10 +23,7 @@ import {
 import { useStore } from '../../context/shopStore'
 import { API_ROUTES } from '../../constants'
 import { useGetData } from '../../hooks/useGetAction'
-import {
-  TResponseGetAllCategories,
-  TResponseGetAllSubCategories,
-} from '../../types'
+import { TResponseGetAllCategories } from '../../types'
 import { httpRequest } from '../../lib/axiosConfig'
 
 const sortOptions = [
@@ -47,8 +44,6 @@ export function ShopLayout() {
 
   const [selectedCategory, setSelectedCategory] = useState('')
 
-  // const [subEndpoint, setSubEndpoint] = useState(API_ROUTES.SUBCATEGORIES_BASE)
-
   const [subcategoryList, setSubcategoryList] = useState()
 
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false)
@@ -57,22 +52,17 @@ export function ShopLayout() {
     API_ROUTES.CATEGORY_BASE,
   )
 
-  // useEffect(() => {
-  //   getCategoryId()
-  //   // if (selectedCategory) {
-  //   //   setSubEndpoint(
-  //   //     `${API_ROUTES.SUBCATEGORIES_BASE}?category=${selectedCategory}`,
-  //   //   )
-  //   // }
-  // }, [selectedCategory, categoryName])
-
   useEffect(() => {
     if (categoryName) {
       setName(categoryName)
     }
+  }, [categoryName])
 
-    getCategoryId()
-  }, [categoryName, selectedCategory])
+  useEffect(() => {
+    if (name) {
+      getCategoryId()
+    }
+  }, [name])
 
   useEffect(() => {
     if (selectedCategory) {
@@ -139,16 +129,29 @@ export function ShopLayout() {
               <form className='mt-4 border-t border-gray-200'>
                 <h3 className='sr-only'>Categories</h3>
                 <ul role='list' className='px-2 py-3 font-medium'>
-                  {subcategoryList?.map(sub => (
-                    <li key={sub.name}>
-                      <Link
-                        to={`/home/${encodeURIComponent(sub.name)}/${categoryName}`}
-                        className='block py-3 pl-2 pr-6'
-                      >
-                        {sub.name}
-                      </Link>
-                    </li>
-                  ))}
+                  {subcategoryList ? (
+                    subcategoryList.map(sub => (
+                      <li key={sub.name}>
+                        <Link
+                          to={`/home/${encodeURIComponent(sub.name)}/${categoryName}`}
+                          className='block py-3 pl-2 pr-6'
+                        >
+                          {sub.name}
+                        </Link>
+                      </li>
+                    ))
+                  ) : (
+                    <ul>
+                      {Array.from({ length: 2 }).map((_, index) => (
+                        <li
+                          key={index}
+                          className='flex items-center py-3 pl-2 pr-6'
+                        >
+                          <div className='h-4 w-3/4 animate-pulse rounded bg-gray-300'></div>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
                 </ul>
 
                 <Disclosure
@@ -278,16 +281,29 @@ export function ShopLayout() {
                   role='list'
                   className='space-y-4 border-b border-gray-200 pb-6 text-sm font-medium text-gray-900'
                 >
-                  {subcategoryList?.map(sub => (
-                    <li key={sub.name}>
-                      <Link
-                        to={`/home/${encodeURIComponent(sub.name)}/${categoryName}`}
-                        className='block px-3 py-3'
-                      >
-                        {sub.name}
-                      </Link>
-                    </li>
-                  ))}
+                  {subcategoryList ? (
+                    subcategoryList.map(sub => (
+                      <li key={sub.name}>
+                        <Link
+                          to={`/home/${encodeURIComponent(sub.name)}/${categoryName}`}
+                          className='block py-3 pl-2 pr-6'
+                        >
+                          {sub.name}
+                        </Link>
+                      </li>
+                    ))
+                  ) : (
+                    <ul>
+                      {Array.from({ length: 2 }).map((_, index) => (
+                        <li
+                          key={index}
+                          className='flex items-center py-3 pl-2 pr-6'
+                        >
+                          <div className='h-4 w-3/4 animate-pulse rounded bg-gray-300'></div>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
                 </ul>
 
                 <Disclosure as='div' className='border-b border-gray-200 py-6'>
@@ -352,3 +368,9 @@ export function ShopLayout() {
     </div>
   )
 }
+
+// const { data: singleBlogPost } = useQuery({
+//   queryKey: ["single-blog-post", userId, params.slug],
+//   queryFn: () => getOneBlogPost(params.slug, userId!),
+//   enabled: !!userId,
+// });

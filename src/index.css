@@ -32,3 +32,19 @@ input[type='number'] {
   -webkit-line-clamp: 2; /* Limit to 2 lines */
   text-overflow: ellipsis;
 }
+
+@keyframes pulse {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+.animate-pulse {
+  animation: pulse 1.5s ease-in-out infinite;
+}

@@ -5,10 +5,13 @@ import { httpRequest } from '../../lib/axiosConfig'
 import { TAllProductsResponse, TResponseGetAllCategories } from '../../types'
 import { useGetData } from '../../hooks/useGetAction'
 import { useEffect, useState } from 'react'
+import { useStore } from '../../context/shopStore'
 
 export function CategoryPage() {
   const categoryId = useLoaderData()
   const [searchParams, setSearchParams] = useSearchParams()
+
+  const { theme } = useStore()
 
   const [currentPage, setCurrentPage] = useState(searchParams.get('page') || 1)
 
@@ -39,12 +42,14 @@ export function CategoryPage() {
     <>
       <div className='grid gap-x-4 gap-y-4 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3'>
         {isLoading && (
-          <div className='absolute inset-0 flex items-center justify-center bg-opacity-50'>
+          <div
+            className={`absolute inset-0 flex items-center justify-center bg-opacity-50 ${theme === 'dark' ? 'bg-gray-900' : 'bg-gray-100'}`}
+          >
             <div
-              className='text-surface inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-current border-e-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite] dark:text-white'
+              className={`inline-block h-16 w-16 animate-spin rounded-full border-4 border-solid border-${theme === 'dark' ? 'blue-500' : 'blue-600'} border-e-transparent`}
               role='status'
             >
-              <span className='!absolute !-m-px !h-px !w-px !overflow-hidden !whitespace-nowrap !border-0 !p-0 ![clip:rect(0,0,0,0)]'>
+              <span className='clip-rect absolute -m-px h-px w-px overflow-hidden whitespace-nowrap border-0 p-0'>
                 Loading...
               </span>
             </div>
