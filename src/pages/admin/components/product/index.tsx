@@ -120,7 +120,6 @@ const Products = () => {
         </div>
         <div className="grid grid-cols-2 gap-2 py-6">
           <TextField
-            dir="rtl"
             label="نام محصول"
             name="name"
             id="name"
