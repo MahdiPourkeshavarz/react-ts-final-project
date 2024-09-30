@@ -76,11 +76,11 @@ const router = createBrowserRouter([
             element: <SubCategoryPage />,
             loader: subcategoryLoader,
           },
+          {
+            path: '/home/:categoryName/:subcategoryName/:productId',
+            element: <ProductPage />,
+          },
         ],
-      },
-      {
-        path: '/home/:productId',
-        element: <ProductPage />,
       },
       {
         path: '/home/cart',
