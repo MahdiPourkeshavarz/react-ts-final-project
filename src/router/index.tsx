@@ -76,7 +76,7 @@ const router = createBrowserRouter([
             path: '/home/:categoryName/:subcategoryName',
             element: <SubCategoryPage />,
             loader: subcategoryLoader,
-          },
+          }
         ],
       },
       {
