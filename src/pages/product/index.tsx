@@ -1,15 +1,18 @@
-import { useLoaderData } from 'react-router-dom'
+import { Link, useLoaderData } from 'react-router-dom'
 import { API_ROUTES } from '../../constants'
 import { httpRequest } from '../../lib/axiosConfig'
 import { TAllProductsResponse } from '../../types'
-import { useStore } from '../../context/shopStore'
 import { numberWithCommas } from '../../utils/dataConverter'
 import { useState } from 'react'
+import { QuantitySelector } from './components/quantitySelector'
+import { useStore } from '../../context/shopStore'
 
 export function ProductPage() {
-  const { theme } = useStore()
   const product = useLoaderData()
   const [selectedImageIndex, setSelectedImageIndex] = useState(0)
+  const [isAdded, setIsAdded] = useState(false)
+  const [isCartExpanded, setCartIsExpanded] = useState(false)
+  const { cartQuantity, removeItem, addItem } = useStore()
 
   if (!product) {
     return <div className='min-h-screen p-6 text-center'>Product not found</div>
@@ -22,12 +25,36 @@ export function ProductPage() {
     return img
   })
 
+  function handleDeleteProduct() {
+    setIsAdded(false)
+    removeItem(product?._id)
+  }
+
   return (
     <div
-      className={`flex min-h-screen flex-col md:flex-row ${
-        theme === 'dark' ? 'bg-gray-900 text-white' : 'bg-white text-gray-900'
-      }`}
+      className={`flex min-h-screen flex-col bg-slate-100 text-gray-900 md:flex-row dark:bg-gray-900 dark:text-white`}
     >
+      {isAdded && (
+        <div
+          dir='ltr'
+          className={`fixed left-4 top-20 z-50 flex items-center gap-x-4 rounded-lg bg-blue-100 shadow-lg transition-all duration-300 ${
+            isCartExpanded ? 'w-52 p-4' : 'w-auto p-2'
+          } cursor-pointer`}
+          onClick={() => setCartIsExpanded(!isCartExpanded)}
+        >
+          <img src='/Cart.png' alt='_' width='40px' />
+          <div
+            className={`absolute flex w-5 justify-center rounded-full bg-red-700 text-sm ${isCartExpanded ? 'left-7 top-3' : 'left-5 top-2'} transition-all duration-300`}
+          >
+            <p className='text-white'>{cartQuantity}</p>
+          </div>
+          {isCartExpanded && (
+            <Link to='/home/cart'>
+              <p className='text-sm text-blue-500'>برو به سبد خرید</p>
+            </Link>
+          )}
+        </div>
+      )}
       <div className='container mx-auto flex flex-1 flex-col gap-x-4 p-6 md:flex-row'>
         <div className='flex flex-col items-center md:w-1/2'>
           <div className='relative w-full max-w-lg overflow-hidden rounded-3xl shadow-xl'>
@@ -62,38 +89,28 @@ export function ProductPage() {
 
         <div className='mt-6 flex flex-col justify-center md:ml-12 md:mt-0 md:w-1/2'>
           <div
-            className={`rounded-3xl p-8 ${
-              theme === 'dark' ? 'bg-gray-800/70' : 'bg-gray-100/90'
-            } shadow-md backdrop-blur-xl transition-all duration-300`}
+            className={`rounded-3xl bg-slate-100/90 p-8 shadow-md backdrop-blur-xl transition-all duration-300 dark:bg-slate-800/70`}
           >
             <h2
-              className={`mb-3 text-3xl font-semibold leading-tight tracking-tighter ${
-                theme === 'dark' ? 'text-white' : 'text-gray-900'
-              }`}
+              className={`mb-3 text-3xl font-semibold leading-tight tracking-tighter text-slate-900 dark:text-white`}
             >
               {product?.name}
             </h2>
 
             <p
-              className={`mb-6 text-lg font-medium ${
-                theme === 'dark' ? 'text-gray-400' : 'text-gray-500'
-              }`}
+              className={`mb-6 text-lg font-medium text-gray-600 dark:text-gray-400`}
             >
               {product?.category?.name} / {product?.subcategory?.name}
             </p>
 
             <p
-              className={`mb-6 text-left text-4xl font-bold ${
-                theme === 'dark' ? 'text-white' : 'text-gray-900'
-              }`}
+              className={`mb-6 text-left text-4xl font-bold text-gray-900 dark:text-white`}
             >
               {numberWithCommas(product?.price)} تومان
             </p>
 
             <div
-              className={`mb-6 flex flex-row-reverse items-center space-x-2 text-left text-sm ${
-                theme === 'dark' ? 'text-gray-400' : 'text-gray-500'
-              }`}
+              className={`mb-6 flex flex-row-reverse items-center space-x-2 text-left text-sm text-gray-500 dark:text-gray-400`}
             >
               <span>{(Math.random() * 4 + 1).toFixed(1)} ⭐</span>
               <span>•</span>
@@ -102,16 +119,27 @@ export function ProductPage() {
             </div>
 
             <p
-              className={`mb-8 text-lg leading-relaxed ${
-                theme === 'dark' ? 'text-gray-300' : 'text-gray-700'
-              }`}
+              className={`mb-8 text-lg leading-relaxed text-gray-700 dark:text-gray-300`}
             >
               {product?.description}
             </p>
 
-            <button className='w-full rounded-full bg-blue-600 py-4 text-lg font-semibold text-white shadow-lg transition-all duration-200 hover:bg-blue-700 hover:shadow-xl focus:outline-none focus:ring-4 focus:ring-blue-300 active:bg-blue-800'>
-              اضافه کردن به سبد خرید
-            </button>
+            {!isAdded ? (
+              <button
+                className='w-full rounded-full bg-blue-600 py-4 text-lg font-semibold text-white shadow-lg transition-all duration-200 hover:bg-blue-700 hover:shadow-xl focus:outline-none focus:ring-4 focus:ring-blue-300 active:bg-blue-800'
+                onClick={() => {
+                  setIsAdded(!isAdded)
+                  addItem({ _id: product._id, quantity: 1 })
+                }}
+              >
+                اضافه کردن به سبد خرید
+              </button>
+            ) : (
+              <QuantitySelector
+                handleRemove={handleDeleteProduct}
+                productId={product?._id}
+              />
+            )}
           </div>
         </div>
       </div>
