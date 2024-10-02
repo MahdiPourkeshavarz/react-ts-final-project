@@ -5,14 +5,11 @@ import { httpRequest } from '../../lib/axiosConfig'
 import { useGetData } from '../../hooks/useGetAction'
 import { ProductCard } from '../../components/productCard'
 import { useEffect, useState } from 'react'
-import { useStore } from '../../context/shopStore'
 
 export function SubCategoryPage() {
   const subcategoryId = useLoaderData()
 
   const [searchParams, setSearchParams] = useSearchParams()
-
-  const { theme } = useStore()
 
   const [currentPage, setCurrentPage] = useState(searchParams.get('page') || 1)
 
@@ -44,10 +41,10 @@ export function SubCategoryPage() {
       <div className='grid gap-x-3 gap-y-4 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3'>
         {isLoading && (
           <div
-            className={`absolute inset-0 flex items-center justify-center bg-opacity-50 ${theme === 'dark' ? 'bg-gray-900' : 'bg-gray-100'}`}
+            className={`absolute inset-0 flex items-center justify-center bg-slate-100 bg-opacity-50 dark:bg-slate-900`}
           >
             <div
-              className={`inline-block h-16 w-16 animate-spin rounded-full border-4 border-solid border-${theme === 'dark' ? 'blue-500' : 'blue-600'} border-e-transparent`}
+              className={`inline-block h-16 w-16 animate-spin rounded-full border-4 border-solid border-blue-600 border-e-transparent dark:border-blue-500`}
               role='status'
             >
               <span className='clip-rect absolute -m-px h-px w-px overflow-hidden whitespace-nowrap border-0 p-0'>

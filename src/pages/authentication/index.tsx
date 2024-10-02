@@ -3,14 +3,11 @@ import { useNavigate } from 'react-router-dom'
 import { submitUser } from '../../api/getAccess'
 import { AuthformData } from '../../types'
 import { AuthenticationForm } from './components/authForm'
-import { useStore } from '../../context/shopStore'
 
 export function AuthenticationPage() {
   localStorage.setItem('theme', 'light')
   const [mode, setMode] = useState('login')
   const navigate = useNavigate()
-
-  const { theme } = useStore()
 
   const toggleMode = () => {
     setMode(mode === 'login' ? 'signup' : 'login')
@@ -31,11 +28,7 @@ export function AuthenticationPage() {
       >
         <div className='flex flex-1 items-center justify-center p-8'>
           <div
-            className={`w-full max-w-md rounded-lg p-8 shadow-lg ${
-              theme === 'dark'
-                ? 'bg-slate-900 text-white'
-                : 'bg-slate-100 text-black'
-            } `}
+            className={`w-full max-w-md rounded-lg bg-slate-100 p-8 text-black shadow-lg dark:bg-slate-900 dark:text-white`}
           >
             <header className='mb-6 text-center'>
               <h1 className='text-2xl font-bold'>به گجت هاب خوش آمدید</h1>

@@ -27,15 +27,6 @@ export function Header() {
     setAnchorElNav(null)
   }
 
-  const toggleDarkMode = () => {
-    toggleTheme()
-    if (theme === 'dark') {
-      localStorage.setItem('theme', 'dark')
-    } else {
-      localStorage.setItem('theme', 'light')
-    }
-  }
-
   return (
     <>
       <AppBar position='static'>
@@ -136,7 +127,7 @@ export function Header() {
                 </Button>
               </Link>
             </Box>
-            <IconButton sx={{ ml: 1 }} onClick={toggleDarkMode} color='inherit'>
+            <IconButton sx={{ ml: 1 }} onClick={toggleTheme} color='inherit'>
               {theme === 'dark' ? <Brightness7Icon /> : <Brightness4Icon />}
             </IconButton>
           </Toolbar>
