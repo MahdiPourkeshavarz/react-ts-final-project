@@ -48,3 +48,9 @@ input[type='number'] {
 .animate-pulse {
   animation: pulse 1.5s ease-in-out infinite;
 }
+
+.product-page {
+  background-size: 70%; /* 100% - 30% = 70% */
+  background-position: center; /*Keeps image centered*/
+  background-repeat: no-repeat; /* Prevents image repetition */
+}

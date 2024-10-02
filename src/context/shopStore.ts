@@ -4,23 +4,33 @@ import { CartState, ThemeState } from '../types'
 type StoreState = ThemeState & CartState
 
 export const useStore = create<StoreState>(set => ({
-  // Theme logic
-  theme: localStorage.getItem('theme'),
-  toggleTheme: () =>
-    set(state => ({
-      theme: state.theme === 'dark' ? 'light' : 'dark',
-    })),
+  theme:
+    localStorage.getItem('theme') ||
+    (window.matchMedia('(prefers-color-scheme: dark)').matches
+      ? 'dark'
+      : 'light'),
 
-  // Cart logic
+  toggleTheme: () => {
+    set(state => {
+      const newTheme = state.theme === 'dark' ? 'light' : 'dark'
+      localStorage.setItem('theme', newTheme)
+
+      document.documentElement.classList.toggle('dark', newTheme === 'dark')
+
+      return { theme: newTheme }
+    })
+  },
+
   items: [],
   cartQuantity: 0,
+
   addItem: item =>
     set(state => {
-      const existingItem = state.items.find(i => i.name === item.name)
+      const existingItem = state.items.find(i => i._id === item._id)
       if (existingItem) {
         return {
           items: state.items.map(i =>
-            i.name === item.name
+            i._id === item._id
               ? { ...i, quantity: i.quantity + item.quantity }
               : i,
           ),
@@ -32,28 +42,31 @@ export const useStore = create<StoreState>(set => ({
         cartQuantity: state.cartQuantity + item.quantity,
       }
     }),
-  removeItem: name =>
+
+  removeItem: _id =>
     set(state => {
-      const itemToRemove = state.items.find(i => i.name === name)
+      const itemToRemove = state.items.find(i => i._id === _id)
       return {
-        items: state.items.filter(i => i.name !== name),
+        items: state.items.filter(i => i._id !== _id),
         cartQuantity: itemToRemove
           ? state.cartQuantity - itemToRemove.quantity
           : state.cartQuantity,
       }
     }),
-  updateItem: (name, updatedItem) =>
+
+  updateItem: (_id, updatedItem) =>
     set(state => ({
       items: state.items.map(i =>
-        i.name === name ? { ...i, ...updatedItem } : i,
+        i._id === _id ? { ...i, ...updatedItem } : i,
       ),
     })),
-  adjustQuantity: (name, quantity) =>
+
+  adjustQuantity: (_id, quantity) =>
     set(state => {
-      const item = state.items.find(i => i.name === name)
+      const item = state.items.find(i => i._id === _id)
       const currentQuantity = item ? item.quantity : 0
       return {
-        items: state.items.map(i => (i.name === name ? { ...i, quantity } : i)),
+        items: state.items.map(i => (i._id === _id ? { ...i, quantity } : i)),
         cartQuantity: state.cartQuantity - currentQuantity + quantity,
       }
     }),

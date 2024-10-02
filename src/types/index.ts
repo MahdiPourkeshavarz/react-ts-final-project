@@ -4,12 +4,17 @@ export interface ThemeState {
 }
 
 export interface CartState {
-  items: Product[]
+  items: CartProduct[]
   cartQuantity: number
-  addItem: (item: Product) => void
-  removeItem: (name: string) => void
-  updateItem: (name: string, updatedItem: Partial<Product>) => void
-  adjustQuantity: (name: string, quantity: number) => void
+  addItem: (item: CartProduct) => void
+  removeItem: (_id: string) => void
+  updateItem: (_id: string, updatedItem: CartProduct) => void
+  adjustQuantity: (_id: string, quantity: number) => void
+}
+
+interface CartProduct {
+  _id: string
+  quantity: number
 }
 
 export interface ResponseProduct {
