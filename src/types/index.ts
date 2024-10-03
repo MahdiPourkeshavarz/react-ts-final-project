@@ -8,13 +8,15 @@ export interface CartState {
   cartQuantity: number
   addItem: (item: CartProduct) => void
   removeItem: (_id: string) => void
-  updateItem: (_id: string, updatedItem: CartProduct) => void
-  adjustQuantity: (_id: string, quantity: number) => void
+  updateItem: (_id: string, updatedItem: Partial<CartProduct>) => void
 }
 
-interface CartProduct {
+export interface CartProduct {
   _id: string
   quantity: number
+  imgSrc: string
+  name: string
+  price: number
 }
 
 export interface ResponseProduct {

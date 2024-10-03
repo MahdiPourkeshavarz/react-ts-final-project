@@ -10,9 +10,16 @@ import { useStore } from '../../context/shopStore'
 export function ProductPage() {
   const product = useLoaderData()
   const [selectedImageIndex, setSelectedImageIndex] = useState(0)
-  const [isAdded, setIsAdded] = useState(false)
   const [isCartExpanded, setCartIsExpanded] = useState(false)
   const { cartQuantity, removeItem, addItem } = useStore()
+
+  const store = JSON.parse(localStorage.getItem('shop-storage'))
+
+  const item = store.state.items.filter(item => item._id === product._id)
+
+  const [itemQuantity, setItemQuantity] = useState(item[0]?.quantity | 0)
+
+  const [isAdded, setIsAdded] = useState(itemQuantity ? true : false)
 
   if (!product) {
     return <div className='min-h-screen p-6 text-center'>Product not found</div>
@@ -129,7 +136,13 @@ export function ProductPage() {
                 className='w-full rounded-full bg-blue-600 py-4 text-lg font-semibold text-white shadow-lg transition-all duration-200 hover:bg-blue-700 hover:shadow-xl focus:outline-none focus:ring-4 focus:ring-blue-300 active:bg-blue-800'
                 onClick={() => {
                   setIsAdded(!isAdded)
-                  addItem({ _id: product._id, quantity: 1 })
+                  addItem({
+                    _id: product._id,
+                    quantity: 1,
+                    imgSrc: imagesWithProtocol[0],
+                    name: product?.name,
+                    price: product?.price,
+                  })
                 }}
               >
                 اضافه کردن به سبد خرید
@@ -137,7 +150,8 @@ export function ProductPage() {
             ) : (
               <QuantitySelector
                 handleRemove={handleDeleteProduct}
-                productId={product?._id}
+                product={product}
+                initialValue={itemQuantity}
               />
             )}
           </div>

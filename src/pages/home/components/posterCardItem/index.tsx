@@ -1,12 +1,15 @@
+import { Link } from 'react-router-dom'
+
 interface props {
   imgSrc: string
   title: string
+  link: string
 }
 
-export function PosterCardItem({ imgSrc, title }: props): JSX.Element {
+export function PosterCardItem({ imgSrc, title, link }: props): JSX.Element {
   return (
     <>
-      <div className='relative flex min-w-max shadow-xl'>
+      <Link to={link} className='relative flex min-w-max shadow-xl'>
         <p className='absolute right-16 top-6 text-lg font-medium'>{title}</p>
         <button className='absolute right-24 top-16 z-50 mt-2 flex gap-x-2 rounded-lg border-none bg-slate-50 px-4 py-1 text-lg font-semibold text-blue-500'>
           خرید
@@ -18,7 +21,7 @@ export function PosterCardItem({ imgSrc, title }: props): JSX.Element {
           src={imgSrc}
           alt={title}
         />
-      </div>
+      </Link>
     </>
   )
 }

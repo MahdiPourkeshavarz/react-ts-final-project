@@ -5,13 +5,10 @@ import { httpRequest } from '../../lib/axiosConfig'
 import { TAllProductsResponse, TResponseGetAllCategories } from '../../types'
 import { useGetData } from '../../hooks/useGetAction'
 import { useEffect, useState } from 'react'
-import { useStore } from '../../context/shopStore'
 
 export function CategoryPage() {
   const categoryId = useLoaderData()
   const [searchParams, setSearchParams] = useSearchParams()
-
-  const { theme } = useStore()
 
   const [currentPage, setCurrentPage] = useState(searchParams.get('page') || 1)
 
