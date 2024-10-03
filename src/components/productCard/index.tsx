@@ -7,6 +7,11 @@ interface props {
 }
 
 export function ProductCard({ product }: props) {
+  const imageUrl =
+    product.images && product.images[0]
+      ? `http://${product.images[0]}`
+      : '/placeholder-image.jpg'
+
   return (
     <Link
       to={`/home/${product?.category?.name}/${product?.subcategory?.name}/${product?.name}`}
@@ -17,8 +22,8 @@ export function ProductCard({ product }: props) {
         <img
           loading='lazy'
           width='240'
-          alt={product?.name}
-          src={`http://${product?.images[0]}`}
+          alt='img'
+          src={imageUrl}
           className='rounded-lg'
         />
       </div>
