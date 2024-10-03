@@ -70,8 +70,8 @@ export function HomePage() {
         <CategoryItem to='/home/مودم' imgSrc='/router.png' label='مودم' />
         <CategoryItem
           to='/home/پاوربانک'
-          imgSrc='/others.png'
-          label='همه دسته بندی ها'
+          imgSrc='/powerbank.png'
+          label='پاور بانک'
         />
       </div>
 
@@ -81,21 +81,24 @@ export function HomePage() {
           میتونی از اینجا یه نگاه سریع بهشون بندازی.
         </p>
       </div>
-
       <div className='ml-4 flex gap-x-5 overflow-x-auto whitespace-nowrap scrollbar-hide'>
         <PosterCardItem
+          link='http://localhost:5173/home/%D8%B3%D8%A7%D8%B9%D8%AA%20%D9%87%D9%88%D8%B4%D9%85%D9%86%D8%AF/%D9%88%D8%B1%D8%B2%D8%B4%DB%8C/%D8%A7%D9%BE%D9%84%20%D9%88%D8%A7%DA%86%20%D8%B3%D8%B1%DB%8C%209'
           imgSrc='/smartwatch-poster-re.png'
           title='ساعت هوشمند اپل سری 9'
         />
         <PosterCardItem
+          link='http://localhost:5173/home/%D9%87%D8%AF%D9%81%D9%88%D9%86/%D8%A8%DB%8C%20%D8%B3%DB%8C%D9%85/%D8%A8%D9%88%D8%B2%20%D9%85%D8%AF%D9%84%20Ultra%20Open%20EarBuds'
           imgSrc='/earphone-poster.webp'
           title='هدفون القایی بوز سری جدید'
         />
         <PosterCardItem
+          link='http://localhost:5173/home/%D8%A7%D8%B3%D9%BE%DB%8C%DA%A9%D8%B1/%D8%A7%D8%B3%D9%BE%DB%8C%DA%A9%D8%B1%20%D9%82%D8%A7%D8%A8%D9%84%20%D8%AD%D9%85%D9%84/%D8%A7%D8%B3%D9%BE%DB%8C%DA%A9%D8%B1%20%D8%A8%D9%84%D9%88%D8%AA%D9%88%D8%AB%DB%8C%20%D9%82%D8%A7%D8%A8%D9%84%20%D8%AD%D9%85%D9%84%20%D8%AC%DB%8C%20%D8%A8%DB%8C%20%D8%A7%D9%84%20%D9%85%D8%AF%D9%84%20Go%204'
           imgSrc='/speaker-poster.png'
           title='اسپیکر جیبی جی بی ال'
         />
         <PosterCardItem
+          link='http://localhost:5173/home/%D8%A7%D8%B3%D9%BE%DB%8C%DA%A9%D8%B1/%D8%A7%D8%B3%D9%BE%DB%8C%DA%A9%D8%B1%20%D9%82%D8%A7%D8%A8%D9%84%20%D8%AD%D9%85%D9%84/%D8%A7%D8%B3%D9%BE%DB%8C%DA%A9%D8%B1%20%D8%A8%D9%84%D9%88%D8%AA%D9%88%D8%AB%DB%8C%20%D9%82%D8%A7%D8%A8%D9%84%20%D8%AD%D9%85%D9%84%20%D8%A7%D9%86%DA%A9%D8%B1%20%D9%85%D8%AF%D9%84%20SoundCore%20A3395%20Rave%20Neo'
           imgSrc='/speaker-stand-poster.png'
           title='اسپیکر ایستاده انکر'
         />

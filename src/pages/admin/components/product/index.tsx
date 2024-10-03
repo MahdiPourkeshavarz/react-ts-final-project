@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState } from 'react'
 import {
   TextField,
   Button,
@@ -6,96 +6,96 @@ import {
   MenuItem,
   InputLabel,
   FormControl,
-} from "@mui/material";
-import { httpRequest } from "../../../../lib/axiosConfig";
-import { API_ROUTES } from "../../../../constants";
-import { useGetData } from "../../../../hooks/useGetAction";
+} from '@mui/material'
+import { httpRequest } from '../../../../lib/axiosConfig'
+import { API_ROUTES } from '../../../../constants'
+import { useGetData } from '../../../../hooks/useGetAction'
 import {
   SubcategoryById,
   TResponseGetAllCategories,
   TResponseGetAllSubCategories,
-} from "../../../../types";
+} from '../../../../types'
 
 const Products = () => {
-  const [selectedCategory, setSelectedCategory] = useState("");
-  const [selectedSubcategory, setSelectedSubcategory] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState('')
+  const [selectedSubcategory, setSelectedSubcategory] = useState('')
   const [productData, setProductData] = useState({
-    name: "",
-    price: "",
-    quantity: "",
-    brand: "",
-    discount: "",
-    description: "",
+    name: '',
+    price: '',
+    quantity: '',
+    brand: '',
+    discount: '',
+    description: '',
     thumbnail: null,
     images: [],
-  });
+  })
 
-  const [subEndpoint, setSubEndpoint] = useState(API_ROUTES.SUBCATEGORIES_BASE);
+  const [subEndpoint, setSubEndpoint] = useState(API_ROUTES.SUBCATEGORIES_BASE)
 
   const { data: categoriesList, refetch } =
-    useGetData<TResponseGetAllCategories>(API_ROUTES.CATEGORY_BASE);
+    useGetData<TResponseGetAllCategories>(API_ROUTES.CATEGORY_BASE)
 
   const { data: subcategoriesList } =
-    useGetData<TResponseGetAllSubCategories>(subEndpoint);
+    useGetData<TResponseGetAllSubCategories>(subEndpoint)
 
-  const handleCategoryChange = async (e) => {
-    setSelectedCategory(e.target.value);
-  };
+  const handleCategoryChange = (e: SelectChangeEvent<string>) => {
+    setSelectedCategory(e.target.value as string)
+  }
 
   useEffect(() => {
     setSubEndpoint(
-      `${API_ROUTES.SUBCATEGORIES_BASE}?category=${selectedCategory}`
-    );
-  }, [selectedCategory]);
+      `${API_ROUTES.SUBCATEGORIES_BASE}?category=${selectedCategory}`,
+    )
+  }, [selectedCategory])
 
   const handleAddProduct = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const formData = new FormData(e.currentTarget);
-    formData.delete("images");
-    formData.delete("thumbnail");
+    e.preventDefault()
+    const formData = new FormData(e.currentTarget)
+    formData.delete('images')
+    formData.delete('thumbnail')
 
-    const images = e.currentTarget["images"].files;
-    const thumbnail = e.currentTarget["thumbnail"].files[0];
+    const images = e.currentTarget['images'].files
+    const thumbnail = e.currentTarget['thumbnail'].files[0]
     for (let i = 0; i < images.length; i++) {
-      formData.append("images", images[i]);
+      formData.append('images', images[i])
     }
 
     // Append the single thumbnail file
-    formData.append("thumbnail", thumbnail);
+    formData.append('thumbnail', thumbnail)
 
-    formData.append("category", selectedCategory);
+    formData.append('category', selectedCategory)
 
-    formData.append("subcategory", selectedSubcategory);
-    console.log(formData.get("images"));
+    formData.append('subcategory', selectedSubcategory)
+    console.log(formData.get('images'))
     try {
-      await httpRequest.post(API_ROUTES.PRODUCT_BASE, formData);
-      alert("Product added successfully!");
+      await httpRequest.post(API_ROUTES.PRODUCT_BASE, formData)
+      alert('Product added successfully!')
       setProductData({
-        name: "",
-        price: "",
-        quantity: "",
-        brand: "",
-        discount: "",
-        description: "",
+        name: '',
+        price: '',
+        quantity: '',
+        brand: '',
+        discount: '',
+        description: '',
         thumbnail: null,
         images: [],
-      });
-      setSelectedCategory("");
-      setSelectedSubcategory("");
-      refetch();
+      })
+      setSelectedCategory('')
+      setSelectedSubcategory('')
+      refetch()
     } catch (error) {
-      console.error("Error adding product:", error);
+      console.error('Error adding product:', error)
     }
-  };
+  }
 
   return (
-    <div className="flex flex-col px-16 lg:px-36 gap-y-6 text-center" dir="rtl">
+    <div className='flex flex-col gap-y-6 px-16 text-center lg:px-36' dir='rtl'>
       <form onSubmit={handleAddProduct}>
-        <div className="flex flex-col gap-y-6">
-          <FormControl fullWidth dir="rtl">
+        <div className='flex flex-col gap-y-6'>
+          <FormControl fullWidth dir='rtl'>
             <InputLabel>انتخاب دسته بندی</InputLabel>
             <Select value={selectedCategory} onChange={handleCategoryChange}>
-              {categoriesList?.data?.categories?.map((category) => (
+              {categoriesList?.data?.categories?.map(category => (
                 <MenuItem key={category._id} value={category._id}>
                   {category.name}
                 </MenuItem>
@@ -106,119 +106,119 @@ const Products = () => {
             <InputLabel>انتخاب زیر دسته بندی</InputLabel>
             <Select
               value={selectedSubcategory}
-              onChange={(e) => setSelectedSubcategory(e.target.value)}
+              onChange={e => setSelectedSubcategory(e.target.value)}
             >
               {subcategoriesList?.data?.subcategories.map(
                 (subcategory: SubcategoryById) => (
                   <MenuItem key={subcategory._id} value={subcategory._id}>
                     {subcategory.name}
                   </MenuItem>
-                )
+                ),
               )}
             </Select>
           </FormControl>
         </div>
-        <div className="grid grid-cols-2 gap-2 py-6">
+        <div className='grid grid-cols-2 gap-2 py-6'>
           <TextField
-            label="نام محصول"
-            name="name"
-            id="name"
-            variant="outlined"
+            label='نام محصول'
+            name='name'
+            id='name'
+            variant='outlined'
             value={productData.name}
-            onChange={(e) =>
+            onChange={e =>
               setProductData({ ...productData, name: e.target.value })
             }
           />
           <TextField
-            dir="rtl"
-            label="قیمت"
-            name="price"
-            id="price"
-            variant="outlined"
+            dir='rtl'
+            label='قیمت'
+            name='price'
+            id='price'
+            variant='outlined'
             value={productData.price}
-            onChange={(e) =>
+            onChange={e =>
               setProductData({ ...productData, price: e.target.value })
             }
           />
           <TextField
-            label="تعداد"
-            name="quantity"
-            id="quantity"
-            variant="outlined"
+            label='تعداد'
+            name='quantity'
+            id='quantity'
+            variant='outlined'
             value={productData.quantity}
-            onChange={(e) =>
+            onChange={e =>
               setProductData({ ...productData, quantity: e.target.value })
             }
           />
           <TextField
-            label="برند"
-            variant="outlined"
-            name="brand"
-            id="brand"
+            label='برند'
+            variant='outlined'
+            name='brand'
+            id='brand'
             value={productData.brand}
-            onChange={(e) =>
+            onChange={e =>
               setProductData({ ...productData, brand: e.target.value })
             }
           />
           <TextField
-            label="تخفیف"
-            name="discount"
-            id="discount"
-            variant="outlined"
+            label='تخفیف'
+            name='discount'
+            id='discount'
+            variant='outlined'
             value={productData.discount}
-            onChange={(e) =>
+            onChange={e =>
               setProductData({ ...productData, discount: e.target.value })
             }
           />
           <TextField
-            label="توضیحات"
-            variant="outlined"
-            name="description"
-            id="description"
+            label='توضیحات'
+            variant='outlined'
+            name='description'
+            id='description'
             value={productData.description}
-            onChange={(e) =>
+            onChange={e =>
               setProductData({ ...productData, description: e.target.value })
             }
           />
           <label
-            for="thumbnail"
-            className="flex items-center p-4 gap-3 rounded-3xl border border-gray-300 border-dashed bg-gray-300 cursor-pointer"
+            for='thumbnail'
+            className='flex cursor-pointer items-center gap-3 rounded-3xl border border-dashed border-gray-300 bg-gray-300 p-4'
           >
-            <div className="space-y-2 mx-auto">
-              <h4 className="text-base text-sm font-semibold text-gray-700 sm:text-xs">
+            <div className='mx-auto space-y-2'>
+              <h4 className='text-base text-sm font-semibold text-gray-700 sm:text-xs'>
                 Upload a file for thumbnail
               </h4>
-              <span className="text-sm text-gray-500 sm:text-xs">Max 1 Mb</span>
+              <span className='text-sm text-gray-500 sm:text-xs'>Max 1 Mb</span>
             </div>
             <input
-              type="file"
-              id="thumbnail"
-              name="thumbnail"
-              accept="png, jpg"
+              type='file'
+              id='thumbnail'
+              name='thumbnail'
+              accept='png, jpg'
               hidden
-              onChange={(e) =>
+              onChange={e =>
                 setProductData({ ...productData, thumbnail: e.target.files[0] })
               }
             />
           </label>
           <label
-            for="images"
-            className="flex items-center p-2 gap-3 rounded-3xl border border-gray-300 border-dashed bg-gray-300 cursor-pointer"
+            for='images'
+            className='flex cursor-pointer items-center gap-3 rounded-3xl border border-dashed border-gray-300 bg-gray-300 p-2'
           >
-            <div className="space-y-1 mx-auto">
-              <h4 className="text-base text-sm font-semibold text-gray-700 sm:text-xs">
+            <div className='mx-auto space-y-1'>
+              <h4 className='text-base text-sm font-semibold text-gray-700 sm:text-xs'>
                 Upload a file for image gallery
               </h4>
-              <span className="text-sm text-gray-500 sm:text-xs">Max 1 Mb</span>
+              <span className='text-sm text-gray-500 sm:text-xs'>Max 1 Mb</span>
             </div>
             <input
-              type="file"
-              id="images"
-              name="images"
-              accept="png, jpg"
+              type='file'
+              id='images'
+              name='images'
+              accept='png, jpg'
               multiple
               hidden
-              onChange={(e) =>
+              onChange={e =>
                 setProductData({
                   ...productData,
                   images: Array.from(e.target.files),
@@ -227,12 +227,12 @@ const Products = () => {
             />
           </label>
         </div>
-        <Button variant="contained" color="inherit" type="submit">
+        <Button variant='contained' color='inherit' type='submit'>
           اضافه کردن محصول
         </Button>
       </form>
     </div>
-  );
-};
+  )
+}
 
-export default Products;
+export default Products

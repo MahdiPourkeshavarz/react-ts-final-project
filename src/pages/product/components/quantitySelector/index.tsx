@@ -1,23 +1,27 @@
 import { useState } from 'react'
 import { useStore } from '../../../../context/shopStore'
+import { GeneralProductsEntity } from '../../../../types'
 
 interface QuantityProps {
   initialValue?: number
   handleRemove: () => void
-  productId: string
+  productId: GeneralProductsEntity
 }
 
 export function QuantitySelector({
   initialValue = 1,
   handleRemove,
-  productId,
+  product,
 }: QuantityProps) {
   const [value, setValue] = useState(initialValue)
   const { updateItem } = useStore()
+  console.log(value)
 
   function increment() {
     setValue(prevValue => prevValue + 1)
-    adjustItem()
+    updateItem(product?._id, {
+      quantity: value + 1,
+    })
   }
 
   function decrement() {
@@ -26,11 +30,9 @@ export function QuantitySelector({
       return
     }
     setValue(prevValue => (prevValue > 0 ? prevValue - 1 : 0))
-    adjustItem()
-  }
-
-  function adjustItem() {
-    updateItem(productId, { _id: productId, quantity: value })
+    updateItem(product?._id, {
+      quantity: value - 1,
+    })
   }
 
   return (
@@ -44,9 +46,9 @@ export function QuantitySelector({
           &mdash;
         </button>
         <input
-          className='h-12 w-16 border-b border-t border-gray-300 text-center focus:outline-none'
+          className='h-12 w-16 border-b border-t border-gray-300 text-center focus:outline-none dark:text-black'
           type='text'
-          value={value}
+          value={value === 0 ? 1 : value}
           readOnly
         />
         <button
