@@ -8,15 +8,15 @@ import {
   CardContent,
   CardMedia,
   Typography,
-} from "@mui/material";
-import { Order, Product, ProductsEntity } from "../../../../../types";
-import { numberWithCommas } from "../../../../../utils/dataConverter";
+} from '@mui/material'
+import { Order, Product, ProductsEntity } from '../../../../../types'
+import { numberWithCommas } from '../../../../../utils/dataConverter'
 
 interface Props {
-  open: boolean;
-  handleState: () => void;
-  order: Order;
-  handleDelivered: (id: string) => void;
+  open: boolean
+  handleState: () => void
+  order?: Order
+  handleDelivered: (id: string) => void
 }
 
 export function EditOrderModal({
@@ -27,22 +27,22 @@ export function EditOrderModal({
 }: Props) {
   return (
     <Dialog open={open} onClose={handleState}>
-      <DialogTitle style={{ textAlign: "center" }}>جزئیات سفارش</DialogTitle>
+      <DialogTitle style={{ textAlign: 'center' }}>جزئیات سفارش</DialogTitle>
       <DialogContent>
         {order?.products?.map((item: ProductsEntity) => {
-          const product = item.product as Product;
+          const product = item.product as Product
           return (
             <Card
               key={product._id}
               sx={{
-                display: "flex",
+                display: 'flex',
                 marginBottom: 2,
-                backgroundColor: "whitesmoke",
-                color: "black",
+                backgroundColor: 'whitesmoke',
+                color: 'black',
               }}
             >
               <CardMedia
-                component="img"
+                component='img'
                 sx={{ width: 170 }}
                 image={`http://${
                   product.images ? product.images[0] : product.thumbnail
@@ -50,55 +50,58 @@ export function EditOrderModal({
                 alt={product.name}
               />
               <CardContent>
-                <Typography variant="h6">{product.name}</Typography>
+                <Typography variant='h6'>{product.name}</Typography>
                 <Typography>تعداد: {item.count}</Typography>
                 <Typography>
                   مجموع قیمت: {numberWithCommas(product.price * item.count)}
                 </Typography>
               </CardContent>
             </Card>
-          );
+          )
         })}
-        <div className="flex flex-col">
-          <div className="flex justify-between items-center">
-            <Typography variant="h6">مجموع کل سفارش: تومان</Typography>
-            <Typography variant="h5">
-              {numberWithCommas(order?.totalPrice)}
+        <div className='flex flex-col'>
+          <div className='flex items-center justify-between'>
+            <Typography variant='h6'>مجموع کل سفارش: تومان</Typography>
+            <Typography variant='h5'>
+              {numberWithCommas(order?.totalPrice as number)}
             </Typography>
           </div>
-          <div className="flex justify-between items-center">
+          <div className='flex items-center justify-between'>
             <Typography>زمان ثبت سفارش:</Typography>
             <Typography>
-              {new Date(order?.createdAt).toLocaleDateString("fa-IR")}
+              {new Date(order?.createdAt as string).toLocaleDateString('fa-IR')}
             </Typography>
           </div>
-          <div className="flex justify-between items-center">
+          <div className='flex items-center justify-between'>
             <Typography>زمان تحویل:</Typography>
             <Typography>
-              {order?.updatedAt > order?.deliveryDate
-                ? new Date(order?.updatedAt).toLocaleDateString("fa-IR")
-                : new Date(order?.deliveryDate).toLocaleDateString("fa-IR")}
+              {order?.updatedAt && order?.deliveryDate
+                ? new Date(order.updatedAt).toLocaleDateString('fa-IR') >
+                  new Date(order.deliveryDate).toLocaleDateString('fa-IR')
+                  ? new Date(order.updatedAt).toLocaleDateString('fa-IR')
+                  : new Date(order.deliveryDate).toLocaleDateString('fa-IR')
+                : 'N/A'}{' '}
             </Typography>
           </div>
-          <div className="flex justify-between items-center">
+          <div className='flex items-center justify-between'>
             <Typography>وضعیت سفارش:</Typography>
             <Typography>
-              {order?.deliveryStatus ? "در حال تحویل" : "تحویل شده"}
+              {order?.deliveryStatus ? 'در حال تحویل' : 'تحویل شده'}
             </Typography>
           </div>
         </div>
       </DialogContent>
-      <DialogActions style={{ justifyContent: "center" }}>
+      <DialogActions style={{ justifyContent: 'center' }}>
         {order?.deliveryStatus === true ? (
           <Button
             onClick={() => handleDelivered(order?._id)}
             style={{
-              backgroundColor: "skyblue",
-              color: "black",
-              fontSize: "18px",
-              fontWeight: "bold",
-              paddingRight: "24px",
-              paddingLeft: "24px",
+              backgroundColor: 'skyblue',
+              color: 'black',
+              fontSize: '18px',
+              fontWeight: 'bold',
+              paddingRight: '24px',
+              paddingLeft: '24px',
             }}
           >
             تحویل شد
@@ -107,12 +110,12 @@ export function EditOrderModal({
           <Button
             onClick={handleState}
             style={{
-              backgroundColor: "springgreen",
-              color: "black",
-              fontSize: "18px",
-              fontWeight: "bold",
-              paddingRight: "24px",
-              paddingLeft: "24px",
+              backgroundColor: 'springgreen',
+              color: 'black',
+              fontSize: '18px',
+              fontWeight: 'bold',
+              paddingRight: '24px',
+              paddingLeft: '24px',
             }}
           >
             بستن
@@ -120,5 +123,5 @@ export function EditOrderModal({
         )}
       </DialogActions>
     </Dialog>
-  );
+  )
 }

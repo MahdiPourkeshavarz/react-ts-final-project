@@ -76,10 +76,10 @@ export function ProductsPage() {
   }
 
   const editMutation = useMutation({
-    mutationFn: product => editProduct(product, productToEdit?._id),
+    mutationFn: (product: FormData) => editProduct(product, productToEdit?._id),
   })
 
-  function handleEditProduct(data: any) {
+  function handleEditProduct(data: FormData) {
     editMutation.mutate(data)
   }
 
@@ -174,12 +174,21 @@ export function ProductsPage() {
             {data?.data?.products?.map(product => (
               <tr key={product._id} className='pr-3 hover:bg-[#bcc3c921]'>
                 <td>
-                  <img
-                    className='mr-3 rounded-lg'
-                    width='50px'
-                    src={`http://${product.images[0]}`}
-                    alt='_'
-                  />
+                  {product.images && product.images.length > 0 ? (
+                    <img
+                      className='mr-3 rounded-lg'
+                      width='50px'
+                      src={`http://${product.images[0]}`}
+                      alt={product.name} // Better to use a descriptive alt text
+                    />
+                  ) : (
+                    <img
+                      className='mr-3 rounded-lg'
+                      width='50px'
+                      src='/path/to/default/image.png' // Fallback image
+                      alt='Default product image'
+                    />
+                  )}
                 </td>
                 <td className='pr-3'>{product.name}</td>
                 <td className='px-3 py-4'>
@@ -197,7 +206,7 @@ export function ProductsPage() {
                     onClick={() => {
                       setDeleteItem({
                         name: product.name,
-                        id: product._id,
+                        id: product._id as string,
                       })
                       handleModalState()
                     }}

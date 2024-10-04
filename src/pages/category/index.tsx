@@ -1,14 +1,15 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { useLoaderData, useSearchParams } from 'react-router-dom'
 import { ProductCard } from '../../components/productCard'
 import { API_ROUTES } from '../../constants'
 import { httpRequest } from '../../lib/axiosConfig'
 import { TAllProductsResponse, TResponseGetAllCategories } from '../../types'
 import { useGetData } from '../../hooks/useGetAction'
-import { useEffect, useState } from 'react'
+import { SetStateAction, useEffect, useState } from 'react'
 
 export function CategoryPage() {
-  const categoryId = useLoaderData()
-  const [searchParams, setSearchParams] = useSearchParams()
+  const categoryId = useLoaderData() as string
+  const [searchParams] = useSearchParams()
 
   const [currentPage, setCurrentPage] = useState(searchParams.get('page') || 1)
 
@@ -31,7 +32,7 @@ export function CategoryPage() {
     setEndpoint(`${API_ROUTES.PRODUCT_BASE}?${queryParams.toString()}`)
   }, [currentPage, categoryId])
 
-  function handlePageChange(page) {
+  function handlePageChange(page: SetStateAction<string | number>) {
     setCurrentPage(page)
   }
 
@@ -57,7 +58,7 @@ export function CategoryPage() {
         ))}
       </div>
       <div className='mt-8 flex justify-center'>
-        {Array.from({ length: data?.total_pages }, (_, index) => (
+        {Array.from({ length: data?.total_pages ?? 2 }, (_, index) => (
           <button
             key={index}
             className={`mx-1 px-4 py-2 ${
@@ -77,8 +78,14 @@ export function CategoryPage() {
   )
 }
 
+interface TParams {
+  categoryName?: string
+}
+
 export async function Categoryloader({
   params,
+}: {
+  params: TParams
 }): Promise<TResponseGetAllCategories> {
   const categoryName = params.categoryName
   try {

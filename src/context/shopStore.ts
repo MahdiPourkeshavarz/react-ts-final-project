@@ -54,11 +54,13 @@ export const useStore = create<StoreState>(
       removeItem: _id =>
         set(state => {
           const itemToRemove = state.items.find(i => i._id === _id)
+          if (!itemToRemove) return state
+
+          const newCartQuantity = state.cartQuantity - itemToRemove.quantity
+
           return {
             items: state.items.filter(i => i._id !== _id),
-            cartQuantity: itemToRemove
-              ? state.cartQuantity - itemToRemove.quantity
-              : state.cartQuantity,
+            cartQuantity: newCartQuantity < 0 ? 0 : newCartQuantity,
           }
         }),
 

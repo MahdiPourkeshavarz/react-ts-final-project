@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { useLoaderData, useSearchParams } from 'react-router-dom'
 import { TAllProductsResponse, TResponseGetAllSubCategories } from '../../types'
 import { API_ROUTES } from '../../constants'
@@ -7,9 +8,9 @@ import { ProductCard } from '../../components/productCard'
 import { useEffect, useState } from 'react'
 
 export function SubCategoryPage() {
-  const subcategoryId = useLoaderData()
+  const subcategoryId = useLoaderData() as string
 
-  const [searchParams, setSearchParams] = useSearchParams()
+  const [searchParams] = useSearchParams()
 
   const [currentPage, setCurrentPage] = useState(searchParams.get('page') || 1)
 
@@ -32,7 +33,7 @@ export function SubCategoryPage() {
     setEndpoint(`${API_ROUTES.PRODUCT_BASE}?${queryParams.toString()}`)
   }, [currentPage, subcategoryId])
 
-  function handlePageChange(page) {
+  function handlePageChange(page: number) {
     setCurrentPage(page)
   }
 
@@ -61,7 +62,7 @@ export function SubCategoryPage() {
           ))}
       </div>
       <div className='mt-8 flex justify-center'>
-        {Array.from({ length: data?.total_pages }, (_, index) => (
+        {Array.from({ length: data?.total_pages ?? 2 }, (_, index: number) => (
           <button
             key={index}
             className={`mx-1 px-4 py-2 ${
@@ -81,8 +82,14 @@ export function SubCategoryPage() {
   )
 }
 
+interface TParams {
+  categoryName?: string
+}
+
 export async function loader({
   params,
+}: {
+  params: TParams
 }): Promise<TResponseGetAllSubCategories> {
   const subcategoryName = params.categoryName
   try {

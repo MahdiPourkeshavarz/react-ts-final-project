@@ -184,12 +184,21 @@ export function InventoryPage() {
             {data?.data?.products?.map(product => (
               <tr key={product._id} className='hover:bg-[#bcc3c921]'>
                 <td>
-                  <img
-                    className='mr-3 rounded-lg'
-                    width='50px'
-                    src={`http://${product.images[0]}`}
-                    alt='_'
-                  />
+                  {product.images && product.images.length > 0 ? (
+                    <img
+                      className='mr-3 rounded-lg'
+                      width='50px'
+                      src={`http://${product.images[0]}`}
+                      alt={product.name} // Better to use a descriptive alt text
+                    />
+                  ) : (
+                    <img
+                      className='mr-3 rounded-lg'
+                      width='50px'
+                      src='/path/to/default/image.png' // Fallback image
+                      alt='Default product image'
+                    />
+                  )}
                 </td>
                 <td className='px-3 py-4'>{product.name}</td>
                 <td

@@ -6,6 +6,7 @@ import {
   MenuItem,
   InputLabel,
   FormControl,
+  SelectChangeEvent,
 } from '@mui/material'
 import { httpRequest } from '../../../../lib/axiosConfig'
 import { API_ROUTES } from '../../../../constants'
@@ -26,8 +27,6 @@ const Products = () => {
     brand: '',
     discount: '',
     description: '',
-    thumbnail: null,
-    images: [],
   })
 
   const [subEndpoint, setSubEndpoint] = useState(API_ROUTES.SUBCATEGORIES_BASE)
@@ -77,8 +76,6 @@ const Products = () => {
         brand: '',
         discount: '',
         description: '',
-        thumbnail: null,
-        images: [],
       })
       setSelectedCategory('')
       setSelectedSubcategory('')
@@ -181,7 +178,7 @@ const Products = () => {
             }
           />
           <label
-            for='thumbnail'
+            htmlFor='thumbnail'
             className='flex cursor-pointer items-center gap-3 rounded-3xl border border-dashed border-gray-300 bg-gray-300 p-4'
           >
             <div className='mx-auto space-y-2'>
@@ -196,13 +193,10 @@ const Products = () => {
               name='thumbnail'
               accept='png, jpg'
               hidden
-              onChange={e =>
-                setProductData({ ...productData, thumbnail: e.target.files[0] })
-              }
             />
           </label>
           <label
-            for='images'
+            htmlFor='images'
             className='flex cursor-pointer items-center gap-3 rounded-3xl border border-dashed border-gray-300 bg-gray-300 p-2'
           >
             <div className='mx-auto space-y-1'>
@@ -218,12 +212,6 @@ const Products = () => {
               accept='png, jpg'
               multiple
               hidden
-              onChange={e =>
-                setProductData({
-                  ...productData,
-                  images: Array.from(e.target.files),
-                })
-              }
             />
           </label>
         </div>
