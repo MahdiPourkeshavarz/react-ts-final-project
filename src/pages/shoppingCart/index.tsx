@@ -51,12 +51,15 @@ export function ShoppingCart() {
                     min='1'
                     value={item.quantity}
                     onChange={e =>
-                      handleAdjustQuantity(item._id, Number(e.target.value))
+                      handleAdjustQuantity(
+                        item._id as string,
+                        Number(e.target.value),
+                      )
                     }
                     className='w-16 rounded-lg border border-gray-300 py-1 text-center outline-none dark:text-black'
                   />
                   <button
-                    onClick={() => handleRemoveItem(item._id)}
+                    onClick={() => handleRemoveItem(item._id as string)}
                     className='pr-6 text-red-500 transition-colors duration-300 hover:text-red-600'
                   >
                     حذف

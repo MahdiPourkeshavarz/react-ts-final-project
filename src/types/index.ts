@@ -12,7 +12,7 @@ export interface CartState {
 }
 
 export interface CartProduct {
-  _id: string
+  _id: string | undefined
   quantity: number
   imgSrc: string
   name: string
@@ -209,7 +209,7 @@ export type TAllProductsResponse = {
   data: GetAllProductsData
 }
 export interface GetAllProductsData {
-  products?: GeneralProductsEntity[] | null
+  products?: GeneralProductsEntity[]
 }
 
 export interface GeneralProductsEntity {
@@ -224,7 +224,7 @@ export interface GeneralProductsEntity {
   discount: number
   description: string
   thumbnail: string
-  images?: string[] | null
+  images?: string[] | null | undefined
   createdAt: string
   updatedAt: string
   slugname: string

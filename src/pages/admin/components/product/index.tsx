@@ -6,6 +6,7 @@ import {
   MenuItem,
   InputLabel,
   FormControl,
+  SelectChangeEvent,
 } from '@mui/material'
 import { httpRequest } from '../../../../lib/axiosConfig'
 import { API_ROUTES } from '../../../../constants'
@@ -181,7 +182,7 @@ const Products = () => {
             }
           />
           <label
-            for='thumbnail'
+            htmlFor='thumbnail'
             className='flex cursor-pointer items-center gap-3 rounded-3xl border border-dashed border-gray-300 bg-gray-300 p-4'
           >
             <div className='mx-auto space-y-2'>
@@ -202,7 +203,7 @@ const Products = () => {
             />
           </label>
           <label
-            for='images'
+            htmlFor='images'
             className='flex cursor-pointer items-center gap-3 rounded-3xl border border-dashed border-gray-300 bg-gray-300 p-2'
           >
             <div className='mx-auto space-y-1'>

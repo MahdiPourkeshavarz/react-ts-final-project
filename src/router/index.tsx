@@ -76,7 +76,7 @@ const router = createBrowserRouter([
             path: '/home/:categoryName/:subcategoryName',
             element: <SubCategoryPage />,
             loader: subcategoryLoader,
-          }
+          },
         ],
       },
       {
@@ -102,7 +102,10 @@ const router = createBrowserRouter([
 
 export default function AppRoute() {
   const { theme } = useStore()
-  const muiTheme = useMemo(() => defaultTheme(theme), [theme])
+  const muiTheme = useMemo(
+    () => defaultTheme(theme as 'light' | 'dark'),
+    [theme],
+  )
 
   return (
     <>
