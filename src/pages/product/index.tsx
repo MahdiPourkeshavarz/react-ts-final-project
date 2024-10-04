@@ -1,23 +1,25 @@
-import { Link, useLoaderData } from 'react-router-dom'
+import { Link, LoaderFunctionArgs, useLoaderData } from 'react-router-dom'
 import { API_ROUTES } from '../../constants'
 import { httpRequest } from '../../lib/axiosConfig'
-import { TAllProductsResponse } from '../../types'
+import { GeneralProductsEntity, TAllProductsResponse } from '../../types'
 import { numberWithCommas } from '../../utils/dataConverter'
 import { useState } from 'react'
 import { QuantitySelector } from './components/quantitySelector'
 import { useStore } from '../../context/shopStore'
 
 export function ProductPage() {
-  const product = useLoaderData()
+  const product = useLoaderData() as GeneralProductsEntity
   const [selectedImageIndex, setSelectedImageIndex] = useState(0)
   const [isCartExpanded, setCartIsExpanded] = useState(false)
   const { cartQuantity, removeItem, addItem } = useStore()
 
-  const store = JSON.parse(localStorage.getItem('shop-storage'))
+  const store = JSON.parse(localStorage.getItem('shop-storage') as string)
 
-  const item = store.state.items.filter(item => item._id === product._id)
+  const item = store.state.items.filter(
+    (item: { _id: string | undefined }) => item._id === product._id,
+  )
 
-  const [itemQuantity, setItemQuantity] = useState(item[0]?.quantity | 0)
+  const [itemQuantity] = useState(item[0]?.quantity | 0)
 
   const [isAdded, setIsAdded] = useState(itemQuantity ? true : false)
 
@@ -25,16 +27,17 @@ export function ProductPage() {
     return <div className='min-h-screen p-6 text-center'>Product not found</div>
   }
 
-  const imagesWithProtocol = product?.images.map(img => {
-    if (!img.startsWith('http')) {
-      return `http://${img}`
-    }
-    return img
-  })
+  const imagesWithProtocol =
+    product.images?.map(img => {
+      if (img && !img.startsWith('http')) {
+        return `http://${img}`
+      }
+      return img
+    }) || []
 
   function handleDeleteProduct() {
     setIsAdded(false)
-    removeItem(product?._id)
+    removeItem(product?._id as string)
   }
 
   return (
@@ -161,15 +164,17 @@ export function ProductPage() {
   )
 }
 
-export async function loader({ params }): Promise<TAllProductsResponse | null> {
-  const productName = params.productName
+export async function loader({
+  params,
+}: LoaderFunctionArgs): Promise<TAllProductsResponse | null> {
+  const productName = params.productName // This should match the route param
   try {
     const response = await httpRequest.get(
       API_ROUTES.PRODUCT_BASE + '?name=' + productName,
     )
-    return response.data.data.products[0] || null // Return null if no product is found
+    return response.data.data.products[0]
   } catch (e) {
-    console.error('Error fetching product:', e) //More informative error logging
-    return null //Return null on error
+    console.error('Error fetching product:', e)
+    return null
   }
 }

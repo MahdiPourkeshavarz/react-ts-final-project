@@ -5,7 +5,7 @@ import { GeneralProductsEntity } from '../../../../types'
 interface QuantityProps {
   initialValue?: number
   handleRemove: () => void
-  productId: GeneralProductsEntity
+  product: GeneralProductsEntity
 }
 
 export function QuantitySelector({
@@ -19,7 +19,7 @@ export function QuantitySelector({
 
   function increment() {
     setValue(prevValue => prevValue + 1)
-    updateItem(product?._id, {
+    updateItem(product?._id as string, {
       quantity: value + 1,
     })
   }
@@ -30,7 +30,7 @@ export function QuantitySelector({
       return
     }
     setValue(prevValue => (prevValue > 0 ? prevValue - 1 : 0))
-    updateItem(product?._id, {
+    updateItem(product?._id as string, {
       quantity: value - 1,
     })
   }

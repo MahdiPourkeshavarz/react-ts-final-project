@@ -87,8 +87,9 @@ export function DataTable({ selected }: TableProps) {
       {selected !== 'سفارش ها' ? (
         <div className='flex items-center justify-between px-3 py-3'>
           <select
+            dir='rtl'
             className={
-              'w-40 rounded-lg bg-slate-200 px-2 py-1 dark:bg-slate-900 dark:text-blue-500'
+              'w-40 rounded-lg bg-slate-200 py-1 dark:bg-slate-900 dark:text-blue-500'
             }
             name='categoryList'
             id='categoryList'
