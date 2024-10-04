@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Link, LoaderFunctionArgs, useLoaderData } from 'react-router-dom'
 import { API_ROUTES } from '../../constants'
 import { httpRequest } from '../../lib/axiosConfig'
@@ -20,7 +19,7 @@ export function ProductPage() {
     (item: { _id: string | undefined }) => item._id === product._id,
   )
 
-  const [itemQuantity, setItemQuantity] = useState(item[0]?.quantity | 0)
+  const [itemQuantity] = useState(item[0]?.quantity | 0)
 
   const [isAdded, setIsAdded] = useState(itemQuantity ? true : false)
 

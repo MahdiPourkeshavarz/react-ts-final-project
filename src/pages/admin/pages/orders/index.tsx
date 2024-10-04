@@ -7,13 +7,6 @@ import { useSearchParams } from 'react-router-dom'
 import { EditOrderModal } from './components/editModal'
 import { useEditOrderMutation } from '../../../../hooks/useEditOrderMutation'
 
-interface Props {
-  open: boolean
-  handleState: () => void
-  order: Order
-  handleDelivered: (id: string) => void
-}
-
 export function OrdersPage() {
   const [page, setPage] = useState(1)
 

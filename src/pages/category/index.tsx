@@ -9,7 +9,7 @@ import { SetStateAction, useEffect, useState } from 'react'
 
 export function CategoryPage() {
   const categoryId = useLoaderData() as string
-  const [searchParams, setSearchParams] = useSearchParams()
+  const [searchParams] = useSearchParams()
 
   const [currentPage, setCurrentPage] = useState(searchParams.get('page') || 1)
 

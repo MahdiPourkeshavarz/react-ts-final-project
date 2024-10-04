@@ -27,8 +27,6 @@ const Products = () => {
     brand: '',
     discount: '',
     description: '',
-    thumbnail: null,
-    images: [],
   })
 
   const [subEndpoint, setSubEndpoint] = useState(API_ROUTES.SUBCATEGORIES_BASE)
@@ -78,8 +76,6 @@ const Products = () => {
         brand: '',
         discount: '',
         description: '',
-        thumbnail: null,
-        images: [],
       })
       setSelectedCategory('')
       setSelectedSubcategory('')
@@ -197,9 +193,6 @@ const Products = () => {
               name='thumbnail'
               accept='png, jpg'
               hidden
-              onChange={e =>
-                setProductData({ ...productData, thumbnail: e.target.files[0] })
-              }
             />
           </label>
           <label
@@ -219,12 +212,6 @@ const Products = () => {
               accept='png, jpg'
               multiple
               hidden
-              onChange={e =>
-                setProductData({
-                  ...productData,
-                  images: Array.from(e.target.files),
-                })
-              }
             />
           </label>
         </div>
