@@ -42,6 +42,7 @@ const Subcategories = () => {
         <Select
           value={selectedCategory}
           onChange={e => setSelectedCategory(e.target.value)}
+          required
         >
           {categoriesList?.data?.categories?.map(
             (category: CategoriesEntity) => (
@@ -58,6 +59,7 @@ const Subcategories = () => {
         variant='outlined'
         value={subcategoryName}
         onChange={e => setSubcategoryName(e.target.value)}
+        required
       />
       <Button
         variant='contained'

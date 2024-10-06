@@ -15,7 +15,7 @@ export function ProductPage() {
 
   const store = JSON.parse(localStorage.getItem('shop-storage') as string)
 
-  const item = store.state.items.filter(
+  const item = store?.state?.items?.filter(
     (item: { _id: string | undefined }) => item._id === product._id,
   )
 
@@ -172,6 +172,7 @@ export async function loader({
     const response = await httpRequest.get(
       API_ROUTES.PRODUCT_BASE + '?name=' + productName,
     )
+    console.log(response.data.data.products[0])
     return response.data.data.products[0]
   } catch (e) {
     console.error('Error fetching product:', e)

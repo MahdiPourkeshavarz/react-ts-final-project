@@ -37,11 +37,13 @@ export function EditModal({
           formData.delete('images')
           formData.delete('thumbnail')
 
-          for (let i = 0; i < images.length; i++) {
-            formData.append('images', images[i])
-          }
+          if (images) {
+            for (let i = 0; i < images.length; i++) {
+              formData.append('images', images[i])
+            }
 
-          formData.append('thumbnail', thumbnail)
+            // formData.append('thumbnail', thumbnail)
+          }
 
           formData.append('category', product?.category?._id as string)
 
@@ -60,9 +62,9 @@ export function EditModal({
         <div className='mx-auto flex flex-col gap-y-4'>
           {product?.images && product?.images.length > 0 ? (
             <img
-              className='mr-3 rounded-lg'
-              width='50px'
-              src={`http://${product.images[1]}`}
+              className='mx-auto rounded-lg'
+              width='100px'
+              src={`http://${product?.images[0]}`}
               alt={product.name} // Better to use a descriptive alt text
             />
           ) : (

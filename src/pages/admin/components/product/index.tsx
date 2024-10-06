@@ -125,6 +125,7 @@ const Products = () => {
             onChange={e =>
               setProductData({ ...productData, name: e.target.value })
             }
+            required
           />
           <TextField
             dir='rtl'
@@ -136,6 +137,7 @@ const Products = () => {
             onChange={e =>
               setProductData({ ...productData, price: e.target.value })
             }
+            required
           />
           <TextField
             label='تعداد'
@@ -146,6 +148,7 @@ const Products = () => {
             onChange={e =>
               setProductData({ ...productData, quantity: e.target.value })
             }
+            required
           />
           <TextField
             label='برند'
@@ -156,6 +159,7 @@ const Products = () => {
             onChange={e =>
               setProductData({ ...productData, brand: e.target.value })
             }
+            required
           />
           <TextField
             label='تخفیف'
@@ -166,6 +170,7 @@ const Products = () => {
             onChange={e =>
               setProductData({ ...productData, discount: e.target.value })
             }
+            required
           />
           <TextField
             label='توضیحات'
@@ -176,6 +181,7 @@ const Products = () => {
             onChange={e =>
               setProductData({ ...productData, description: e.target.value })
             }
+            required
           />
           <label
             htmlFor='thumbnail'
@@ -193,6 +199,7 @@ const Products = () => {
               name='thumbnail'
               accept='png, jpg'
               hidden
+              required
             />
           </label>
           <label
@@ -212,6 +219,7 @@ const Products = () => {
               accept='png, jpg'
               multiple
               hidden
+              required
             />
           </label>
         </div>

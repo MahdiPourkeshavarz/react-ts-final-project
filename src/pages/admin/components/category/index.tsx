@@ -1,34 +1,35 @@
-import { useState } from "react";
-import { TextField, Button } from "@mui/material";
-import { httpRequest } from "../../../../lib/axiosConfig";
-import { API_ROUTES } from "../../../../constants";
+import { useState } from 'react'
+import { TextField, Button } from '@mui/material'
+import { httpRequest } from '../../../../lib/axiosConfig'
+import { API_ROUTES } from '../../../../constants'
 
 const Categories = () => {
-  const [categoryName, setCategoryName] = useState("");
+  const [categoryName, setCategoryName] = useState('')
 
   const handleAddCategory = async () => {
     try {
-      await httpRequest.post(API_ROUTES.CATEGORY_BASE, { name: categoryName });
-      setCategoryName("");
-      alert("Category added successfully!");
+      await httpRequest.post(API_ROUTES.CATEGORY_BASE, { name: categoryName })
+      setCategoryName('')
+      alert('Category added successfully!')
     } catch (error) {
-      console.error("Error adding category:", error);
+      console.error('Error adding category:', error)
     }
-  };
+  }
 
   return (
-    <div className="flex flex-col px-16 gap-y-6 text-center lg:px-36">
+    <div className='flex flex-col gap-y-6 px-16 text-center lg:px-36'>
       <TextField
-        label="نام دسته بندی"
-        variant="outlined"
+        label='نام دسته بندی'
+        variant='outlined'
         value={categoryName}
-        onChange={(e) => setCategoryName(e.target.value)}
+        onChange={e => setCategoryName(e.target.value)}
+        required
       />
-      <Button variant="contained" color="inherit" onClick={handleAddCategory}>
+      <Button variant='contained' color='inherit' onClick={handleAddCategory}>
         اضافه کردن دسته بندی
       </Button>
     </div>
-  );
-};
+  )
+}
 
-export default Categories;
+export default Categories
