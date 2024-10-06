@@ -79,6 +79,8 @@ export interface Token {
   refreshToken: string
 }
 export interface LoginData {
+  data: any
+  token: any
   user: User
 }
 export interface User {
@@ -240,3 +242,20 @@ export type TAllOrderResponse = {
 }
 
 export type TGetData = TAllOrderResponse & TAllProductsResponse
+
+export type TResponseCreatingUser = {
+  status: string
+  data: UserData
+}
+export interface UserData {
+  user: User
+}
+
+export interface AuthForm {
+  username: string
+  password: string
+  firstname: string
+  lastname: string
+  phoneNumber: string
+  address: string
+}
