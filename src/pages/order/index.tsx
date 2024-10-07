@@ -7,6 +7,8 @@ import { useStore } from '../../context/shopStore'
 import { useQuery } from '@tanstack/react-query'
 import { getUserData } from '../../api/getUserData'
 import { numberWithCommas } from '../../utils/dataConverter'
+import { AuthForm } from '../../types'
+import { LoadingSpinner } from '../shoppingCart/components/loadingSpinner'
 
 const schema = yup.object({
   deliveryFirstName: yup.string().required('First name is required'),
@@ -34,13 +36,14 @@ export function OrderPage() {
     setValue,
     formState: { errors },
     watch,
-  } = useForm({
+  } = useForm<AuthForm>({
     resolver: yupResolver(schema),
   })
-  const navigate = useNavigate()
   const { items } = useStore()
 
   const [userId] = useState(localStorage.getItem('user'))
+
+  const [isWaiting, setIsWaiting] = useState(false)
 
   const { data: userData, isLoading } = useQuery({
     queryKey: ['userid'],
@@ -57,9 +60,11 @@ export function OrderPage() {
     }
   }, [userData])
 
-  function onSubmit(data) {
-    console.log(data)
-    navigate('/payment')
+  function onSubmit() {
+    setIsWaiting(true)
+    setTimeout(() => {
+      window.location.href = 'http://localhost:3001/paymentLink'
+    }, 550)
   }
 
   function calculateTotalPrice() {
@@ -274,10 +279,13 @@ export function OrderPage() {
         </div>
 
         <button
-          onClick={handleSubmit(onSubmit)}
-          className='mt-6 w-full rounded-lg bg-blue-600 p-3 text-lg font-semibold text-white transition-colors hover:bg-blue-700'
+          type='submit'
+          className='mt-6 flex w-full justify-center space-x-2 rounded-lg bg-blue-600 py-3 text-lg font-semibold text-white transition-colors hover:bg-blue-700'
+          disabled={isWaiting}
+          onClick={onSubmit}
         >
           برو به صفحه پرداخت
+          {isWaiting && <LoadingSpinner />}
         </button>
       </div>
     </div>

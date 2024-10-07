@@ -2,7 +2,12 @@ import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import * as yup from 'yup'
-import { AuthForm, TResponseLogin } from '../../../../types'
+import {
+  AuthForm,
+  LoginForm,
+  SignUpForm,
+  TResponseLogin,
+} from '../../../../types'
 import { httpRequest } from '../../../../lib/axiosConfig'
 import { API_ROUTES } from '../../../../constants'
 import { useNavigate } from 'react-router-dom'
@@ -13,12 +18,12 @@ interface AuthModalProps {
   onClose: () => void
 }
 
-const loginSchema = yup.object({
+const loginSchema = yup.object().shape({
   username: yup.string().required('نام کاربری الزامی ست'),
   password: yup.string().required('رمز عبور الزامی ست'),
 })
 
-const signupSchema = yup.object({
+const signupSchema = yup.object().shape({
   firstname: yup.string().required('نام الزامی ست'),
   lastname: yup.string().required('نام خوانوادگی الزامی ست'),
   username: yup.string().required('نام کاربری الزامی ست'),
@@ -39,7 +44,7 @@ export function AuthModal({ isOpen, onClose }: AuthModalProps) {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm({
+  } = useForm<AuthForm>({
     resolver: yupResolver(isSignUp ? signupSchema : loginSchema),
   })
 
@@ -61,7 +66,7 @@ export function AuthModal({ isOpen, onClose }: AuthModalProps) {
           password: data.password,
         })) as TResponseLogin
       }
-      if (res.data && res.data.token && res.data && res.data.data.user) {
+      if (res.data && res.data.token && res.data.data.user) {
         localStorage.setItem('accessToken', res.data.token.accessToken)
         localStorage.setItem('refreshToken', res.data.token.refreshToken)
         localStorage.setItem('user', res.data.data.user._id)
@@ -98,19 +103,18 @@ export function AuthModal({ isOpen, onClose }: AuthModalProps) {
             {isSignUp && (
               <>
                 <div>
-                  <label className='block text-sm font-medium'> نام</label>
+                  <label className='block text-sm font-medium'>نام</label>
                   <input
                     type='text'
                     {...register('firstname')}
                     className='w-full rounded border border-gray-300 p-2'
                   />
                   <p className='text-sm text-red-500'>
-                    {errors.firstname?.message}
+                    {errors?.firstname && errors.firstname.message}
                   </p>
                 </div>
                 <div>
                   <label className='block text-sm font-medium'>
-                    {' '}
                     نام خوانوادگی
                   </label>
                   <input
@@ -119,11 +123,12 @@ export function AuthModal({ isOpen, onClose }: AuthModalProps) {
                     className='w-full rounded border border-gray-300 p-2'
                   />
                   <p className='text-sm text-red-500'>
-                    {errors.lastname?.message}
+                    {errors?.lastname && errors.lastname.message}
                   </p>
                 </div>
               </>
             )}
+
             <div>
               <label className='block text-sm font-medium'>نام کاربری</label>
               <input
@@ -131,8 +136,11 @@ export function AuthModal({ isOpen, onClose }: AuthModalProps) {
                 {...register('username')}
                 className='w-full rounded border border-gray-300 p-2'
               />
-              <p className='text-sm text-red-500'>{errors.username?.message}</p>
+              <p className='text-sm text-red-500'>
+                {errors.username && errors.username.message}
+              </p>
             </div>
+
             <div>
               <label className='block text-sm font-medium'>رمز عبور</label>
               <input
@@ -140,8 +148,11 @@ export function AuthModal({ isOpen, onClose }: AuthModalProps) {
                 {...register('password')}
                 className='w-full rounded border border-gray-300 p-2'
               />
-              <p className='text-sm text-red-500'>{errors.password?.message}</p>
+              <p className='text-sm text-red-500'>
+                {errors.password && errors.password.message}
+              </p>
             </div>
+
             {isSignUp && (
               <>
                 <div>
@@ -154,9 +165,10 @@ export function AuthModal({ isOpen, onClose }: AuthModalProps) {
                     className='w-full rounded border border-gray-300 p-2'
                   />
                   <p className='text-sm text-red-500'>
-                    {errors.phoneNumber?.message}
+                    {errors?.phoneNumber && errors.phoneNumber.message}
                   </p>
                 </div>
+
                 <div>
                   <label className='block text-sm font-medium'>آدرس</label>
                   <input
@@ -165,7 +177,7 @@ export function AuthModal({ isOpen, onClose }: AuthModalProps) {
                     className='w-full rounded border border-gray-300 p-2'
                   />
                   <p className='text-sm text-red-500'>
-                    {errors.address?.message}
+                    {errors?.address && errors.address.message}
                   </p>
                 </div>
               </>

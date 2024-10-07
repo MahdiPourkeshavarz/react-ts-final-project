@@ -79,10 +79,14 @@ export interface Token {
   refreshToken: string
 }
 export interface LoginData {
-  data: any
-  token: any
+  data: userData
+  token: Token
+}
+
+export interface userData {
   user: User
 }
+
 export interface User {
   _id: string
   firstname: string
@@ -251,14 +255,19 @@ export interface UserData {
   user: User
 }
 
-export interface AuthForm {
+export interface LoginForm {
   username: string
   password: string
+}
+
+export interface SignUpForm extends LoginForm {
   firstname: string
   lastname: string
   phoneNumber: string
   address: string
 }
+
+export type AuthForm = LoginForm | SignUpForm
 
 export type TResponseGetUser = {
   status: string
