@@ -259,3 +259,11 @@ export interface AuthForm {
   phoneNumber: string
   address: string
 }
+
+export type TResponseGetUser = {
+  status: string
+  data: GetUserData
+}
+export interface GetUserData {
+  user: User
+}
