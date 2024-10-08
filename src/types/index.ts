@@ -9,6 +9,7 @@ export interface CartState {
   addItem: (item: CartProduct) => void
   removeItem: (_id: string) => void
   updateItem: (_id: string, updatedItem: Partial<CartProduct>) => void
+  clearCart: () => void
 }
 
 export interface CartProduct {
@@ -79,8 +80,14 @@ export interface Token {
   refreshToken: string
 }
 export interface LoginData {
+  data: userData
+  token: Token
+}
+
+export interface userData {
   user: User
 }
+
 export interface User {
   _id: string
   firstname: string
@@ -240,3 +247,43 @@ export type TAllOrderResponse = {
 }
 
 export type TGetData = TAllOrderResponse & TAllProductsResponse
+
+export type TResponseCreatingUser = {
+  status: string
+  data: UserData
+}
+export interface UserData {
+  user: User
+}
+
+export interface LoginForm {
+  username: string
+  password: string
+}
+
+export interface SignUpForm extends LoginForm {
+  firstname: string
+  lastname: string
+  phoneNumber: string
+  address: string
+}
+
+export type AuthForm = LoginForm | SignUpForm
+
+export type TResponseGetUser = {
+  status: string
+  data: GetUserData
+}
+export interface GetUserData {
+  user: User
+}
+
+export interface TOrderRequest {
+  user: string
+  products?: OrderProductsEntity[] | null
+  deliveryStatus: boolean
+}
+export interface OrderProductsEntity {
+  product: string
+  count: number
+}

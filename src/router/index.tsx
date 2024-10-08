@@ -8,6 +8,7 @@ import {
   ErrorPage,
   HomePage,
   OrderPage,
+  orderStatusLoader,
   OrderStatusPage,
   ProductPage,
   ShoppingCart,
@@ -93,8 +94,9 @@ const router = createBrowserRouter([
         element: <OrderPage />,
       },
       {
-        path: '/home/cart/order/orderStatus',
+        path: '/home/cart/order/orderStatus/:status',
         element: <OrderStatusPage />,
+        loader: orderStatusLoader,
       },
     ],
   },
