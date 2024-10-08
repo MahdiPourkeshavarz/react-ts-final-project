@@ -32,6 +32,14 @@ export const useStore = create<StoreState>(
       items: [],
       cartQuantity: 0,
 
+      clearCart: () =>
+        set(() => {
+          return {
+            items: [],
+            cartQuantity: 0,
+          }
+        }),
+
       addItem: item =>
         set(state => {
           const existingItem = state.items.find(i => i._id === item._id)
