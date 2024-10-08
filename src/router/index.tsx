@@ -27,7 +27,7 @@ import {
   SubCategoryPage,
 } from '../pages/subcategory'
 import { loader as productLoader } from '../pages/product'
-
+import { Toaster } from 'react-hot-toast'
 const router = createBrowserRouter([
   {
     path: '/',
@@ -36,11 +36,11 @@ const router = createBrowserRouter([
     children: [
       {
         index: true,
-        element: <AuthenticationPage />,
+        element: <HomePage />,
       },
       {
-        path: '/home',
-        element: <HomePage />,
+        path: '/auth',
+        element: <AuthenticationPage />,
       },
       {
         path: '/admin',
@@ -113,6 +113,7 @@ export default function AppRoute() {
     <>
       <ThemeProvider theme={muiTheme}>
         <Rtl>
+          <Toaster />
           <RouterProvider router={router} />
         </Rtl>
       </ThemeProvider>

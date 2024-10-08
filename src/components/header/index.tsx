@@ -33,7 +33,7 @@ export function Header() {
         <Container maxWidth='xl'>
           <Toolbar disableGutters>
             <AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
-            <Link to='/home'>
+            <Link to='/'>
               <Typography
                 variant='h6'
                 noWrap
@@ -81,7 +81,9 @@ export function Header() {
                 sx={{ display: { xs: 'block', md: 'none' } }}
               >
                 <MenuItem onClick={handleCloseNavMenu}>
-                  <Typography sx={{ textAlign: 'center' }}>ورود</Typography>
+                  <Typography sx={{ textAlign: 'center' }}>
+                    ورود به پنل ادمین
+                  </Typography>
                 </MenuItem>
                 <MenuItem onClick={handleCloseNavMenu}>
                   <Typography sx={{ textAlign: 'center' }}>فروشگاه</Typography>
@@ -89,7 +91,7 @@ export function Header() {
               </Menu>
             </Box>
             <AdbIcon sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} />
-            <Link to='/home'>
+            <Link to='/'>
               <Typography
                 variant='h5'
                 noWrap
@@ -115,10 +117,10 @@ export function Header() {
                   onClick={handleCloseNavMenu}
                   sx={{ my: 2, display: 'block' }}
                 >
-                  ورود
+                  ورود به پنل ادمین
                 </Button>
               </Link>
-              <Link to='/home'>
+              <Link to='/'>
                 <Button
                   onClick={handleCloseNavMenu}
                   sx={{ my: 2, display: 'block' }}
