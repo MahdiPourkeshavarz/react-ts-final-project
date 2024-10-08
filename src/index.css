@@ -48,3 +48,29 @@ input[type='number'] {
 .animate-pulse {
   animation: pulse 1.5s ease-in-out infinite;
 }
+
+.product-page {
+  background-size: 70%; /* 100% - 30% = 70% */
+  background-position: center; /*Keeps image centered*/
+  background-repeat: no-repeat; /* Prevents image repetition */
+}
+
+.cart-item-price {
+  font-size: 1.2rem;
+  font-weight: 500;
+  color: #666;
+  margin-top: 5px;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-spin {
+  animation: spin 1s linear infinite;
+}

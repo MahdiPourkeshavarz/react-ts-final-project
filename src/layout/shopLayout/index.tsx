@@ -18,12 +18,14 @@ import {
   FunnelIcon,
   MinusIcon,
   PlusIcon,
-  Squares2X2Icon,
 } from '@heroicons/react/20/solid'
-import { useStore } from '../../context/shopStore'
 import { API_ROUTES } from '../../constants'
 import { useGetData } from '../../hooks/useGetAction'
-import { TResponseGetAllCategories } from '../../types'
+import {
+  Subcategory,
+  TResponseGetAllCategories,
+  TResponseGetAllSubCategories,
+} from '../../types'
 import { httpRequest } from '../../lib/axiosConfig'
 
 const sortOptions = [
@@ -31,20 +33,18 @@ const sortOptions = [
   { name: 'بیشترین قیمت', href: '#', current: false },
 ]
 
-function classNames(...classes) {
+function classNames(...classes: (string | undefined | null)[]): string {
   return classes.filter(Boolean).join(' ')
 }
 
 export function ShopLayout() {
-  const { theme } = useStore()
-
   const { categoryName } = useParams()
 
   const [name, setName] = useState(categoryName)
 
   const [selectedCategory, setSelectedCategory] = useState('')
 
-  const [subcategoryList, setSubcategoryList] = useState()
+  const [subcategoryList, setSubcategoryList] = useState<Subcategory[]>([])
 
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false)
 
@@ -81,37 +81,41 @@ export function ShopLayout() {
     }
   }
 
-  async function getSubcategoryList() {
+  async function getSubcategoryList(): Promise<
+    TResponseGetAllSubCategories | undefined
+  > {
     try {
       const response = await httpRequest.get(
         `${API_ROUTES.SUBCATEGORIES_BASE}?category=${selectedCategory}`,
       )
       setSubcategoryList(response.data.data.subcategories)
+      return response.data.data.subcategories
     } catch (e) {
       console.log(e)
+      return undefined
     }
   }
 
   return (
     <div
-      className={`${theme === 'dark' ? 'bg-slate-950 text-slate-100' : 'bg-slate-100 text-slate-900'}`}
+      className={`bg-slate-100 text-slate-900 dark:bg-slate-950 dark:text-slate-100`}
     >
       <div>
         {/* Mobile filter dialog */}
         <Dialog
           open={mobileFiltersOpen}
           onClose={setMobileFiltersOpen}
-          className='relative z-40 lg:hidden'
+          className='relative z-40 lg:hidden dark:bg-slate-900'
         >
           <DialogBackdrop
             transition
-            className={`fixed inset-0 ${theme === 'dark' ? 'bg-slate-950 text-slate-100' : 'bg-slate-100 text-slate-900'} bg-opacity-45 transition-opacity duration-300 ease-linear data-[closed]:opacity-0`}
+            className={`fixed inset-0 bg-slate-100 bg-opacity-45 text-slate-900 transition-opacity duration-300 ease-linear data-[closed]:opacity-0 dark:bg-slate-900 dark:text-slate-100`}
           />
 
           <div className='fixed inset-0 z-40 flex'>
             <DialogPanel
               transition
-              className='relative ml-auto flex h-full w-full max-w-xs transform flex-col overflow-y-auto bg-white py-4 pb-12 shadow-xl transition duration-300 ease-in-out data-[closed]:translate-x-full'
+              className='relative ml-auto flex h-full w-full max-w-xs transform flex-col overflow-y-auto bg-white py-4 pb-12 shadow-xl transition duration-300 ease-in-out data-[closed]:translate-x-full dark:bg-slate-900 dark:text-white'
             >
               <div className='flex items-center justify-between px-4'>
                 <h2 className='text-lg font-medium'>Filters</h2>
@@ -126,11 +130,11 @@ export function ShopLayout() {
               </div>
 
               {/* Filters */}
-              <form className='mt-4 border-t border-gray-200'>
-                <h3 className='sr-only'>Categories</h3>
+              <form className='mt-4 border-t border-gray-200 dark:text-white'>
+                <h3 className='sr-only dark:text-white'>Categories</h3>
                 <ul role='list' className='px-2 py-3 font-medium'>
                   {subcategoryList ? (
-                    subcategoryList.map(sub => (
+                    subcategoryList.map((sub: Subcategory) => (
                       <li key={sub.name}>
                         <Link
                           to={`/home/${encodeURIComponent(sub.name)}/${categoryName}`}
@@ -159,8 +163,8 @@ export function ShopLayout() {
                   className='border-t border-gray-200 px-4 py-6'
                 >
                   <h3 className='-mx-2 -my-3 flow-root'>
-                    <DisclosureButton className='group flex w-full items-center justify-between bg-inherit px-2 py-3 text-gray-400 hover:text-gray-500'>
-                      <span className='font-medium text-gray-900'>
+                    <DisclosureButton className='group flex w-full items-center justify-between bg-inherit px-2 py-3 text-gray-400 hover:text-gray-500 dark:text-white'>
+                      <span className='font-medium text-gray-900 dark:text-white'>
                         دسته بندی
                       </span>
                       <span className='ml-6 flex items-center'>
@@ -177,31 +181,29 @@ export function ShopLayout() {
                   </h3>
                   <DisclosurePanel className='pt-6'>
                     <div className='space-x-2 space-y-6'>
-                      {categoriesList?.data?.categories?.map(
-                        (category, optionIdx) => (
-                          <Link
-                            to={`/home/${category.name}`}
-                            key={category._id}
-                            className='flex items-center'
+                      {categoriesList?.data?.categories?.map(category => (
+                        <Link
+                          to={`/home/${category.name}`}
+                          key={category._id}
+                          className='flex items-center'
+                        >
+                          <input
+                            checked={selectedCategory === category._id}
+                            onChange={() => setSelectedCategory(category._id)}
+                            id={category._id}
+                            name='category'
+                            type='radio'
+                            className='h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500'
+                          />
+                          <label
+                            htmlFor='category'
+                            className='ml-2 min-w-0 flex-1 text-gray-500 dark:text-gray-300'
                           >
-                            <input
-                              checked={selectedCategory === category._id}
-                              onChange={() => setSelectedCategory(category._id)}
-                              id={category._id}
-                              name='category'
-                              type='radio'
-                              className='h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500'
-                            />
-                            <label
-                              htmlFor='category'
-                              className='ml-2 min-w-0 flex-1 text-gray-500'
-                            >
-                              {'  '}
-                              {category.name}
-                            </label>
-                          </Link>
-                        ),
-                      )}
+                            {'  '}
+                            {category.name}
+                          </label>
+                        </Link>
+                      ))}
                     </div>
                   </DisclosurePanel>
                 </Disclosure>
@@ -217,7 +219,7 @@ export function ShopLayout() {
             <div className='flex items-center'>
               <Menu as='div' className='relative inline-block text-left'>
                 <div>
-                  <MenuButton className='group inline-flex justify-center text-sm font-medium hover:text-gray-900'>
+                  <MenuButton className='group inline-flex justify-center text-sm font-medium'>
                     Sort
                     <ChevronDownIcon
                       aria-hidden='true'
@@ -230,7 +232,7 @@ export function ShopLayout() {
                   transition
                   className='absolute left-0 z-10 mt-2 w-40 origin-top-right rounded-md bg-inherit shadow-2xl ring-1 ring-black ring-opacity-5 transition focus:outline-none data-[closed]:scale-95 data-[closed]:transform data-[closed]:opacity-0 data-[enter]:duration-100 data-[leave]:duration-75 data-[enter]:ease-out data-[leave]:ease-in'
                 >
-                  <div className='py-1'>
+                  <div className='bg-slate-200 py-1 dark:bg-slate-600'>
                     {sortOptions.map(option => (
                       <MenuItem key={option.name}>
                         <a
@@ -238,7 +240,7 @@ export function ShopLayout() {
                           className={classNames(
                             option.current
                               ? 'font-medium text-gray-900'
-                              : 'text-gray-500',
+                              : 'text-gray-500 dark:text-white',
                             'block px-4 py-2 text-sm data-[focus]:bg-gray-100',
                           )}
                         >
@@ -249,14 +251,6 @@ export function ShopLayout() {
                   </div>
                 </MenuItems>
               </Menu>
-
-              <button
-                type='button'
-                className='-m-2 ml-5 p-2 text-gray-400 hover:text-gray-500 sm:ml-7'
-              >
-                <span className='sr-only'>View grid</span>
-                <Squares2X2Icon aria-hidden='true' className='h-5 w-5' />
-              </button>
               <button
                 type='button'
                 onClick={() => setMobileFiltersOpen(true)}
@@ -279,7 +273,7 @@ export function ShopLayout() {
                 <h3 className='sr-only'>Categories</h3>
                 <ul
                   role='list'
-                  className='space-y-4 border-b border-gray-200 pb-6 text-sm font-medium text-gray-900'
+                  className='space-y-4 border-b border-gray-200 pb-6 text-sm font-medium text-gray-900 dark:text-white'
                 >
                   {subcategoryList ? (
                     subcategoryList.map(sub => (
@@ -308,10 +302,8 @@ export function ShopLayout() {
 
                 <Disclosure as='div' className='border-b border-gray-200 py-6'>
                   <h3 className='-my-3 flow-root'>
-                    <DisclosureButton className='group flex w-full items-center justify-between bg-white py-3 text-sm text-gray-400 hover:text-gray-500'>
-                      <span className='font-medium text-gray-900'>
-                        دسته بندی
-                      </span>
+                    <DisclosureButton className='group flex w-full items-center justify-between bg-white py-3 text-sm text-gray-400 hover:text-gray-500 dark:bg-slate-900 dark:text-white'>
+                      <span className='font-medium'>دسته بندی</span>
                       <span className='ml-6 flex items-center'>
                         <PlusIcon
                           aria-hidden='true'
@@ -326,32 +318,30 @@ export function ShopLayout() {
                   </h3>
                   <DisclosurePanel className='pt-6'>
                     <div className='space-y-4'>
-                      {categoriesList?.data?.categories?.map(
-                        (category, optionIdx) => (
-                          <Link
-                            to={`/home/${category.name}`}
-                            key={category._id}
-                            className='flex items-center'
-                            onClick={() => setSelectedCategory('')}
+                      {categoriesList?.data?.categories?.map(category => (
+                        <Link
+                          to={`/home/${category.name}`}
+                          key={category._id}
+                          className='flex items-center'
+                          onClick={() => setSelectedCategory('')}
+                        >
+                          <input
+                            checked={selectedCategory === category._id}
+                            onChange={() => setSelectedCategory(category._id)}
+                            id={category._id}
+                            name='category'
+                            type='radio'
+                            className='h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500'
+                          />
+                          <label
+                            htmlFor='category'
+                            className='ml-2 min-w-0 flex-1 text-gray-600 dark:text-gray-300'
                           >
-                            <input
-                              checked={selectedCategory === category._id}
-                              onChange={() => setSelectedCategory(category._id)}
-                              id={category._id}
-                              name='category'
-                              type='radio'
-                              className='h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500'
-                            />
-                            <label
-                              htmlFor='category'
-                              className='ml-2 min-w-0 flex-1 text-gray-500'
-                            >
-                              {'  '}
-                              {category.name}
-                            </label>
-                          </Link>
-                        ),
-                      )}
+                            {'  '}
+                            {category.name}
+                          </label>
+                        </Link>
+                      ))}
                     </div>
                   </DisclosurePanel>
                 </Disclosure>

@@ -4,12 +4,20 @@ export interface ThemeState {
 }
 
 export interface CartState {
-  items: Product[]
+  items: CartProduct[]
   cartQuantity: number
-  addItem: (item: Product) => void
-  removeItem: (name: string) => void
-  updateItem: (name: string, updatedItem: Partial<Product>) => void
-  adjustQuantity: (name: string, quantity: number) => void
+  addItem: (item: CartProduct) => void
+  removeItem: (_id: string) => void
+  updateItem: (_id: string, updatedItem: Partial<CartProduct>) => void
+  clearCart: () => void
+}
+
+export interface CartProduct {
+  _id: string | undefined
+  quantity: number
+  imgSrc: string
+  name: string
+  price: number
 }
 
 export interface ResponseProduct {
@@ -72,8 +80,14 @@ export interface Token {
   refreshToken: string
 }
 export interface LoginData {
+  data: userData
+  token: Token
+}
+
+export interface userData {
   user: User
 }
+
 export interface User {
   _id: string
   firstname: string
@@ -202,7 +216,7 @@ export type TAllProductsResponse = {
   data: GetAllProductsData
 }
 export interface GetAllProductsData {
-  products?: GeneralProductsEntity[] | null
+  products?: GeneralProductsEntity[]
 }
 
 export interface GeneralProductsEntity {
@@ -217,7 +231,7 @@ export interface GeneralProductsEntity {
   discount: number
   description: string
   thumbnail: string
-  images?: string[] | null
+  images?: string[] | null | undefined
   createdAt: string
   updatedAt: string
   slugname: string
@@ -233,3 +247,43 @@ export type TAllOrderResponse = {
 }
 
 export type TGetData = TAllOrderResponse & TAllProductsResponse
+
+export type TResponseCreatingUser = {
+  status: string
+  data: UserData
+}
+export interface UserData {
+  user: User
+}
+
+export interface LoginForm {
+  username: string
+  password: string
+}
+
+export interface SignUpForm extends LoginForm {
+  firstname: string
+  lastname: string
+  phoneNumber: string
+  address: string
+}
+
+export type AuthForm = LoginForm | SignUpForm
+
+export type TResponseGetUser = {
+  status: string
+  data: GetUserData
+}
+export interface GetUserData {
+  user: User
+}
+
+export interface TOrderRequest {
+  user: string
+  products?: OrderProductsEntity[] | null
+  deliveryStatus: boolean
+}
+export interface OrderProductsEntity {
+  product: string
+  count: number
+}

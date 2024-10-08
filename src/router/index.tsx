@@ -3,11 +3,12 @@ import { Layout } from '../layout'
 import {
   AdminPage,
   AuthenticationPage,
+  Categoryloader,
   CategoryPage,
   ErrorPage,
   HomePage,
-  loader as categoryLoader,
   OrderPage,
+  orderStatusLoader,
   OrderStatusPage,
   ProductPage,
   ShoppingCart,
@@ -25,6 +26,7 @@ import {
   loader as subcategoryLoader,
   SubCategoryPage,
 } from '../pages/subcategory'
+import { loader as productLoader } from '../pages/product'
 
 const router = createBrowserRouter([
   {
@@ -69,7 +71,7 @@ const router = createBrowserRouter([
           {
             index: true,
             element: <CategoryPage />,
-            loader: categoryLoader,
+            loader: Categoryloader,
           },
           {
             path: '/home/:categoryName/:subcategoryName',
@@ -79,8 +81,9 @@ const router = createBrowserRouter([
         ],
       },
       {
-        path: '/home/:productId',
+        path: '/home/:categoryName/:subcategoryName/:productName',
         element: <ProductPage />,
+        loader: productLoader,
       },
       {
         path: '/home/cart',
@@ -91,8 +94,9 @@ const router = createBrowserRouter([
         element: <OrderPage />,
       },
       {
-        path: '/home/cart/order/orderStatus',
+        path: '/home/cart/order/orderStatus/:status',
         element: <OrderStatusPage />,
+        loader: orderStatusLoader,
       },
     ],
   },
@@ -100,7 +104,10 @@ const router = createBrowserRouter([
 
 export default function AppRoute() {
   const { theme } = useStore()
-  const muiTheme = useMemo(() => defaultTheme(theme), [theme])
+  const muiTheme = useMemo(
+    () => defaultTheme(theme as 'light' | 'dark'),
+    [theme],
+  )
 
   return (
     <>

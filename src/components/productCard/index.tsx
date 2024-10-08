@@ -7,18 +7,23 @@ interface props {
 }
 
 export function ProductCard({ product }: props) {
+  const imageUrl =
+    product.images && product.images[0]
+      ? `http://${product.images[0]}`
+      : '/placeholder-image.jpg'
+
   return (
     <Link
-      to={`/home/${product?.name}/${product?.subcategory?.name}/${product?.category?.name}`}
+      to={`/home/${product?.category?.name}/${product?.subcategory?.name}/${product?.name}`}
       role='listitem'
-      className='mx-auto flex max-w-sm transform flex-col items-center rounded-lg bg-white bg-opacity-75 px-12 py-3 shadow-lg transition-transform duration-300 hover:scale-105 hover:shadow-2xl'
+      className='mx-auto flex max-w-sm transform flex-col items-center rounded-lg bg-slate-50 bg-opacity-75 px-12 py-3 shadow-lg transition-transform duration-300 hover:scale-105 hover:shadow-2xl dark:bg-slate-900'
     >
       <div>
         <img
           loading='lazy'
           width='240'
-          alt={product?.name}
-          src={`http://${product?.images[0]}`}
+          alt='img'
+          src={imageUrl}
           className='rounded-lg'
         />
       </div>
@@ -28,7 +33,9 @@ export function ProductCard({ product }: props) {
       <div className='mt-2 flex w-full justify-between px-2'>
         <div className='flex items-center'>
           <img src='/delivery.png' width='20px' alt='ارسال امروز' />
-          <p className='mr-2 text-neutral-600'>ارسال امروز</p>
+          <p className='mr-2 text-neutral-500 dark:text-neutral-200'>
+            ارسال امروز
+          </p>
         </div>
         <div className='flex items-center'>
           <img src='/star.png' alt='Rating' width='20px' className='pb-1' />
