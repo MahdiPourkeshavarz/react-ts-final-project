@@ -2,10 +2,14 @@ import { useState } from 'react'
 import { useStore } from '../../context/shopStore'
 import { numberWithCommas } from '../../utils/dataConverter'
 import { AuthModal } from './components/authModal'
+import { useNavigate } from 'react-router-dom'
 
 export function ShoppingCart() {
   const { items, cartQuantity, removeItem, updateItem } = useStore()
   const [isModalOpen, setIsModalOpen] = useState(false)
+
+  const navigate = useNavigate()
+
   const handleAdjustQuantity = (id: string, quantity: number) => {
     updateItem(id, { quantity })
   }
@@ -23,7 +27,7 @@ export function ShoppingCart() {
     if (!token) {
       setIsModalOpen(true)
     } else {
-      alert('Proceed to Checkout')
+      navigate('/home/cart/order')
     }
   }
 
@@ -80,7 +84,7 @@ export function ShoppingCart() {
             ))}
           </ul>
 
-          <div className='mt-10 flex flex-col justify-center px-52'>
+          <div className='mt-10 flex flex-col justify-center px-16'>
             <div className='flex justify-between'>
               <p className='mb-6 text-xl text-gray-800 dark:text-white'>
                 تعداد اغلام شما:

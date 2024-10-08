@@ -9,6 +9,7 @@ export interface CartState {
   addItem: (item: CartProduct) => void
   removeItem: (_id: string) => void
   updateItem: (_id: string, updatedItem: Partial<CartProduct>) => void
+  clearCart: () => void
 }
 
 export interface CartProduct {
@@ -275,4 +276,14 @@ export type TResponseGetUser = {
 }
 export interface GetUserData {
   user: User
+}
+
+export interface TOrderRequest {
+  user: string
+  products?: OrderProductsEntity[] | null
+  deliveryStatus: boolean
+}
+export interface OrderProductsEntity {
+  product: string
+  count: number
 }
