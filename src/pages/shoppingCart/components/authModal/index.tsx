@@ -2,16 +2,11 @@ import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import * as yup from 'yup'
-import {
-  AuthForm,
-  LoginForm,
-  SignUpForm,
-  TResponseLogin,
-} from '../../../../types'
+import { AuthForm, TResponseLogin } from '../../../../types'
 import { httpRequest } from '../../../../lib/axiosConfig'
 import { API_ROUTES } from '../../../../constants'
 import { useNavigate } from 'react-router-dom'
-import { LoadingSpinner } from '../loadingSpinner'
+import { LoadingSpinner } from '../../../../components/loadingSpinner'
 
 interface AuthModalProps {
   isOpen: boolean

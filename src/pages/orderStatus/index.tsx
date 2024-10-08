@@ -2,7 +2,7 @@ import { useLoaderData } from 'react-router-dom'
 import { useNavigate } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 import { useStore } from '../../context/shopStore'
-import { LoadingSpinner } from '../shoppingCart/components/loadingSpinner'
+import { LoadingSpinner } from '../../components/loadingSpinner'
 import { TOrderRequest } from '../../types'
 import { createOrder } from '../../api/createOrder'
 

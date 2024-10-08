@@ -8,7 +8,7 @@ import { useQuery } from '@tanstack/react-query'
 import { getUserData } from '../../api/getUserData'
 import { numberWithCommas } from '../../utils/dataConverter'
 import { AuthForm } from '../../types'
-import { LoadingSpinner } from '../shoppingCart/components/loadingSpinner'
+import { LoadingSpinner } from '../../components/loadingSpinner'
 
 const schema = yup.object({
   deliveryFirstName: yup.string().required('First name is required'),
