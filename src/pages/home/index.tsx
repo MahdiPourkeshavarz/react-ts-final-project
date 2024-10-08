@@ -7,12 +7,34 @@ import { AboutUs } from './components/aboutUs'
 import { Footer } from './components/footer'
 import { Link } from 'react-router-dom'
 import { useStore } from '../../context/shopStore'
+import { HomepageProductCard } from './components/homePageProductCard'
+import { useQuery } from '@tanstack/react-query'
+import { API_ROUTES } from '../../constants'
+import { TAllProductsResponse } from '../../types'
+import { getData } from '../../api/getData'
 
 export function HomePage() {
-  localStorage.setItem('theme', 'light')
   const [isSupportExpanded, setSupportIsExpanded] = useState(false)
   const [isCartExpanded, setCartIsExpanded] = useState(false)
   const { cartQuantity } = useStore()
+
+  const { data, isLoading } = useQuery<Partial<TAllProductsResponse>>({
+    queryKey: ['smartwatch'],
+    queryFn: () =>
+      getData(
+        `${API_ROUTES.PRODUCT_BASE}?category=66df2144e7276341e8446f0f&page=1&limit=4`,
+      ),
+  })
+
+  const { data: speakersData, isLoading: isSpeakersLoading } = useQuery<
+    Partial<TAllProductsResponse>
+  >({
+    queryKey: ['speaker'],
+    queryFn: () =>
+      getData(
+        `${API_ROUTES.PRODUCT_BASE}?category=66e6e3de2f617c79b38c292e&page=1&limit=4`,
+      ),
+  })
 
   return (
     <div className='myContainer flex flex-col gap-y-8 px-5 py-8 pb-[200px] text-slate-800 dark:text-white'>
@@ -81,7 +103,7 @@ export function HomePage() {
           میتونی از اینجا یه نگاه سریع بهشون بندازی.
         </p>
       </div>
-      <div className='ml-4 flex gap-x-5 overflow-x-auto whitespace-nowrap scrollbar-hide'>
+      <div className='ml-4 flex gap-x-5 overflow-x-auto whitespace-nowrap py-3 scrollbar-hide'>
         <PosterCardItem
           link='http://localhost:5173/home/%D8%B3%D8%A7%D8%B9%D8%AA%20%D9%87%D9%88%D8%B4%D9%85%D9%86%D8%AF/%D9%88%D8%B1%D8%B2%D8%B4%DB%8C/%D8%A7%D9%BE%D9%84%20%D9%88%D8%A7%DA%86%20%D8%B3%D8%B1%DB%8C%209'
           imgSrc='/smartwatch-poster-re.png'
@@ -106,6 +128,25 @@ export function HomePage() {
 
       <div className='pt-6'>
         <p className='text-lg'>
+          <span className='text-xl font-semibold'>بهترین ساعت های هوشمند</span>{' '}
+          رو میتونی از اینجا یه نگاه سریع بهشون بندازی.
+        </p>
+      </div>
+      {!isLoading ? (
+        <div className='overflow-x-auto whitespace-nowrap px-1 py-3 scrollbar-hide'>
+          {data &&
+            data?.data?.products?.map(product => (
+              <div className='inline-flex'>
+                <HomepageProductCard product={product} />
+              </div>
+            ))}
+        </div>
+      ) : (
+        <></>
+      )}
+
+      <div className='pt-6'>
+        <p className='text-lg'>
           <span className='text-xl font-semibold'>تفاوت ها</span> رو اینجا رقم
           میزنیم و رضایت شما هدف اول ماست.
         </p>
@@ -127,6 +168,25 @@ export function HomePage() {
           />
         </div>
       </div>
+
+      <div className='pt-6'>
+        <p className='text-lg'>
+          <span className='text-xl font-semibold'>بهترین بلندگو ها</span> رو
+          میتونی از اینجا یه نگاه سریع بهشون بندازی.
+        </p>
+      </div>
+      {!isSpeakersLoading ? (
+        <div className='overflow-x-auto whitespace-nowrap px-1 py-3 scrollbar-hide'>
+          {speakersData &&
+            speakersData?.data?.products?.map(product => (
+              <div className='inline-flex'>
+                <HomepageProductCard product={product} />
+              </div>
+            ))}
+        </div>
+      ) : (
+        <></>
+      )}
 
       <div className='pt-6'>
         <p className='text-lg'>

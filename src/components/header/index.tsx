@@ -80,14 +80,20 @@ export function Header() {
                 onClose={handleCloseNavMenu}
                 sx={{ display: { xs: 'block', md: 'none' } }}
               >
-                <MenuItem onClick={handleCloseNavMenu}>
-                  <Typography sx={{ textAlign: 'center' }}>
-                    ورود به پنل ادمین
-                  </Typography>
-                </MenuItem>
-                <MenuItem onClick={handleCloseNavMenu}>
-                  <Typography sx={{ textAlign: 'center' }}>فروشگاه</Typography>
-                </MenuItem>
+                <Link to='/auth'>
+                  <MenuItem onClick={handleCloseNavMenu}>
+                    <Typography sx={{ textAlign: 'center' }}>
+                      پنل ادمین
+                    </Typography>
+                  </MenuItem>
+                </Link>
+                <Link to='/'>
+                  <MenuItem onClick={handleCloseNavMenu}>
+                    <Typography sx={{ textAlign: 'center' }}>
+                      فروشگاه
+                    </Typography>
+                  </MenuItem>
+                </Link>
               </Menu>
             </Box>
             <AdbIcon sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} />
@@ -117,7 +123,7 @@ export function Header() {
                   onClick={handleCloseNavMenu}
                   sx={{ my: 2, display: 'block' }}
                 >
-                  ورود به پنل ادمین
+                  پنل ادمین
                 </Button>
               </Link>
               <Link to='/'>

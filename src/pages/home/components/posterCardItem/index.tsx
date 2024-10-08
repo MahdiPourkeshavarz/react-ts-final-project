@@ -9,7 +9,10 @@ interface props {
 export function PosterCardItem({ imgSrc, title, link }: props): JSX.Element {
   return (
     <>
-      <Link to={link} className='relative flex min-w-max shadow-xl'>
+      <Link
+        to={link}
+        className='relative flex min-w-max shadow-md dark:bg-slate-900'
+      >
         <p className='absolute right-16 top-6 text-lg font-medium'>{title}</p>
         <button className='absolute right-24 top-16 z-50 mt-2 flex gap-x-2 rounded-lg border-none bg-slate-50 px-4 py-1 text-lg font-semibold text-blue-500'>
           خرید
