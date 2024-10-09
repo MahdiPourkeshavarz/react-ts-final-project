@@ -15,12 +15,14 @@ export function QuantitySelector({
 }: QuantityProps) {
   const [value, setValue] = useState(initialValue)
   const { updateItem } = useStore()
-  console.log(value)
 
   function increment() {
-    setValue(prevValue => prevValue + 1)
-    updateItem(product?._id as string, {
-      quantity: value + 1,
+    setValue(prevValue => {
+      const newValue = prevValue + 1
+      updateItem(product?._id as string, {
+        quantity: newValue,
+      })
+      return newValue
     })
   }
 
@@ -29,9 +31,12 @@ export function QuantitySelector({
       handleRemove()
       return
     }
-    setValue(prevValue => (prevValue > 0 ? prevValue - 1 : 0))
-    updateItem(product?._id as string, {
-      quantity: value - 1,
+    setValue(prevValue => {
+      const newValue = prevValue > 0 ? prevValue - 1 : 0
+      updateItem(product?._id as string, {
+        quantity: newValue,
+      })
+      return newValue
     })
   }
 

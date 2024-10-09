@@ -41,7 +41,7 @@ export function EditModal({
             formData.append('images', images[i])
           }
 
-          formData.append('thumbnail', thumbnail)
+          // formData.append('thumbnail', thumbnail)
 
           formData.append('category', product?.category?._id as string)
 
@@ -62,7 +62,7 @@ export function EditModal({
             <img
               className='mr-3 rounded-lg'
               width='50px'
-              src={`http://${product.images[1]}`}
+              src={`http://${product.images[0]}`}
               alt={product.name} // Better to use a descriptive alt text
             />
           ) : (

@@ -105,9 +105,9 @@ export function HomePage() {
       </div>
       <div className='ml-4 flex gap-x-5 overflow-x-auto whitespace-nowrap py-3 scrollbar-hide'>
         <PosterCardItem
-          link='http://localhost:5173/home/%D8%B3%D8%A7%D8%B9%D8%AA%20%D9%87%D9%88%D8%B4%D9%85%D9%86%D8%AF/%D9%88%D8%B1%D8%B2%D8%B4%DB%8C/%D8%A7%D9%BE%D9%84%20%D9%88%D8%A7%DA%86%20%D8%B3%D8%B1%DB%8C%209'
+          link='http://localhost:5173/home/%D8%B3%D8%A7%D8%B9%D8%AA%20%D9%87%D9%88%D8%B4%D9%85%D9%86%D8%AF/%D9%88%D8%B1%D8%B2%D8%B4%DB%8C/%D8%A7%D9%BE%D9%84%20%D9%88%D8%A7%DA%86%20%D8%B3%D8%B1%DB%8C%2010'
           imgSrc='/smartwatch-poster-re.png'
-          title='ساعت هوشمند اپل سری 9'
+          title='اپل واچ سری 10'
         />
         <PosterCardItem
           link='http://localhost:5173/home/%D9%87%D8%AF%D9%81%D9%88%D9%86/%D8%A8%DB%8C%20%D8%B3%DB%8C%D9%85/%D8%A8%D9%88%D8%B2%20%D9%85%D8%AF%D9%84%20Ultra%20Open%20EarBuds'
