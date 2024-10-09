@@ -58,21 +58,22 @@ export function CategoryPage() {
         ))}
       </div>
       <div className='mt-8 flex justify-center'>
-        {Array.from({ length: data?.total_pages ?? 2 }, (_, index) => (
-          <button
-            key={index}
-            className={`mx-1 px-4 py-2 ${
-              currentPage === index + 1
-                ? 'bg-blue-600 text-white'
-                : 'bg-white text-blue-600'
-            } rounded-full border border-blue-600`}
-            onClick={() => {
-              handlePageChange(index + 1)
-            }}
-          >
-            {index + 1}
-          </button>
-        ))}
+        {!isLoading &&
+          Array.from({ length: data?.total_pages ?? 2 }, (_, index) => (
+            <button
+              key={index}
+              className={`mx-1 px-4 py-2 ${
+                currentPage === index + 1
+                  ? 'bg-blue-600 text-white'
+                  : 'bg-white text-blue-600'
+              } rounded-full border border-blue-600`}
+              onClick={() => {
+                handlePageChange(index + 1)
+              }}
+            >
+              {index + 1}
+            </button>
+          ))}
       </div>
     </>
   )
