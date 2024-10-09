@@ -27,10 +27,11 @@ import {
   TResponseGetAllSubCategories,
 } from '../../types'
 import { httpRequest } from '../../lib/axiosConfig'
+import { useStore } from '../../context/shopStore'
 
 const sortOptions = [
-  { name: 'کمترین قیمت', href: '#', current: false },
-  { name: 'بیشترین قیمت', href: '#', current: false },
+  { name: 'کمترین قیمت', href: 'price', current: false },
+  { name: 'بیشترین قیمت', href: '-price', current: false },
 ]
 
 function classNames(...classes: (string | undefined | null)[]): string {
@@ -47,6 +48,8 @@ export function ShopLayout() {
   const [subcategoryList, setSubcategoryList] = useState<Subcategory[]>([])
 
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false)
+
+  const { setSortOption } = useStore()
 
   const { data: categoriesList } = useGetData<TResponseGetAllCategories>(
     API_ROUTES.CATEGORY_BASE,
@@ -220,7 +223,7 @@ export function ShopLayout() {
               <Menu as='div' className='relative inline-block text-left'>
                 <div>
                   <MenuButton className='group inline-flex justify-center text-sm font-medium'>
-                    Sort
+                    فیلتر
                     <ChevronDownIcon
                       aria-hidden='true'
                       className='-mr-1 ml-1 h-5 w-5 flex-shrink-0 group-hover:text-gray-500'
@@ -235,17 +238,21 @@ export function ShopLayout() {
                   <div className='bg-slate-200 py-1 dark:bg-slate-600'>
                     {sortOptions.map(option => (
                       <MenuItem key={option.name}>
-                        <a
-                          href={option.href}
+                        <button
+                          id={option.name}
                           className={classNames(
                             option.current
                               ? 'font-medium text-gray-900'
                               : 'text-gray-500 dark:text-white',
-                            'block px-4 py-2 text-sm data-[focus]:bg-gray-100',
+                            'block px-4 py-2 text-right text-sm data-[focus]:bg-gray-100',
                           )}
+                          onClick={() => {
+                            setSortOption(option.href)
+                            option.current = true
+                          }}
                         >
                           {option.name}
-                        </a>
+                        </button>
                       </MenuItem>
                     ))}
                   </div>
@@ -358,9 +365,3 @@ export function ShopLayout() {
     </div>
   )
 }
-
-// const { data: singleBlogPost } = useQuery({
-//   queryKey: ["single-blog-post", userId, params.slug],
-//   queryFn: () => getOneBlogPost(params.slug, userId!),
-//   enabled: !!userId,
-// });

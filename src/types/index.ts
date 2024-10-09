@@ -10,6 +10,8 @@ export interface CartState {
   removeItem: (_id: string) => void
   updateItem: (_id: string, updatedItem: Partial<CartProduct>) => void
   clearCart: () => void
+  sort: string
+  setSortOption: (option: string) => void
 }
 
 export interface CartProduct {

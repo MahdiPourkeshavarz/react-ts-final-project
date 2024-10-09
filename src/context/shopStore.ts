@@ -29,6 +29,13 @@ export const useStore = create<StoreState>(
         })
       },
 
+      sort: '',
+
+      setSortOption: (option: string) =>
+        set(() => ({
+          sort: option,
+        })),
+
       items: [],
       cartQuantity: 0,
 

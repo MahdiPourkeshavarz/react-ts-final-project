@@ -1,23 +1,34 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { useLoaderData, useSearchParams } from 'react-router-dom'
 import { ProductCard } from '../../components/productCard'
 import { API_ROUTES } from '../../constants'
 import { httpRequest } from '../../lib/axiosConfig'
 import { TAllProductsResponse, TResponseGetAllCategories } from '../../types'
 import { useGetData } from '../../hooks/useGetAction'
-import { SetStateAction, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
+import { useStore } from '../../context/shopStore'
 
 export function CategoryPage() {
   const categoryId = useLoaderData() as string
-  const [searchParams] = useSearchParams()
+  const [searchParams, setSearchParams] = useSearchParams()
+  const { sort } = useStore()
 
-  const [currentPage, setCurrentPage] = useState(searchParams.get('page') || 1)
+  const [currentPage, setCurrentPage] = useState<number>(
+    Number(searchParams.get('page')) || 1,
+  )
+
+  const [sortOption, setSortOption] = useState(sort || '')
 
   const [endpoint, setEndpoint] = useState(
-    API_ROUTES.PRODUCT_BASE + '?category=' + categoryId,
+    `${API_ROUTES.PRODUCT_BASE}?category=${categoryId}`,
   )
 
   const { data, isLoading } = useGetData<TAllProductsResponse>(endpoint)
+
+  useEffect(() => {
+    if (sort) {
+      setSortOption(sort)
+    }
+  }, [sort])
 
   useEffect(() => {
     const queryParams = new URLSearchParams()
@@ -25,14 +36,19 @@ export function CategoryPage() {
     if (categoryId) {
       queryParams.append('category', categoryId)
     }
-
     queryParams.set('page', currentPage.toString())
     queryParams.set('limit', '7')
 
-    setEndpoint(`${API_ROUTES.PRODUCT_BASE}?${queryParams.toString()}`)
-  }, [currentPage, categoryId])
+    if (sortOption) {
+      queryParams.set('sort', sortOption)
+    }
 
-  function handlePageChange(page: SetStateAction<string | number>) {
+    setSearchParams(queryParams)
+
+    setEndpoint(`${API_ROUTES.PRODUCT_BASE}?${queryParams.toString()}`)
+  }, [currentPage, categoryId, sortOption, setSearchParams])
+
+  function handlePageChange(page: number) {
     setCurrentPage(page)
   }
 
