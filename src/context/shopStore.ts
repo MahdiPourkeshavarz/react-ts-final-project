@@ -29,6 +29,12 @@ export const useStore = create<StoreState>(
         })
       },
 
+      activeNav: '',
+      setActiveNav: (link: string) =>
+        set(() => ({
+          activeNav: link,
+        })),
+
       sort: '',
 
       setSortOption: (option: string) =>

@@ -63,13 +63,64 @@ export function OrdersPage() {
     setPage(1)
   }
 
-  function handlePageChange(increment: number) {
-    if (page == data?.total_pages) {
-      return
-    } else if (page === 1 && increment === -1) {
-      return
+  function handlePageChange(page: number) {
+    setPage(page)
+  }
+
+  const generatePaginationButtons = (totalPages: number) => {
+    const visiblePages = 5
+    const currentPageIndex = page - 1
+    let startPage = Math.max(0, currentPageIndex - Math.floor(visiblePages / 2))
+    let endPage = Math.min(totalPages - 1, startPage + visiblePages - 1)
+
+    if (startPage < 0) {
+      endPage = Math.min(totalPages - 1, visiblePages - 1)
+      startPage = 0
     }
-    setPage(prev => Math.max(1, prev + increment))
+    if (endPage >= totalPages) {
+      startPage = Math.max(0, totalPages - visiblePages)
+      endPage = totalPages - 1
+    }
+
+    const buttons = []
+
+    if (startPage > 0) {
+      buttons.push(
+        <button
+          key='...'
+          className='mx-1 rounded-full border border-blue-600 bg-white px-4 py-2 text-blue-600'
+        >
+          ...
+        </button>,
+      )
+    }
+
+    for (let i = startPage; i <= endPage; i++) {
+      buttons.push(
+        <button
+          key={i + 1}
+          className={`ml-4 px-4 py-2 ${
+            page === i + 1 ? 'bg-blue-600 text-white' : 'bg-white text-blue-600'
+          } rounded-full border border-blue-600`}
+          onClick={() => handlePageChange(i + 1)}
+        >
+          {i + 1}
+        </button>,
+      )
+    }
+
+    if (endPage < totalPages - 1) {
+      buttons.push(
+        <button
+          key='...'
+          className='mx-1 rounded-full border border-blue-600 bg-white px-4 py-2 text-blue-600'
+        >
+          ...
+        </button>,
+      )
+    }
+
+    return buttons
   }
 
   return (
@@ -95,20 +146,18 @@ export function OrdersPage() {
         </select>
       </div>
       <div className='relative'>
-        <table
-          className={`min-w-full rounded-lg bg-slate-200 text-slate-700 dark:bg-slate-800 dark:text-blue-400`}
-        >
+        <table className='min-w-full rounded-lg bg-white text-gray-900 shadow-lg dark:bg-gray-900 dark:text-gray-200'>
           <thead>
-            <tr>
-              <th className='py-3 pr-3 text-right'>سفارش دهنده</th>
-              <th className='py-3 pr-3 text-right'>تاریخ ثبت</th>
-              <th className='py-3 pr-3 text-right'>تاریخ تحویل</th>
-              <th className='py-3 pr-3 text-right'>جمع کل</th>
-              <th className='py-3 pr-3 text-right'>عملیات ها</th>
+            <tr className='bg-gray-100 text-sm font-medium text-gray-500 dark:bg-gray-800 dark:text-gray-300'>
+              <th className='px-6 py-4 text-right'>سفارش دهنده</th>
+              <th className='px-6 py-4 text-right'>تاریخ ثبت</th>
+              <th className='px-6 py-4 text-right'>تاریخ تحویل</th>
+              <th className='px-6 py-4 text-right'>جمع کل</th>
+              <th className='px-6 py-4 text-right'>عملیات ها</th>
             </tr>
           </thead>
           {isLoading && (
-            <div className='absolute inset-0 flex items-center justify-center bg-opacity-50'>
+            <div className='absolute inset-0 flex items-center justify-center bg-opacity-50 py-20'>
               <div
                 className='text-surface inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-current border-e-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite] dark:text-white'
                 role='status'
@@ -119,28 +168,32 @@ export function OrdersPage() {
               </div>
             </div>
           )}
-          <tbody className='h-20'>
+          <tbody className='h-32'>
             {data?.data?.orders?.map(order => (
-              <tr key={order._id} className='hover:bg-[#bcc3c921]'>
-                <td className='px-3 py-4'>{order.user.username}</td>
-                <td className='px-3 py-4'>
+              <tr
+                key={order._id}
+                className='border-b border-gray-200 transition-all hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-gray-800'
+              >
+                <td className='px-6 py-4 font-medium'>{order.user.username}</td>
+                <td className='px-6 py-4'>
                   {new Date(order.updatedAt).toLocaleDateString('fa-IR')}
                 </td>
-                <td className='px-3 py-4'>
+                <td className='px-6 py-4'>
                   {new Date(order.createdAt).toLocaleDateString('fa-IR')}
                 </td>
-                <td className='px-3 py-4'>
+                <td className='px-6 py-4'>
                   {numberWithCommas(order.totalPrice)}
                 </td>
-                <td className='px-3 py-4'>
+                <td className='px-6 py-4'>
                   <button
-                    className='ml-3 text-blue-500 hover:underline'
+                    className='rounded text-blue-600 transition-all hover:text-blue-500 focus:ring-2 focus:ring-blue-500'
                     onClick={() => {
                       setOrderToEdit(order)
                       handleModalState()
                     }}
+                    aria-label='Edit order'
                   >
-                    <img width='28px' src='/Edit.png' alt='_' />
+                    <img width='28px' src='/Edit.png' alt='Edit order' />
                   </button>
                 </td>
               </tr>
@@ -148,19 +201,8 @@ export function OrdersPage() {
           </tbody>
         </table>
       </div>
-      <div className='mt-4 flex justify-between px-3'>
-        <button
-          className='rounded bg-blue-500 px-4 py-2 text-white shadow hover:bg-blue-600'
-          onClick={() => handlePageChange(+1)}
-        >
-          بعدی
-        </button>
-        <button
-          className='rounded bg-blue-500 px-4 py-2 text-white shadow hover:bg-blue-600'
-          onClick={() => handlePageChange(-1)}
-        >
-          قبلی
-        </button>
+      <div className='mt-4 flex justify-center'>
+        {data && generatePaginationButtons(2)}
       </div>
     </div>
   )

@@ -14,9 +14,13 @@ import { DeleteModal } from './components/deleteModal'
 import { EditModal } from './components/editModal'
 import { useMutation } from '@tanstack/react-query'
 import { editProduct } from '../../../../api/editProduct'
+import { useSearchParams } from 'react-router-dom'
 
 export function ProductsPage() {
-  const [page, setPage] = useState(1)
+  const [searchParams, setSearchParams] = useSearchParams()
+  const [currentPage, setCurrentPage] = useState<number>(
+    Number(searchParams.get('page')) || 1,
+  )
   const [categoryId, setcategoryId] = useState('')
   const [subcategoryId, setSubcategoryId] = useState('')
   const [subEndpoint, setSubEndpoint] = useState('')
@@ -62,11 +66,13 @@ export function ProductsPage() {
       queryParams.append('subcategory', subcategoryId)
     }
 
-    queryParams.set('page', page.toString())
+    queryParams.set('page', currentPage.toString())
     queryParams.set('limit', '4')
 
+    setSearchParams(queryParams)
+
     setEndpoint(`${API_ROUTES.PRODUCT_BASE}?${queryParams.toString()}`)
-  }, [page, categoryId, subcategoryId])
+  }, [currentPage, categoryId, subcategoryId])
 
   function handleDeleteProduct() {
     setOpen(false)
@@ -83,13 +89,66 @@ export function ProductsPage() {
     editMutation.mutate(data)
   }
 
-  function handlePageChange(increment: number) {
-    if (page == data?.total_pages) {
-      return
-    } else if (page === 1 && increment === -1) {
-      return
+  function handlePageChange(page: number) {
+    setCurrentPage(page)
+  }
+
+  const generatePaginationButtons = (totalPages: number) => {
+    const visiblePages = 5
+    const currentPageIndex = currentPage - 1
+    let startPage = Math.max(0, currentPageIndex - Math.floor(visiblePages / 2))
+    let endPage = Math.min(totalPages - 1, startPage + visiblePages - 1)
+
+    if (startPage < 0) {
+      endPage = Math.min(totalPages - 1, visiblePages - 1)
+      startPage = 0
     }
-    setPage(prev => Math.max(1, prev + increment))
+    if (endPage >= totalPages) {
+      startPage = Math.max(0, totalPages - visiblePages)
+      endPage = totalPages - 1
+    }
+
+    const buttons = []
+
+    if (startPage > 0) {
+      buttons.push(
+        <button
+          key='...'
+          className='mx-1 rounded-full border border-blue-600 bg-white px-4 py-2 text-blue-600'
+        >
+          ...
+        </button>,
+      )
+    }
+
+    for (let i = startPage; i <= endPage; i++) {
+      buttons.push(
+        <button
+          key={i + 1}
+          className={`ml-4 px-4 py-2 ${
+            currentPage === i + 1
+              ? 'bg-blue-600 text-white'
+              : 'bg-white text-blue-600'
+          } rounded-full border border-blue-600`}
+          onClick={() => handlePageChange(i + 1)}
+        >
+          {i + 1}
+        </button>,
+      )
+    }
+
+    if (endPage < totalPages - 1) {
+      buttons.push(
+        <button
+          key='...'
+          className='mx-1 rounded-full border border-blue-600 bg-white px-4 py-2 text-blue-600'
+        >
+          ...
+        </button>,
+      )
+    }
+
+    return buttons
   }
 
   return (
@@ -115,7 +174,7 @@ export function ProductsPage() {
             onChange={e => {
               setcategoryId(e.target.value)
               setSubcategoryId('')
-              setPage(1)
+              setCurrentPage(1)
             }}
           >
             <option value=''>دسته بندی</option>
@@ -133,7 +192,7 @@ export function ProductsPage() {
             id='subcategoryList'
             onChange={e => {
               setSubcategoryId(e.target.value)
-              setPage(1)
+              setCurrentPage(1)
             }}
           >
             <option value=''>زیر دسته بندی</option>
@@ -148,61 +207,74 @@ export function ProductsPage() {
         </div>
       </div>
       <div className='relative'>
-        {isLoading && (
-          <div className='absolute inset-0 flex items-center justify-center bg-opacity-50'>
-            <div
-              className='text-surface inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-current border-e-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite] dark:text-white'
-              role='status'
-            >
-              <span className='!absolute !-m-px !h-px !w-px !overflow-hidden !whitespace-nowrap !border-0 !p-0 ![clip:rect(0,0,0,0)]'>
-                Loading...
-              </span>
-            </div>
-          </div>
-        )}
         <table
-          className={`min-w-full rounded-lg bg-slate-200 text-slate-700 dark:bg-slate-800 dark:text-blue-400`}
+          className='min-w-full rounded-lg bg-white text-gray-800 shadow-md dark:bg-gray-900 dark:text-gray-200'
+          style={{ borderSpacing: 0, borderCollapse: 'separate' }}
         >
           <thead>
-            <tr>
-              <th className='py-3 pr-3 text-right'>تصویر</th>
-              <th className='py-3 pr-3 text-right'>نام محصول</th>
-              <th className='py-3 pr-3 text-right'>عملیات ها</th>
+            <tr className='bg-gray-100 dark:bg-gray-800'>
+              <th className='px-6 py-4 text-right text-sm font-medium text-gray-500 dark:text-gray-300'>
+                تصویر
+              </th>
+              <th className='px-6 py-4 text-right text-sm font-medium text-gray-500 dark:text-gray-300'>
+                نام محصول
+              </th>
+              <th className='px-6 py-4 text-right text-sm font-medium text-gray-500 dark:text-gray-300'>
+                عملیات ها
+              </th>
             </tr>
           </thead>
-          <tbody className='h-72'>
+          {isLoading && (
+            <div className='absolute inset-0 flex items-center justify-center bg-opacity-50 py-20'>
+              <div
+                className='text-surface inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-current border-e-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite] dark:text-white'
+                role='status'
+              >
+                <span className='!absolute !-m-px !h-px !w-px !overflow-hidden !whitespace-nowrap !border-0 !p-0 text-slate-500 ![clip:rect(0,0,0,0)]'>
+                  Loading...
+                </span>
+              </div>
+            </div>
+          )}
+          <tbody className='h-32'>
             {data?.data?.products?.map(product => (
-              <tr key={product._id} className='pr-3 hover:bg-[#bcc3c921]'>
-                <td>
+              <tr
+                key={product._id}
+                className='border-b border-gray-200 transition-all hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-gray-800'
+              >
+                <td className='px-6 py-4'>
                   {product.images && product.images.length > 0 ? (
                     <img
-                      className='mr-3 rounded-lg'
+                      className='rounded-lg shadow-sm'
                       width='50px'
                       src={`http://${product.images[0]}`}
-                      alt={product.name} // Better to use a descriptive alt text
+                      alt={product.name}
                     />
                   ) : (
                     <img
-                      className='mr-3 rounded-lg'
+                      className='rounded-lg shadow-sm'
                       width='50px'
-                      src='/path/to/default/image.png' // Fallback image
+                      src='/watch.png'
                       alt='Default product image'
                     />
                   )}
                 </td>
-                <td className='pr-3'>{product.name}</td>
-                <td className='px-3 py-4'>
+                <td className='px-6 py-4 text-sm font-medium'>
+                  {product.name}
+                </td>
+                <td className='flex space-x-3 px-6 py-4'>
                   <button
-                    className='ml-3 text-blue-500 hover:underline'
+                    className='text-blue-600 transition-all hover:text-blue-500'
                     onClick={() => {
                       setProductToEdit(product)
                       handleEditModalState()
                     }}
+                    aria-label='Edit product'
                   >
-                    <img width='28px' src='/Edit.png' alt='_' />
+                    <img width='28px' src='/Edit.png' alt='Edit' />
                   </button>
                   <button
-                    className='text-red-500 hover:underline'
+                    className='text-red-600 transition-all hover:text-red-500'
                     onClick={() => {
                       setDeleteItem({
                         name: product.name,
@@ -210,8 +282,9 @@ export function ProductsPage() {
                       })
                       handleModalState()
                     }}
+                    aria-label='Delete product'
                   >
-                    <img width='30px' src='/Delete.png' alt='_' />
+                    <img width='30px' src='/Delete.png' alt='Delete' />
                   </button>
                 </td>
               </tr>
@@ -219,19 +292,8 @@ export function ProductsPage() {
           </tbody>
         </table>
       </div>
-      <div className='mt-4 flex justify-between px-3'>
-        <button
-          className='rounded bg-blue-500 px-4 py-2 text-white shadow hover:bg-blue-600'
-          onClick={() => handlePageChange(+1)}
-        >
-          بعدی
-        </button>
-        <button
-          className='rounded bg-blue-500 px-4 py-2 text-white shadow hover:bg-blue-600'
-          onClick={() => handlePageChange(-1)}
-        >
-          قبلی
-        </button>
+      <div className='mt-4 flex justify-center'>
+        {data && generatePaginationButtons(data?.total_pages as number)}
       </div>
     </div>
   )

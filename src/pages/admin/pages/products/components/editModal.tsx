@@ -60,8 +60,8 @@ export function EditModal({
         <div className='mx-auto flex flex-col gap-y-4'>
           {product?.images && product?.images.length > 0 ? (
             <img
-              className='mr-3 rounded-lg'
-              width='50px'
+              className='mx-auto rounded-lg'
+              width='120px'
               src={`http://${product.images[0]}`}
               alt={product.name} // Better to use a descriptive alt text
             />
