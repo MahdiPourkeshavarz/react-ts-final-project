@@ -64,7 +64,7 @@ export function EditModal({
 
           formData.append('category', product?.category?._id as string)
           formData.append('subcategory', product?.subcategory?._id as string)
-          formData.append('description', description) // Use the CKEditor description
+          formData.append('description', description)
 
           handleEditProduct(formData)
           handleState()
@@ -95,6 +95,7 @@ export function EditModal({
 
           <input
             id='img'
+            required
             name='images'
             accept='image/*'
             type='file'
@@ -110,6 +111,7 @@ export function EditModal({
           id='name'
           name='name'
           label='Name'
+          required
           type='text'
           fullWidth
           variant='standard'
@@ -117,6 +119,7 @@ export function EditModal({
         />
         <TextField
           dir='ltr'
+          required
           margin='dense'
           id='price'
           name='price'
@@ -128,6 +131,7 @@ export function EditModal({
         />
         <TextField
           dir='ltr'
+          required
           margin='dense'
           id='quantity'
           name='quantity'
@@ -139,6 +143,7 @@ export function EditModal({
         />
         <TextField
           margin='dense'
+          required
           id='brand'
           name='brand'
           label='Brand'
@@ -149,6 +154,7 @@ export function EditModal({
         />
         <TextField
           dir='ltr'
+          required
           margin='dense'
           id='discount'
           name='discount'

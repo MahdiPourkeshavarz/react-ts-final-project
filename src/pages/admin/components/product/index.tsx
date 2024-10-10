@@ -141,6 +141,7 @@ const Products = () => {
         <div className='grid grid-cols-2 gap-2 py-6'>
           <TextField
             label='نام محصول'
+            required
             name='name'
             id='name'
             variant='outlined'
@@ -155,6 +156,7 @@ const Products = () => {
             name='price'
             id='price'
             variant='outlined'
+            required
             value={productData.price}
             onChange={e =>
               setProductData({ ...productData, price: e.target.value })
@@ -164,6 +166,7 @@ const Products = () => {
             label='تعداد'
             name='quantity'
             id='quantity'
+            required
             variant='outlined'
             value={productData.quantity}
             onChange={e =>
@@ -173,6 +176,7 @@ const Products = () => {
           <TextField
             label='برند'
             variant='outlined'
+            required
             name='brand'
             id='brand'
             value={productData.brand}
@@ -183,6 +187,7 @@ const Products = () => {
           <TextField
             label='تخفیف'
             name='discount'
+            required
             id='discount'
             variant='outlined'
             value={productData.discount}
