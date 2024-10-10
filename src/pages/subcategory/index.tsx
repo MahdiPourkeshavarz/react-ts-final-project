@@ -6,13 +6,19 @@ import { httpRequest } from '../../lib/axiosConfig'
 import { useGetData } from '../../hooks/useGetAction'
 import { ProductCard } from '../../components/productCard'
 import { useEffect, useState } from 'react'
+import { useStore } from '../../context/shopStore'
 
 export function SubCategoryPage() {
   const subcategoryId = useLoaderData() as string
 
-  const [searchParams] = useSearchParams()
+  const [searchParams, setSearchParams] = useSearchParams()
+  const { sort } = useStore()
 
-  const [currentPage, setCurrentPage] = useState(searchParams.get('page') || 1)
+  const [currentPage, setCurrentPage] = useState<number>(
+    Number(searchParams.get('page')) || 1,
+  )
+
+  const [sortOption, setSortOption] = useState(sort || '')
 
   const [endpoint, setEndpoint] = useState(
     API_ROUTES.PRODUCT_BASE + '?subcategory=' + subcategoryId,
@@ -21,17 +27,28 @@ export function SubCategoryPage() {
   const { data, isLoading } = useGetData<TAllProductsResponse>(endpoint)
 
   useEffect(() => {
+    if (sort) {
+      setSortOption(sort)
+    }
+  }, [sort])
+
+  useEffect(() => {
     const queryParams = new URLSearchParams()
 
     if (subcategoryId) {
       queryParams.append('subcategory', subcategoryId)
     }
-
     queryParams.set('page', currentPage.toString())
     queryParams.set('limit', '7')
 
+    if (sortOption) {
+      queryParams.set('sort', sortOption)
+    }
+
+    setSearchParams(queryParams)
+
     setEndpoint(`${API_ROUTES.PRODUCT_BASE}?${queryParams.toString()}`)
-  }, [currentPage, subcategoryId])
+  }, [currentPage, subcategoryId, sortOption, setSearchParams])
 
   function handlePageChange(page: number) {
     setCurrentPage(page)
@@ -62,21 +79,22 @@ export function SubCategoryPage() {
           ))}
       </div>
       <div className='mt-8 flex justify-center'>
-        {Array.from({ length: data?.total_pages ?? 2 }, (_, index: number) => (
-          <button
-            key={index}
-            className={`mx-1 px-4 py-2 ${
-              currentPage === index + 1
-                ? 'bg-blue-600 text-white'
-                : 'bg-white text-blue-600'
-            } rounded-full border border-blue-600`}
-            onClick={() => {
-              handlePageChange(index + 1)
-            }}
-          >
-            {index + 1}
-          </button>
-        ))}
+        {!isLoading &&
+          Array.from({ length: data?.total_pages ?? 2 }, (_, index: number) => (
+            <button
+              key={index}
+              className={`mx-1 px-4 py-2 ${
+                currentPage === index + 1
+                  ? 'bg-blue-600 text-white'
+                  : 'bg-white text-blue-600'
+              } rounded-full border border-blue-600`}
+              onClick={() => {
+                handlePageChange(index + 1)
+              }}
+            >
+              {index + 1}
+            </button>
+          ))}
       </div>
     </>
   )

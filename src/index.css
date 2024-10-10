@@ -4,7 +4,7 @@
 
 @layer {
   .myContainer {
-    @apply mx-auto max-w-7xl;
+    @apply mx-auto max-w-[1340px];
   }
 }
 
@@ -29,8 +29,15 @@ input[type='number'] {
   display: -webkit-box;
   -webkit-box-orient: vertical;
   overflow: hidden;
-  -webkit-line-clamp: 2; /* Limit to 2 lines */
+  -webkit-line-clamp: 3; /* Limit to 2 lines */
   text-overflow: ellipsis;
+}
+
+.productcard-name {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
 }
 
 @keyframes pulse {

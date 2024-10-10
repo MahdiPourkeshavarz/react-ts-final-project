@@ -10,6 +10,10 @@ export interface CartState {
   removeItem: (_id: string) => void
   updateItem: (_id: string, updatedItem: Partial<CartProduct>) => void
   clearCart: () => void
+  sort: string
+  setSortOption: (option: string) => void
+  activeNav: string
+  setActiveNav: (link: string) => void
 }
 
 export interface CartProduct {
@@ -286,4 +290,12 @@ export interface TOrderRequest {
 export interface OrderProductsEntity {
   product: string
   count: number
+}
+
+export type TResponseEditUser = {
+  status: string
+  data: EditData
+}
+export interface EditData {
+  product: GeneralProductsEntity
 }

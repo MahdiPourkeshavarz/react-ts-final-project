@@ -128,11 +128,15 @@ export function ProductPage() {
               <span> reviews</span>
             </div>
 
-            <p
+            {/* <p
+
+            // >
+            //   {product?.description}
+            // </p> */}
+            <div
               className={`mb-8 text-lg leading-relaxed text-gray-700 dark:text-gray-300`}
-            >
-              {product?.description}
-            </p>
+              dangerouslySetInnerHTML={{ __html: product.description }}
+            />
 
             {!isAdded ? (
               <button

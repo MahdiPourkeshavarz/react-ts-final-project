@@ -1,22 +1,25 @@
-import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { submitUser } from '../../api/getAccess'
 import { AuthformData } from '../../types'
 import { AuthenticationForm } from './components/AuthForm'
+import toast from 'react-hot-toast'
 
 export function AuthenticationPage() {
-  localStorage.setItem('theme', 'light')
-  const [mode, setMode] = useState('login')
   const navigate = useNavigate()
 
-  const toggleMode = () => {
-    setMode(mode === 'login' ? 'signup' : 'login')
-  }
-
   async function onSubmit(data: AuthformData) {
-    const isActionSuccessful = await submitUser(data, mode)
+    const isActionSuccessful = await submitUser(data)
     if (isActionSuccessful) {
-      navigate('/admin')
+      toast.success('ورود به پنل ادمین با موفقیت انجام شد', {
+        position: 'bottom-center',
+      })
+      setTimeout(() => {
+        navigate('/admin')
+      }, 1000)
+    } else {
+      toast.error('خطا در ورود به پنل ادمین. لطفا دوباره تلاش کنید.', {
+        position: 'bottom-center',
+      })
     }
   }
 
@@ -32,26 +35,10 @@ export function AuthenticationPage() {
           >
             <header className='mb-6 text-center'>
               <h1 className='text-2xl font-bold'>به گجت هاب خوش آمدید</h1>
-              <p className='mt-2'>همین امروز به ما بپیوندید!</p>
             </header>
             <section className='form-block h-fit transition-transform duration-500 ease-in-out'>
-              <h2 className='mb-4 text-center text-xl font-semibold'>
-                {mode === 'login' ? 'ورود' : 'ثبت نام'}
-              </h2>
-              <div className='mb-4 text-center'>
-                <span className=''>
-                  {mode === 'login'
-                    ? 'می خواهید حساب ایجاد کنید؟'
-                    : 'آیا قبلا حساب ایجاد کرده اید؟'}
-                  <span
-                    className='cursor-pointer text-blue-500'
-                    onClick={toggleMode}
-                  >
-                    {'  '}ایجا را کلیک کنید
-                  </span>
-                </span>
-              </div>
-              <AuthenticationForm mode={mode} onSubmit={onSubmit} />
+              <h2 className='mb-4 text-center text-xl font-semibold'>ورود</h2>
+              <AuthenticationForm onSubmit={onSubmit} />
             </section>
           </div>
         </div>

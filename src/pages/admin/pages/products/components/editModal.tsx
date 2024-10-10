@@ -1,3 +1,4 @@
+import React, { useState, useEffect } from 'react'
 import {
   Button,
   Dialog,
@@ -6,8 +7,9 @@ import {
   DialogTitle,
   TextField,
 } from '@mui/material'
-
 import { GeneralProductsEntity } from '../../../../../types'
+import { CKEditor } from '@ckeditor/ckeditor5-react'
+import ClassicEditor from '@ckeditor/ckeditor5-build-classic'
 
 interface Props {
   open: boolean
@@ -22,6 +24,26 @@ export function EditModal({
   product,
   handleEditProduct,
 }: Props) {
+  const [imagePreviews, setImagePreviews] = useState<string[]>([])
+  const [description, setDescription] = useState(product?.description || '')
+
+  useEffect(() => {
+    if (product?.images && product?.images.length > 0) {
+      setImagePreviews(product.images.map(img => `http://${img}`))
+    }
+    setDescription(product?.description || '')
+  }, [product])
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files
+    if (files) {
+      const newPreviews = Array.from(files).map(file =>
+        URL.createObjectURL(file),
+      )
+      setImagePreviews(newPreviews)
+    }
+  }
+
   return (
     <Dialog
       open={open}
@@ -33,7 +55,6 @@ export function EditModal({
           const formData = new FormData(event.currentTarget)
 
           const images = event.currentTarget['images'].files
-          const thumbnail = event.currentTarget['thumbnail'].files[0]
           formData.delete('images')
           formData.delete('thumbnail')
 
@@ -41,18 +62,13 @@ export function EditModal({
             for (let i = 0; i < images.length; i++) {
               formData.append('images', images[i])
             }
-
-            // formData.append('thumbnail', thumbnail)
           }
 
           formData.append('category', product?.category?._id as string)
-
           formData.append('subcategory', product?.subcategory?._id as string)
-
-          console.log(formData)
+          formData.append('description', description)
 
           handleEditProduct(formData)
-
           handleState()
         },
       }}
@@ -60,6 +76,16 @@ export function EditModal({
       <DialogTitle>Edit Product</DialogTitle>
       <DialogContent>
         <div className='mx-auto flex flex-col gap-y-4'>
+          {imagePreviews.length > 0 ? (
+            imagePreviews.map((imgUrl, index) => (
+              <img
+                key={index}
+                className='mx-auto rounded-lg'
+                width='120px'
+                src={imgUrl}
+                alt={`Product preview ${index + 1}`}
+              />
+            ))
           {product?.images && product?.images.length > 0 ? (
             <img
               className='mx-auto rounded-lg'
@@ -67,36 +93,35 @@ export function EditModal({
               src={`http://${product?.images[0]}`}
               alt={product.name} // Better to use a descriptive alt text
             />
+
           ) : (
             <img
               className='mr-3 rounded-lg'
               width='50px'
-              src='/path/to/default/image.png' // Fallback image
+              src='/watch.png'
               alt='Default product image'
             />
           )}
+
           <input
             id='img'
+            required
             name='images'
             accept='image/*'
             type='file'
             multiple
             className='w-full border-none bg-inherit py-2 pr-56'
-          />
-          <input
-            id='thumb'
-            name='thumbnail'
-            accept='image/*'
-            type='file'
-            className='w-full border-none bg-inherit py-2 pr-56'
+            onChange={handleImageChange}
           />
         </div>
+
         <TextField
           autoFocus
           margin='dense'
           id='name'
           name='name'
           label='Name'
+          required
           type='text'
           fullWidth
           variant='standard'
@@ -104,6 +129,7 @@ export function EditModal({
         />
         <TextField
           dir='ltr'
+          required
           margin='dense'
           id='price'
           name='price'
@@ -115,6 +141,7 @@ export function EditModal({
         />
         <TextField
           dir='ltr'
+          required
           margin='dense'
           id='quantity'
           name='quantity'
@@ -126,6 +153,7 @@ export function EditModal({
         />
         <TextField
           margin='dense'
+          required
           id='brand'
           name='brand'
           label='Brand'
@@ -136,6 +164,7 @@ export function EditModal({
         />
         <TextField
           dir='ltr'
+          required
           margin='dense'
           id='discount'
           name='discount'
@@ -145,21 +174,41 @@ export function EditModal({
           variant='standard'
           defaultValue={product?.discount}
         />
-        <TextField
-          margin='dense'
-          id='description'
-          name='description'
-          label='Description'
-          type='text'
-          fullWidth
-          variant='standard'
-          multiline
-          defaultValue={product?.description}
-        />
+
+        <div className='mt-2'>
+          <h4 className='mb-2 text-sm font-semibold text-gray-700'>
+            Description
+          </h4>
+          <CKEditor
+            editor={ClassicEditor}
+            data={description}
+            config={{
+              toolbar: [
+                'undo',
+                'redo',
+                '|',
+                'bold',
+                'italic',
+                'link',
+                '|',
+                'textDirection:ltr',
+                'textDirection:rtl',
+              ],
+              language: {
+                ui: 'fa',
+                content: 'fa',
+              },
+            }}
+            onChange={(event, editor) => {
+              const data = editor.getData()
+              setDescription(data)
+            }}
+          />
+        </div>
       </DialogContent>
       <DialogActions>
-        <Button onClick={handleState}>Cancel</Button>
-        <Button type='submit'>Save</Button>
+        <Button onClick={handleState}>انصراف</Button>
+        <Button type='submit'>ذخیره</Button>
       </DialogActions>
     </Dialog>
   )

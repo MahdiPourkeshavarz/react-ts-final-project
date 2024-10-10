@@ -16,6 +16,9 @@ import {
   TResponseGetAllCategories,
   TResponseGetAllSubCategories,
 } from '../../../../types'
+import toast from 'react-hot-toast'
+import { CKEditor } from '@ckeditor/ckeditor5-react'
+import ClassicEditor from '@ckeditor/ckeditor5-build-classic'
 
 const Products = () => {
   const [selectedCategory, setSelectedCategory] = useState('')
@@ -30,6 +33,8 @@ const Products = () => {
   })
 
   const [subEndpoint, setSubEndpoint] = useState(API_ROUTES.SUBCATEGORIES_BASE)
+  const [, setSelectedThumbnail] = useState<File | null>(null)
+  const [thumbnailPreview, setThumbnailPreview] = useState<string | null>(null)
 
   const { data: categoriesList, refetch } =
     useGetData<TResponseGetAllCategories>(API_ROUTES.CATEGORY_BASE)
@@ -47,6 +52,20 @@ const Products = () => {
     )
   }, [selectedCategory])
 
+  // Handle image preview
+  const handleThumbnailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files && e.target.files[0]
+    setSelectedThumbnail(file)
+
+    if (file) {
+      const reader = new FileReader()
+      reader.onload = () => {
+        setThumbnailPreview(reader.result as string) // Set the preview
+      }
+      reader.readAsDataURL(file)
+    }
+  }
+
   const handleAddProduct = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     const formData = new FormData(e.currentTarget)
@@ -55,31 +74,35 @@ const Products = () => {
 
     const images = e.currentTarget['images'].files
     const thumbnail = e.currentTarget['thumbnail'].files[0]
+
     for (let i = 0; i < images.length; i++) {
       formData.append('images', images[i])
     }
 
-    // Append the single thumbnail file
     formData.append('thumbnail', thumbnail)
-
     formData.append('category', selectedCategory)
-
     formData.append('subcategory', selectedSubcategory)
-    console.log(formData.get('images'))
+    formData.append('description', productData.description) // Add description
+
     try {
-      await httpRequest.post(API_ROUTES.PRODUCT_BASE, formData)
-      alert('Product added successfully!')
-      setProductData({
-        name: '',
-        price: '',
-        quantity: '',
-        brand: '',
-        discount: '',
-        description: '',
+      const response = await httpRequest.post(API_ROUTES.PRODUCT_BASE, formData)
+      toast.success('محصول با موفقیت اضافه شد', {
+        position: 'bottom-center',
       })
-      setSelectedCategory('')
-      setSelectedSubcategory('')
-      refetch()
+      if (response.data.status === 'success') {
+        setProductData({
+          name: '',
+          price: '',
+          quantity: '',
+          brand: '',
+          discount: '',
+          description: '', // Reset description
+        })
+        setSelectedCategory('')
+        setSelectedSubcategory('')
+        setThumbnailPreview(null) // Reset the preview
+        refetch()
+      }
     } catch (error) {
       console.error('Error adding product:', error)
     }
@@ -118,6 +141,7 @@ const Products = () => {
         <div className='grid grid-cols-2 gap-2 py-6'>
           <TextField
             label='نام محصول'
+            required
             name='name'
             id='name'
             variant='outlined'
@@ -133,6 +157,7 @@ const Products = () => {
             name='price'
             id='price'
             variant='outlined'
+            required
             value={productData.price}
             onChange={e =>
               setProductData({ ...productData, price: e.target.value })
@@ -143,6 +168,7 @@ const Products = () => {
             label='تعداد'
             name='quantity'
             id='quantity'
+            required
             variant='outlined'
             value={productData.quantity}
             onChange={e =>
@@ -153,6 +179,7 @@ const Products = () => {
           <TextField
             label='برند'
             variant='outlined'
+            required
             name='brand'
             id='brand'
             value={productData.brand}
@@ -164,6 +191,7 @@ const Products = () => {
           <TextField
             label='تخفیف'
             name='discount'
+            required
             id='discount'
             variant='outlined'
             value={productData.discount}
@@ -172,57 +200,93 @@ const Products = () => {
             }
             required
           />
-          <TextField
-            label='توضیحات'
-            variant='outlined'
-            name='description'
-            id='description'
-            value={productData.description}
-            onChange={e =>
-              setProductData({ ...productData, description: e.target.value })
-            }
-            required
-          />
+          <div className='col-span-2'>
+            <h4 className='mb-2 text-sm font-semibold text-gray-700'>
+              توضیحات محصول
+            </h4>
+            <CKEditor
+              editor={ClassicEditor}
+              data={productData.description}
+              config={{
+                toolbar: [
+                  'undo',
+                  'redo',
+                  '|',
+                  'bold',
+                  'italic',
+                  'link',
+                  '|',
+                  'textDirection:ltr',
+                  'textDirection:rtl',
+                ],
+                language: {
+                  ui: 'fa',
+                  content: 'fa',
+                },
+              }}
+              onChange={(event, editor) => {
+                const data = editor.getData()
+                setProductData({ ...productData, description: data })
+              }}
+            />
+          </div>
           <label
             htmlFor='thumbnail'
             className='flex cursor-pointer items-center gap-3 rounded-3xl border border-dashed border-gray-300 bg-gray-300 p-4'
           >
             <div className='mx-auto space-y-2'>
               <h4 className='text-base text-sm font-semibold text-gray-700 sm:text-xs'>
-                Upload a file for thumbnail
+                اپلود تصویر نمایشی
               </h4>
-              <span className='text-sm text-gray-500 sm:text-xs'>Max 1 Mb</span>
+              <span className='text-sm text-gray-500 sm:text-xs'>
+                حداکثر 1 مگابایت
+              </span>
             </div>
             <input
               type='file'
               id='thumbnail'
               name='thumbnail'
-              accept='png, jpg'
+              accept='image/png, image/jpg, image/webp'
               hidden
+              onChange={handleThumbnailChange}
               required
             />
           </label>
+
           <label
             htmlFor='images'
             className='flex cursor-pointer items-center gap-3 rounded-3xl border border-dashed border-gray-300 bg-gray-300 p-2'
           >
             <div className='mx-auto space-y-1'>
               <h4 className='text-base text-sm font-semibold text-gray-700 sm:text-xs'>
-                Upload a file for image gallery
+                آپلود تصاویر اصلی
               </h4>
-              <span className='text-sm text-gray-500 sm:text-xs'>Max 1 Mb</span>
+              <span className='text-sm text-gray-500 sm:text-xs'>
+                حداکثر 1 مگابایت
+              </span>
             </div>
             <input
               type='file'
               id='images'
               name='images'
-              accept='png, jpg'
+              accept='image/png, image/jpg, image/webp'
               multiple
               hidden
               required
             />
           </label>
         </div>
+
+        {thumbnailPreview && (
+          <div className='mx-auto h-40 w-40'>
+            <img
+              src={thumbnailPreview}
+              alt='Selected thumbnail'
+              className='h-full w-full rounded-lg object-cover'
+            />
+          </div>
+        )}
+
         <Button variant='contained' color='inherit' type='submit'>
           اضافه کردن محصول
         </Button>

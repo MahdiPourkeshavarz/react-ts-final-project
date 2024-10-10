@@ -29,6 +29,19 @@ export const useStore = create<StoreState>(
         })
       },
 
+      activeNav: '',
+      setActiveNav: (link: string) =>
+        set(() => ({
+          activeNav: link,
+        })),
+
+      sort: '',
+
+      setSortOption: (option: string) =>
+        set(() => ({
+          sort: option,
+        })),
+
       items: [],
       cartQuantity: 0,
 
@@ -46,9 +59,7 @@ export const useStore = create<StoreState>(
           if (existingItem) {
             return {
               items: state.items.map(i =>
-                i._id === item._id
-                  ? { ...i, quantity: i.quantity + item.quantity }
-                  : i,
+                i._id === item._id ? { ...i, quantity: i.quantity + 1 } : i,
               ),
               cartQuantity: state.cartQuantity + item.quantity,
             }
@@ -64,7 +75,7 @@ export const useStore = create<StoreState>(
           const itemToRemove = state.items.find(i => i._id === _id)
           if (!itemToRemove) return state
 
-          const newCartQuantity = state.cartQuantity - itemToRemove.quantity
+          const newCartQuantity = state.cartQuantity - 1
 
           return {
             items: state.items.filter(i => i._id !== _id),

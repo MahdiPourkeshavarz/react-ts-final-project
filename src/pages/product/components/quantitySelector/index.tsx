@@ -9,29 +9,34 @@ interface QuantityProps {
 }
 
 export function QuantitySelector({
-  initialValue = 1,
+  initialValue = 0,
   handleRemove,
   product,
 }: QuantityProps) {
   const [value, setValue] = useState(initialValue)
   const { updateItem } = useStore()
-  console.log(value)
 
   function increment() {
-    setValue(prevValue => prevValue + 1)
-    updateItem(product?._id as string, {
-      quantity: value + 1,
+    setValue(prevValue => {
+      const newValue = prevValue + 1
+      updateItem(product?._id as string, {
+        quantity: newValue,
+      })
+      return newValue
     })
   }
 
   function decrement() {
-    if (value == 1) {
+    if (value == 0) {
       handleRemove()
       return
     }
-    setValue(prevValue => (prevValue > 0 ? prevValue - 1 : 0))
-    updateItem(product?._id as string, {
-      quantity: value - 1,
+    setValue(prevValue => {
+      const newValue = prevValue > 0 ? prevValue - 1 : 0
+      updateItem(product?._id as string, {
+        quantity: newValue,
+      })
+      return newValue
     })
   }
 

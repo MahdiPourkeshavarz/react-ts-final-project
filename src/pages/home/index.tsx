@@ -7,12 +7,46 @@ import { AboutUs } from './components/aboutUs'
 import { Footer } from './components/footer'
 import { Link } from 'react-router-dom'
 import { useStore } from '../../context/shopStore'
+import { HomepageProductCard } from './components/homePageProductCard'
+import { useQuery } from '@tanstack/react-query'
+import { API_ROUTES } from '../../constants'
+import { TAllProductsResponse } from '../../types'
+import { getData } from '../../api/getData'
 
 export function HomePage() {
-  localStorage.setItem('theme', 'light')
   const [isSupportExpanded, setSupportIsExpanded] = useState(false)
   const [isCartExpanded, setCartIsExpanded] = useState(false)
   const { cartQuantity } = useStore()
+
+  const { data: smartwatchData, isLoading: isSmartwatchLoading } = useQuery<
+    Partial<TAllProductsResponse>
+  >({
+    queryKey: ['smartwatch'],
+    queryFn: () =>
+      getData(
+        `${API_ROUTES.PRODUCT_BASE}?category=66df2144e7276341e8446f0f&page=1&limit=4`,
+      ),
+  })
+
+  const { data: speakersData, isLoading: isSpeakersLoading } = useQuery<
+    Partial<TAllProductsResponse>
+  >({
+    queryKey: ['speaker'],
+    queryFn: () =>
+      getData(
+        `${API_ROUTES.PRODUCT_BASE}?category=66e6e3de2f617c79b38c292e&page=1&limit=4`,
+      ),
+  })
+
+  const { data: powerbankData, isLoading: isPowerbankLoading } = useQuery<
+    Partial<TAllProductsResponse>
+  >({
+    queryKey: ['powerbank'],
+    queryFn: () =>
+      getData(
+        `${API_ROUTES.PRODUCT_BASE}?category=66f55af4baeb1c2dcb368e81&page=1&limit=4`,
+      ),
+  })
 
   return (
     <div className='myContainer flex flex-col gap-y-8 px-5 py-8 pb-[200px] text-slate-800 dark:text-white'>
@@ -81,11 +115,11 @@ export function HomePage() {
           میتونی از اینجا یه نگاه سریع بهشون بندازی.
         </p>
       </div>
-      <div className='ml-4 flex gap-x-5 overflow-x-auto whitespace-nowrap scrollbar-hide'>
+      <div className='ml-4 flex gap-x-5 overflow-x-auto whitespace-nowrap py-3 scrollbar-hide'>
         <PosterCardItem
-          link='http://localhost:5173/home/%D8%B3%D8%A7%D8%B9%D8%AA%20%D9%87%D9%88%D8%B4%D9%85%D9%86%D8%AF/%D9%88%D8%B1%D8%B2%D8%B4%DB%8C/%D8%A7%D9%BE%D9%84%20%D9%88%D8%A7%DA%86%20%D8%B3%D8%B1%DB%8C%209'
+          link='http://localhost:5173/home/%D8%B3%D8%A7%D8%B9%D8%AA%20%D9%87%D9%88%D8%B4%D9%85%D9%86%D8%AF/%D9%88%D8%B1%D8%B2%D8%B4%DB%8C/%D8%A7%D9%BE%D9%84%20%D9%88%D8%A7%DA%86%20%D8%B3%D8%B1%DB%8C%2010'
           imgSrc='/smartwatch-poster-re.png'
-          title='ساعت هوشمند اپل سری 9'
+          title='اپل واچ سری 10'
         />
         <PosterCardItem
           link='http://localhost:5173/home/%D9%87%D8%AF%D9%81%D9%88%D9%86/%D8%A8%DB%8C%20%D8%B3%DB%8C%D9%85/%D8%A8%D9%88%D8%B2%20%D9%85%D8%AF%D9%84%20Ultra%20Open%20EarBuds'
@@ -103,6 +137,25 @@ export function HomePage() {
           title='اسپیکر ایستاده انکر'
         />
       </div>
+
+      <div className='pt-6'>
+        <p className='text-lg'>
+          <span className='text-xl font-semibold'>بهترین ساعت های هوشمند</span>{' '}
+          رو میتونی از اینجا یه نگاه سریع بهشون بندازی.
+        </p>
+      </div>
+      {!isSmartwatchLoading ? (
+        <div className='overflow-x-auto whitespace-nowrap px-1 py-3 scrollbar-hide'>
+          {smartwatchData &&
+            smartwatchData?.data?.products?.map(product => (
+              <div className='inline-flex'>
+                <HomepageProductCard product={product} />
+              </div>
+            ))}
+        </div>
+      ) : (
+        <></>
+      )}
 
       <div className='pt-6'>
         <p className='text-lg'>
@@ -130,6 +183,25 @@ export function HomePage() {
 
       <div className='pt-6'>
         <p className='text-lg'>
+          <span className='text-xl font-semibold'>بهترین بلندگو ها</span> رو
+          میتونی از اینجا یه نگاه سریع بهشون بندازی.
+        </p>
+      </div>
+      {!isSpeakersLoading ? (
+        <div className='overflow-x-auto whitespace-nowrap px-1 py-3 scrollbar-hide'>
+          {speakersData &&
+            speakersData?.data?.products?.map(product => (
+              <div className='inline-flex'>
+                <HomepageProductCard product={product} />
+              </div>
+            ))}
+        </div>
+      ) : (
+        <></>
+      )}
+
+      <div className='pt-6'>
+        <p className='text-lg'>
           <span className='text-xl font-semibold'>تخفیفات ویژه </span>
           برای شما دوستداران عزیز تکنولوژی
         </p>
@@ -140,6 +212,25 @@ export function HomePage() {
         <OfferCardItem imgSrc='/kid.png' title='شرایط ویژه دانش آموزان' />
         <OfferCardItem imgSrc='/bussinesman.png' title='شرایط ویژه کارمندان' />
       </div>
+
+      <div className='pt-6'>
+        <p className='text-lg'>
+          <span className='text-xl font-semibold'>بهترین پاوربانک ها</span> رو
+          میتونی از اینجا یه نگاه سریع بهشون بندازی.
+        </p>
+      </div>
+      {!isPowerbankLoading ? (
+        <div className='overflow-x-auto whitespace-nowrap px-1 py-3 scrollbar-hide'>
+          {powerbankData &&
+            powerbankData?.data?.products?.map(product => (
+              <div className='inline-flex'>
+                <HomepageProductCard product={product} />
+              </div>
+            ))}
+        </div>
+      ) : (
+        <></>
+      )}
 
       <AboutUs />
 
