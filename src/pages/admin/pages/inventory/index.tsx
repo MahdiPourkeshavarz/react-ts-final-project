@@ -149,10 +149,10 @@ export function InventoryPage() {
 
     const buttons = []
 
-    if (startPage > 0) {
+    if (startPage > 1) {
       buttons.push(
         <button
-          key='...'
+          key='start-ellipsis'
           className='mx-1 rounded-full border border-blue-600 bg-white px-4 py-2 text-blue-600'
         >
           ...
@@ -176,10 +176,10 @@ export function InventoryPage() {
       )
     }
 
-    if (endPage < totalPages - 1) {
+    if (endPage < totalPages - 2) {
       buttons.push(
         <button
-          key='...'
+          key='end-ellipsis'
           className='mx-1 rounded-full border border-blue-600 bg-white px-4 py-2 text-blue-600'
         >
           ...

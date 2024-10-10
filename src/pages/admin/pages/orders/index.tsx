@@ -6,40 +6,40 @@ import { numberWithCommas } from '../../../../utils/dataConverter'
 import { useSearchParams } from 'react-router-dom'
 import { EditOrderModal } from './components/editModal'
 import { useEditOrderMutation } from '../../../../hooks/useEditOrderMutation'
+import toast from 'react-hot-toast'
 
 export function OrdersPage() {
-  const [page, setPage] = useState(1)
-
   const [searchParams, setSearchParams] = useSearchParams()
 
-  const [optionValue, setOptionValue] = useState(
+  const [page, setPage] = useState(searchParams.get('page') || 1)
+
+  const [deliveryMode, setDeliveryMode] = useState(
     searchParams.get('status') || '',
   )
 
   const [open, setOpen] = useState(false)
   const [orderToEdit, setOrderToEdit] = useState<Order>()
 
-  const initialEndpoint = `${API_ROUTES.ORDERS_BASE}`
-
-  const [endpoint, setEndpoint] = useState(initialEndpoint)
+  const [endpoint, setEndpoint] = useState(API_ROUTES.ORDERS_BASE)
 
   const { data, isLoading, refetch } = useGetData<TAllOrderResponse>(endpoint)
 
   const { mutate: editMutate } = useEditOrderMutation()
 
   useEffect(() => {
-    const deliveryStatus =
-      optionValue === 'delivered'
-        ? 'false'
-        : optionValue === 'notDelivered'
-          ? 'true'
-          : null
-    const newEndpoint = `${API_ROUTES.ORDERS_BASE}${
-      deliveryStatus ? `?deliveryStatus=${deliveryStatus}` : ``
-    }&page=${page}&limit=4`
-    console.log(newEndpoint)
-    setEndpoint(newEndpoint)
-  }, [optionValue, page, initialEndpoint])
+    const queryParams = new URLSearchParams()
+
+    if (deliveryMode) {
+      queryParams.set('deliveryStatus', deliveryMode as string)
+    }
+
+    queryParams.set('page', page.toString())
+    queryParams.set('limit', '4')
+
+    setSearchParams(queryParams)
+
+    setEndpoint(`${API_ROUTES.ORDERS_BASE}?${queryParams.toString()}`)
+  }, [deliveryMode, page])
 
   function handleModalState() {
     setOpen(prev => !prev)
@@ -51,12 +51,15 @@ export function OrdersPage() {
       deliveryStatus: false,
     })
     handleModalState()
+    toast.success('ویرایش با موفقیت انجام شد', {
+      position: 'bottom-center',
+    })
     refetch()
   }
 
   function handleStatusChange(e: React.ChangeEvent<HTMLSelectElement>) {
     const newStatus = e.target.value
-    setOptionValue(newStatus)
+    setDeliveryMode(newStatus)
     setSearchParams({ status: newStatus })
     setPage(1)
   }
@@ -67,7 +70,7 @@ export function OrdersPage() {
 
   const generatePaginationButtons = (totalPages: number) => {
     const visiblePages = 5
-    const currentPageIndex = page - 1
+    const currentPageIndex = (page as number) - 1
     let startPage = Math.max(0, currentPageIndex - Math.floor(visiblePages / 2))
     let endPage = Math.min(totalPages - 1, startPage + visiblePages - 1)
 
@@ -82,10 +85,10 @@ export function OrdersPage() {
 
     const buttons = []
 
-    if (startPage > 0) {
+    if (startPage > 1) {
       buttons.push(
         <button
-          key='...'
+          key='start-ellipsis'
           className='mx-1 rounded-full border border-blue-600 bg-white px-4 py-2 text-blue-600'
         >
           ...
@@ -107,10 +110,10 @@ export function OrdersPage() {
       )
     }
 
-    if (endPage < totalPages - 1) {
+    if (endPage < totalPages - 2) {
       buttons.push(
         <button
-          key='...'
+          key='end-ellipsis'
           className='mx-1 rounded-full border border-blue-600 bg-white px-4 py-2 text-blue-600'
         >
           ...
@@ -139,8 +142,8 @@ export function OrdersPage() {
           }}
         >
           <option value=''>دسته بندی</option>
-          <option value='delivered'>تحویل شده</option>
-          <option value='notDelivered'>تحویل نشده</option>
+          <option value='false'>تحویل شده</option>
+          <option value='true'>تحویل نشده</option>
         </select>
       </div>
       <div className='relative'>
