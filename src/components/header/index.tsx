@@ -12,12 +12,21 @@ import React, { useState } from 'react'
 import { Menu } from '@mui/material'
 import Brightness4Icon from '@mui/icons-material/Brightness4'
 import Brightness7Icon from '@mui/icons-material/Brightness7'
+import LogoutIcon from '@mui/icons-material/Logout'
 import { useStore } from '../../context/shopStore'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
+import { httpRequest } from '../../lib/axiosConfig'
+import { API_ROUTES } from '../../constants'
+import toast from 'react-hot-toast'
 
 export function Header() {
   const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null)
-  const { toggleTheme, theme } = useStore()
+  const { toggleTheme, theme, clearCart, setActiveNav } = useStore()
+  const navigate = useNavigate()
+
+  const isUserLogedIn = localStorage.getItem('user')
+    ? localStorage.getItem('user')
+    : ''
 
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElNav(event.currentTarget)
@@ -25,6 +34,23 @@ export function Header() {
 
   const handleCloseNavMenu = () => {
     setAnchorElNav(null)
+  }
+
+  async function handleUserLogout() {
+    try {
+      await httpRequest.get(API_ROUTES.AUTH_LOGOUT)
+    } catch (e) {
+      console.log(e)
+    }
+    localStorage.removeItem('accessToken')
+    localStorage.removeItem('refreshToken')
+    localStorage.removeItem('user')
+    clearCart()
+    setActiveNav('')
+    toast.success('شما از حساب خود خارج شدید', {
+      position: 'bottom-center',
+    })
+    navigate('/')
   }
 
   return (
@@ -135,6 +161,13 @@ export function Header() {
                 </Button>
               </Link>
             </Box>
+            <IconButton
+              sx={{ ml: 1 }}
+              onClick={handleUserLogout}
+              color='inherit'
+            >
+              {isUserLogedIn && <LogoutIcon />}
+            </IconButton>
             <IconButton sx={{ ml: 1 }} onClick={toggleTheme} color='inherit'>
               {theme === 'dark' ? <Brightness7Icon /> : <Brightness4Icon />}
             </IconButton>

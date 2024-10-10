@@ -13,6 +13,7 @@ import {
 import { numberWithCommas } from '../../../../utils/dataConverter'
 import { httpRequest } from '../../../../lib/axiosConfig'
 import { useSearchParams } from 'react-router-dom'
+import toast from 'react-hot-toast'
 
 export function InventoryPage() {
   const [searchParams, setSearchParams] = useSearchParams()
@@ -30,13 +31,23 @@ export function InventoryPage() {
     productId: '',
     field: '',
   })
+  const [data, setData] = useState<any>()
 
   const [currentQuantityValue, setCurrentQuantityValue] = useState<number>()
   const [currentPriceValue, setCurrentPriceValue] = useState<number>()
   const [changeList, setChangeList] = useState<any[]>([])
 
-  const { data, isLoading, refetch } =
-    useGetData<TAllProductsResponse>(endpoint)
+  const {
+    data: originalData,
+    isLoading,
+    refetch,
+  } = useGetData<TAllProductsResponse>(endpoint)
+
+  useEffect(() => {
+    if (originalData) {
+      setData(originalData?.data?.products || [])
+    }
+  }, [originalData])
 
   const { data: categoriesList } = useGetData<TResponseGetAllCategories>( // data for showing the categories in the select element
     API_ROUTES.CATEGORY_BASE,
@@ -70,10 +81,23 @@ export function InventoryPage() {
     fieldName: string,
   ) {
     if (event.key === 'Enter' && fieldName === 'price') {
+      setData(
+        data.map((item: GeneralProductsEntity) => {
+          return item._id === product._id
+            ? { ...item, ['price']: currentPriceValue }
+            : item
+        }),
+      )
       setChangeList([...changeList, { ...product, price: currentPriceValue }])
       setEditMode({ productId: '', field: '' })
-      console.log(changeList)
     } else if (event.key === 'Enter' && fieldName === 'quantity') {
+      setData(
+        data.map((item: GeneralProductsEntity) => {
+          return item._id === product._id
+            ? { ...item, ['quantity']: currentQuantityValue }
+            : item
+        }),
+      )
       setChangeList([
         ...changeList,
         { ...product, quantity: currentQuantityValue },
@@ -97,6 +121,9 @@ export function InventoryPage() {
         refetch()
         setEditMode({ productId: '', field: '' })
         setChangeList([])
+        toast.success('ویرایش با موفقیت انجام شد', {
+          position: 'bottom-center',
+        })
       })
       .catch(error => console.log(error))
   }
@@ -236,7 +263,7 @@ export function InventoryPage() {
             </div>
           )}
           <tbody className='h-32'>
-            {data?.data?.products?.map(product => (
+            {data?.map((product: GeneralProductsEntity) => (
               <tr
                 key={product._id}
                 className='border-b border-gray-200 transition-all hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-gray-800'
@@ -272,7 +299,7 @@ export function InventoryPage() {
                   editMode.field === 'quantity' ? (
                     <input
                       type='number'
-                      className='w-20 rounded-lg border border-gray-300 bg-transparent px-2 py-1 text-left transition-all focus:outline-none focus:ring-2 focus:ring-blue-500'
+                      className='w-20 rounded-lg border border-gray-300 bg-transparent px-2 py-1 text-right transition-all focus:outline-none focus:ring-2 focus:ring-blue-500'
                       value={currentQuantityValue}
                       onChange={e =>
                         setCurrentQuantityValue(Number(e.target.value))
@@ -295,7 +322,7 @@ export function InventoryPage() {
                   editMode.field === 'price' ? (
                     <input
                       type='number'
-                      className='w-24 rounded-lg border border-gray-300 bg-transparent px-2 py-1 text-left transition-all focus:outline-none focus:ring-2 focus:ring-blue-500'
+                      className='w-24 rounded-lg border border-gray-300 bg-transparent px-2 py-1 text-right transition-all focus:outline-none focus:ring-2 focus:ring-blue-500'
                       value={currentPriceValue}
                       onChange={e =>
                         setCurrentPriceValue(Number(e.target.value))
@@ -312,7 +339,8 @@ export function InventoryPage() {
         </table>
       </div>
       <div className='mt-4 flex justify-center'>
-        {data && generatePaginationButtons(data?.total_pages as number)}
+        {originalData &&
+          generatePaginationButtons(originalData?.total_pages as number)}
       </div>
     </div>
   )

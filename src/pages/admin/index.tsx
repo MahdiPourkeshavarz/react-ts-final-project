@@ -8,8 +8,19 @@ import Categories from './components/category'
 import Products from './components/product'
 import Subcategories from './components/subcategory'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
+import { useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 
 export function AdminPage() {
+  const navigate = useNavigate()
+
+  useEffect(() => {
+    const role = localStorage.getItem('role')
+    if (!role || role !== 'ADMIN') {
+      navigate('/')
+    }
+  }, [])
+
   return (
     <>
       <div className='myContainer mx-auto p-4 md:px-14 lg:px-32'>

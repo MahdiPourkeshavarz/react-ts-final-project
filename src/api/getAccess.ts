@@ -13,9 +13,11 @@ export async function submitUser(formdata: AuthformData): Promise<boolean> {
     const accessToken = await response.data.token.accessToken
     const refreshToken = await response.data.token.refreshToken
     const user = await response.data.data.user._id
+    const userRole = await response.data.data.user.role
     localStorage.setItem('accessToken', accessToken)
     localStorage.setItem('refreshToken', refreshToken)
     localStorage.setItem('user', user)
+    localStorage.setItem('role', userRole)
     return true
   } catch (e) {
     console.log(e)

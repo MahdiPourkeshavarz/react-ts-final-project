@@ -7,6 +7,7 @@ import { httpRequest } from '../../../../lib/axiosConfig'
 import { API_ROUTES } from '../../../../constants'
 import { useNavigate } from 'react-router-dom'
 import { LoadingSpinner } from '../../../../components/loadingSpinner'
+import toast from 'react-hot-toast'
 
 interface AuthModalProps {
   isOpen: boolean
@@ -65,15 +66,24 @@ export function AuthModal({ isOpen, onClose }: AuthModalProps) {
         localStorage.setItem('accessToken', res.data.token.accessToken)
         localStorage.setItem('refreshToken', res.data.token.refreshToken)
         localStorage.setItem('user', res.data.data.user._id)
-        console.log('3')
+        toast.success('ورود به پنل ادمین با موفقیت انجام شد', {
+          position: 'bottom-center',
+        })
 
         await new Promise(resolve => setTimeout(resolve, 150))
 
         navigate('/home/cart/order')
       } else {
+        toast.error('با خطا مواجه شدید', {
+          position: 'bottom-center',
+        })
+
         console.error('Invalid response structure:', res)
       }
     } catch (e) {
+      toast.error('با خطا مواجه شدید', {
+        position: 'bottom-center',
+      })
       console.error('Error during authentication:', e)
     } finally {
       setIsLoading(false)

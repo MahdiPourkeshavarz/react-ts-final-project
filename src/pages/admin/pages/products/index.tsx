@@ -15,6 +15,7 @@ import { EditModal } from './components/editModal'
 import { useMutation } from '@tanstack/react-query'
 import { editProduct } from '../../../../api/editProduct'
 import { useSearchParams } from 'react-router-dom'
+import toast from 'react-hot-toast'
 
 export function ProductsPage() {
   const [searchParams, setSearchParams] = useSearchParams()
@@ -83,6 +84,12 @@ export function ProductsPage() {
 
   const editMutation = useMutation({
     mutationFn: (product: FormData) => editProduct(product, productToEdit?._id),
+    onSuccess: () => {
+      refetch()
+      toast.success('ویرایش با موفقیت انجام شد', {
+        position: 'bottom-center',
+      })
+    },
   })
 
   function handleEditProduct(data: FormData) {

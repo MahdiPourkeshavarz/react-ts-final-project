@@ -21,8 +21,8 @@ export function OrderStatusPage() {
       submitOrder()
       setTimeout(() => {
         clearCart()
-        navigate('/home')
-      }, 5000)
+        navigate('/')
+      }, 3000)
     }
   }, [isPaymentSuccessful, navigate])
 

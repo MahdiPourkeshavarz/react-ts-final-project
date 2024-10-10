@@ -19,7 +19,7 @@ export function OrdersPage() {
   const [open, setOpen] = useState(false)
   const [orderToEdit, setOrderToEdit] = useState<Order>()
 
-  const initialEndpoint = `${API_ROUTES.ORDERS_BASE}?page=${page}&limit=4`
+  const initialEndpoint = `${API_ROUTES.ORDERS_BASE}`
 
   const [endpoint, setEndpoint] = useState(initialEndpoint)
 
@@ -35,9 +35,7 @@ export function OrdersPage() {
           ? 'true'
           : null
     const newEndpoint = `${API_ROUTES.ORDERS_BASE}${
-      deliveryStatus
-        ? `?deliveryStatus=${deliveryStatus}`
-        : `?page=${page}&limit=4`
+      deliveryStatus ? `?deliveryStatus=${deliveryStatus}` : ``
     }&page=${page}&limit=4`
     console.log(newEndpoint)
     setEndpoint(newEndpoint)
@@ -202,7 +200,7 @@ export function OrdersPage() {
         </table>
       </div>
       <div className='mt-4 flex justify-center'>
-        {data && generatePaginationButtons(2)}
+        {data && generatePaginationButtons(data?.total_pages as number)}
       </div>
     </div>
   )

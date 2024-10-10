@@ -9,7 +9,7 @@ interface QuantityProps {
 }
 
 export function QuantitySelector({
-  initialValue = 1,
+  initialValue = 0,
   handleRemove,
   product,
 }: QuantityProps) {
@@ -27,7 +27,7 @@ export function QuantitySelector({
   }
 
   function decrement() {
-    if (value == 1) {
+    if (value == 0) {
       handleRemove()
       return
     }

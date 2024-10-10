@@ -291,3 +291,11 @@ export interface OrderProductsEntity {
   product: string
   count: number
 }
+
+export type TResponseEditUser = {
+  status: string
+  data: EditData
+}
+export interface EditData {
+  product: GeneralProductsEntity
+}

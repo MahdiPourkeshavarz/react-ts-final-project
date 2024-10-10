@@ -33,15 +33,12 @@ export function EditModal({
           const formData = new FormData(event.currentTarget)
 
           const images = event.currentTarget['images'].files
-          const thumbnail = event.currentTarget['thumbnail'].files[0]
           formData.delete('images')
           formData.delete('thumbnail')
 
           for (let i = 0; i < images.length; i++) {
             formData.append('images', images[i])
           }
-
-          // formData.append('thumbnail', thumbnail)
 
           formData.append('category', product?.category?._id as string)
 
