@@ -149,6 +149,7 @@ const Products = () => {
             onChange={e =>
               setProductData({ ...productData, name: e.target.value })
             }
+            required
           />
           <TextField
             dir='rtl'
@@ -161,6 +162,7 @@ const Products = () => {
             onChange={e =>
               setProductData({ ...productData, price: e.target.value })
             }
+            required
           />
           <TextField
             label='تعداد'
@@ -172,6 +174,7 @@ const Products = () => {
             onChange={e =>
               setProductData({ ...productData, quantity: e.target.value })
             }
+            required
           />
           <TextField
             label='برند'
@@ -183,6 +186,7 @@ const Products = () => {
             onChange={e =>
               setProductData({ ...productData, brand: e.target.value })
             }
+            required
           />
           <TextField
             label='تخفیف'
@@ -194,8 +198,8 @@ const Products = () => {
             onChange={e =>
               setProductData({ ...productData, discount: e.target.value })
             }
+            required
           />
-
           <div className='col-span-2'>
             <h4 className='mb-2 text-sm font-semibold text-gray-700'>
               توضیحات محصول
@@ -226,8 +230,6 @@ const Products = () => {
               }}
             />
           </div>
-
-          {/* Thumbnail Input */}
           <label
             htmlFor='thumbnail'
             className='flex cursor-pointer items-center gap-3 rounded-3xl border border-dashed border-gray-300 bg-gray-300 p-4'
@@ -247,6 +249,7 @@ const Products = () => {
               accept='image/png, image/jpg, image/webp'
               hidden
               onChange={handleThumbnailChange}
+              required
             />
           </label>
 
@@ -269,6 +272,7 @@ const Products = () => {
               accept='image/png, image/jpg, image/webp'
               multiple
               hidden
+              required
             />
           </label>
         </div>

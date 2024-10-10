@@ -58,8 +58,10 @@ export function EditModal({
           formData.delete('images')
           formData.delete('thumbnail')
 
-          for (let i = 0; i < images.length; i++) {
-            formData.append('images', images[i])
+          if (images) {
+            for (let i = 0; i < images.length; i++) {
+              formData.append('images', images[i])
+            }
           }
 
           formData.append('category', product?.category?._id as string)
@@ -84,6 +86,14 @@ export function EditModal({
                 alt={`Product preview ${index + 1}`}
               />
             ))
+          {product?.images && product?.images.length > 0 ? (
+            <img
+              className='mx-auto rounded-lg'
+              width='100px'
+              src={`http://${product?.images[0]}`}
+              alt={product.name} // Better to use a descriptive alt text
+            />
+
           ) : (
             <img
               className='mr-3 rounded-lg'
