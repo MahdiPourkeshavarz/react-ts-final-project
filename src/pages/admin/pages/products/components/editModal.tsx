@@ -197,8 +197,8 @@ export function EditModal({
         </div>
       </DialogContent>
       <DialogActions>
-        <Button onClick={handleState}>Cancel</Button>
-        <Button type='submit'>Save</Button>
+        <Button onClick={handleState}>انصراف</Button>
+        <Button type='submit'>ذخیره</Button>
       </DialogActions>
     </Dialog>
   )

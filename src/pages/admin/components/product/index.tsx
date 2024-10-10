@@ -234,9 +234,11 @@ const Products = () => {
           >
             <div className='mx-auto space-y-2'>
               <h4 className='text-base text-sm font-semibold text-gray-700 sm:text-xs'>
-                Upload a file for thumbnail
+                اپلود تصویر نمایشی
               </h4>
-              <span className='text-sm text-gray-500 sm:text-xs'>Max 1 Mb</span>
+              <span className='text-sm text-gray-500 sm:text-xs'>
+                حداکثر 1 مگابایت
+              </span>
             </div>
             <input
               type='file'
@@ -254,9 +256,11 @@ const Products = () => {
           >
             <div className='mx-auto space-y-1'>
               <h4 className='text-base text-sm font-semibold text-gray-700 sm:text-xs'>
-                Upload files for image gallery
+                آپلود تصاویر اصلی
               </h4>
-              <span className='text-sm text-gray-500 sm:text-xs'>Max 1 Mb</span>
+              <span className='text-sm text-gray-500 sm:text-xs'>
+                حداکثر 1 مگابایت
+              </span>
             </div>
             <input
               type='file'
