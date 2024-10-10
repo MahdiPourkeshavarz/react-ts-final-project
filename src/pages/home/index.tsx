@@ -18,7 +18,9 @@ export function HomePage() {
   const [isCartExpanded, setCartIsExpanded] = useState(false)
   const { cartQuantity } = useStore()
 
-  const { data, isLoading } = useQuery<Partial<TAllProductsResponse>>({
+  const { data: smartwatchData, isLoading: isSmartwatchLoading } = useQuery<
+    Partial<TAllProductsResponse>
+  >({
     queryKey: ['smartwatch'],
     queryFn: () =>
       getData(
@@ -33,6 +35,16 @@ export function HomePage() {
     queryFn: () =>
       getData(
         `${API_ROUTES.PRODUCT_BASE}?category=66e6e3de2f617c79b38c292e&page=1&limit=4`,
+      ),
+  })
+
+  const { data: powerbankData, isLoading: isPowerbankLoading } = useQuery<
+    Partial<TAllProductsResponse>
+  >({
+    queryKey: ['powerbank'],
+    queryFn: () =>
+      getData(
+        `${API_ROUTES.PRODUCT_BASE}?category=66f55af4baeb1c2dcb368e81&page=1&limit=4`,
       ),
   })
 
@@ -132,10 +144,10 @@ export function HomePage() {
           رو میتونی از اینجا یه نگاه سریع بهشون بندازی.
         </p>
       </div>
-      {!isLoading ? (
+      {!isSmartwatchLoading ? (
         <div className='overflow-x-auto whitespace-nowrap px-1 py-3 scrollbar-hide'>
-          {data &&
-            data?.data?.products?.map(product => (
+          {smartwatchData &&
+            smartwatchData?.data?.products?.map(product => (
               <div className='inline-flex'>
                 <HomepageProductCard product={product} />
               </div>
@@ -200,6 +212,25 @@ export function HomePage() {
         <OfferCardItem imgSrc='/kid.png' title='شرایط ویژه دانش آموزان' />
         <OfferCardItem imgSrc='/bussinesman.png' title='شرایط ویژه کارمندان' />
       </div>
+
+      <div className='pt-6'>
+        <p className='text-lg'>
+          <span className='text-xl font-semibold'>بهترین پاوربانک ها</span> رو
+          میتونی از اینجا یه نگاه سریع بهشون بندازی.
+        </p>
+      </div>
+      {!isPowerbankLoading ? (
+        <div className='overflow-x-auto whitespace-nowrap px-1 py-3 scrollbar-hide'>
+          {powerbankData &&
+            powerbankData?.data?.products?.map(product => (
+              <div className='inline-flex'>
+                <HomepageProductCard product={product} />
+              </div>
+            ))}
+        </div>
+      ) : (
+        <></>
+      )}
 
       <AboutUs />
 
