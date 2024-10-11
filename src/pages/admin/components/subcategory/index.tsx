@@ -1,5 +1,4 @@
 import { useState } from 'react'
-
 import {
   TextField,
   Button,
@@ -12,10 +11,17 @@ import { httpRequest } from '../../../../lib/axiosConfig'
 import { API_ROUTES } from '../../../../constants'
 import { useGetData } from '../../../../hooks/useGetAction'
 import { CategoriesEntity, TResponseGetAllCategories } from '../../../../types'
+import { useFieldValidation } from '../../../../hooks/useFieldValidation'
+import toast from 'react-hot-toast'
 
 const Subcategories = () => {
-  const [subcategoryName, setSubcategoryName] = useState('')
   const [selectedCategory, setSelectedCategory] = useState('')
+
+  const {
+    value: subcategoryNameValue,
+    isValid,
+    setValue: setSubcategoryNameValue,
+  } = useFieldValidation('', 'persian')
 
   const { data: categoriesList, refetch } =
     useGetData<TResponseGetAllCategories>(API_ROUTES.CATEGORY_BASE)
@@ -24,11 +30,13 @@ const Subcategories = () => {
     try {
       await httpRequest.post(API_ROUTES.SUBCATEGORIES_BASE, {
         category: selectedCategory,
-        name: subcategoryName,
+        name: subcategoryNameValue,
       })
-      setSubcategoryName('')
+      setSubcategoryNameValue('')
       setSelectedCategory('')
-      alert('Subcategory added successfully!')
+      toast.success('زیر دسته بندی با موفقیت اضافه شد', {
+        position: 'bottom-center',
+      })
       refetch()
     } catch (error) {
       console.error('Error adding subcategory:', error)
@@ -56,8 +64,9 @@ const Subcategories = () => {
         dir='rtl'
         label='نام زیر دسته بندی'
         variant='outlined'
-        value={subcategoryName}
-        onChange={e => setSubcategoryName(e.target.value)}
+        value={subcategoryNameValue}
+        onChange={e => setSubcategoryNameValue(e.target.value)}
+        error={!isValid}
       />
       <Button
         variant='contained'
