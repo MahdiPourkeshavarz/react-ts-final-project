@@ -86,6 +86,9 @@ export function EditModal({
                 alt={`Product preview ${index + 1}`}
               />
             ))
+          ) : (
+            <></>
+          )}
           {product?.images && product?.images.length > 0 ? (
             <img
               className='mx-auto rounded-lg'
@@ -93,7 +96,6 @@ export function EditModal({
               src={`http://${product?.images[0]}`}
               alt={product.name} // Better to use a descriptive alt text
             />
-
           ) : (
             <img
               className='mr-3 rounded-lg'

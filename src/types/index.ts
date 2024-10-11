@@ -14,6 +14,8 @@ export interface CartState {
   setSortOption: (option: string) => void
   activeNav: string
   setActiveNav: (link: string) => void
+  orderDate: string
+  setNewDate: (date: string) => void
 }
 
 export interface CartProduct {

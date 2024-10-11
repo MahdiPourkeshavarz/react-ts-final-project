@@ -29,6 +29,12 @@ export const useStore = create<StoreState>(
         })
       },
 
+      orderDate: '',
+      setNewDate: date =>
+        set(() => ({
+          orderDate: date,
+        })),
+
       activeNav: '',
       setActiveNav: (link: string) =>
         set(() => ({

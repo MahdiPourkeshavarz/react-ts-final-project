@@ -33,7 +33,7 @@ export function ErrorPage() {
           to='/'
           className='inline-block rounded-lg bg-blue-600 px-6 py-3 text-lg font-semibold text-white transition hover:bg-blue-700'
         >
-          برو به سفحه اصلی
+          برو به صفحه اصلی
         </Link>
       </div>
     </div>

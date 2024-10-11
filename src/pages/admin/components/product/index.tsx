@@ -19,18 +19,41 @@ import {
 import toast from 'react-hot-toast'
 import { CKEditor } from '@ckeditor/ckeditor5-react'
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic'
+import { useFieldValidation } from '../../../../hooks/useFieldValidation'
 
 const Products = () => {
   const [selectedCategory, setSelectedCategory] = useState('')
   const [selectedSubcategory, setSelectedSubcategory] = useState('')
-  const [productData, setProductData] = useState({
-    name: '',
-    price: '',
-    quantity: '',
-    brand: '',
-    discount: '',
-    description: '',
-  })
+
+  const {
+    value: productName,
+    isValid: isProductNameValid,
+    setValue: setProductName,
+  } = useFieldValidation('', 'persianAndEnglish')
+  const {
+    value: price,
+    isValid: isPriceValid,
+    setValue: setPrice,
+  } = useFieldValidation('', 'number')
+  const { value: description, setValue: setDescription } = useFieldValidation(
+    '',
+    'persianAndEnglish',
+  )
+  const {
+    value: discount,
+    isValid: isDiscountValid,
+    setValue: setDiscount,
+  } = useFieldValidation('', 'number')
+  const {
+    value: quantity,
+    isValid: isQuantityValid,
+    setValue: setQuantity,
+  } = useFieldValidation('', 'number')
+  const {
+    value: brand,
+    isValid: isBrandValid,
+    setValue: setBrand,
+  } = useFieldValidation('', 'english')
 
   const [subEndpoint, setSubEndpoint] = useState(API_ROUTES.SUBCATEGORIES_BASE)
   const [, setSelectedThumbnail] = useState<File | null>(null)
@@ -82,7 +105,7 @@ const Products = () => {
     formData.append('thumbnail', thumbnail)
     formData.append('category', selectedCategory)
     formData.append('subcategory', selectedSubcategory)
-    formData.append('description', productData.description) // Add description
+    formData.append('description', description)
 
     try {
       const response = await httpRequest.post(API_ROUTES.PRODUCT_BASE, formData)
@@ -90,22 +113,24 @@ const Products = () => {
         position: 'bottom-center',
       })
       if (response.data.status === 'success') {
-        setProductData({
-          name: '',
-          price: '',
-          quantity: '',
-          brand: '',
-          discount: '',
-          description: '', // Reset description
-        })
-        setSelectedCategory('')
-        setSelectedSubcategory('')
-        setThumbnailPreview(null) // Reset the preview
+        clearFormFields()
         refetch()
       }
     } catch (error) {
       console.error('Error adding product:', error)
     }
+  }
+
+  function clearFormFields() {
+    setSelectedCategory('')
+    setSelectedSubcategory('')
+    setThumbnailPreview(null)
+    setBrand('')
+    setDescription('')
+    setDiscount('')
+    setPrice('')
+    setProductName('')
+    setQuantity('')
   }
 
   return (
@@ -145,11 +170,9 @@ const Products = () => {
             name='name'
             id='name'
             variant='outlined'
-            value={productData.name}
-            onChange={e =>
-              setProductData({ ...productData, name: e.target.value })
-            }
-            required
+            value={productName}
+            onChange={e => setProductName(e.target.value)}
+            error={!isProductNameValid}
           />
           <TextField
             dir='rtl'
@@ -158,11 +181,9 @@ const Products = () => {
             id='price'
             variant='outlined'
             required
-            value={productData.price}
-            onChange={e =>
-              setProductData({ ...productData, price: e.target.value })
-            }
-            required
+            value={price}
+            onChange={e => setPrice(e.target.value)}
+            error={!isPriceValid}
           />
           <TextField
             label='تعداد'
@@ -170,11 +191,9 @@ const Products = () => {
             id='quantity'
             required
             variant='outlined'
-            value={productData.quantity}
-            onChange={e =>
-              setProductData({ ...productData, quantity: e.target.value })
-            }
-            required
+            value={quantity}
+            onChange={e => setQuantity(e.target.value)}
+            error={!isQuantityValid}
           />
           <TextField
             label='برند'
@@ -182,11 +201,9 @@ const Products = () => {
             required
             name='brand'
             id='brand'
-            value={productData.brand}
-            onChange={e =>
-              setProductData({ ...productData, brand: e.target.value })
-            }
-            required
+            value={brand}
+            onChange={e => setBrand(e.target.value)}
+            error={!isBrandValid}
           />
           <TextField
             label='تخفیف'
@@ -194,11 +211,9 @@ const Products = () => {
             required
             id='discount'
             variant='outlined'
-            value={productData.discount}
-            onChange={e =>
-              setProductData({ ...productData, discount: e.target.value })
-            }
-            required
+            value={discount}
+            onChange={e => setDiscount(e.target.value)}
+            error={!isDiscountValid}
           />
           <div className='col-span-2'>
             <h4 className='mb-2 text-sm font-semibold text-gray-700'>
@@ -206,7 +221,7 @@ const Products = () => {
             </h4>
             <CKEditor
               editor={ClassicEditor}
-              data={productData.description}
+              data={description}
               config={{
                 toolbar: [
                   'undo',
@@ -226,7 +241,7 @@ const Products = () => {
               }}
               onChange={(event, editor) => {
                 const data = editor.getData()
-                setProductData({ ...productData, description: data })
+                setDescription(data)
               }}
             />
           </div>

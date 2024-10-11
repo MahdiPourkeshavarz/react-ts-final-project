@@ -2,13 +2,13 @@ import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import * as yup from 'yup'
-import { useNavigate } from 'react-router-dom'
 import { useStore } from '../../context/shopStore'
 import { useQuery } from '@tanstack/react-query'
 import { getUserData } from '../../api/getUserData'
 import { numberWithCommas } from '../../utils/dataConverter'
 import { AuthForm } from '../../types'
 import { LoadingSpinner } from '../../components/loadingSpinner'
+import DatePicker from 'react-multi-date-picker'
 
 const schema = yup.object({
   deliveryFirstName: yup.string().required('First name is required'),
@@ -30,6 +30,7 @@ const schema = yup.object({
 })
 
 export function OrderPage() {
+  const [dateValue, setDateValue] = useState()
   const {
     register,
     handleSubmit,
@@ -39,7 +40,7 @@ export function OrderPage() {
   } = useForm<AuthForm>({
     resolver: yupResolver(schema),
   })
-  const { items } = useStore()
+  const { items, setNewDate } = useStore()
 
   const [userId] = useState(localStorage.getItem('user'))
 
@@ -227,6 +228,17 @@ export function OrderPage() {
                 {errors.nationalId.message}
               </p>
             )}
+          </div>
+          <div>
+            <DatePicker
+              render={<input placeholder=' تاریخ تحویل' />}
+              value={dateValue}
+              onChange={date => {
+                const newdate = new Date(date.unix * 1000).toISOString()
+                setDateValue(newdate)
+                setNewDate(newdate)
+              }}
+            />
           </div>
         </div>
 

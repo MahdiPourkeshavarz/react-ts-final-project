@@ -13,7 +13,7 @@ export function OrderStatusPage() {
 
   const navigate = useNavigate()
 
-  const { clearCart, items } = useStore()
+  const { clearCart, items, orderDate } = useStore()
 
   useEffect(() => {
     if (isPaymentSuccessful) {
@@ -34,6 +34,7 @@ export function OrderStatusPage() {
       user: localStorage.getItem('user'),
       products,
       deliveryStatus: true,
+      deliveryDate: orderDate,
     }
     createOrder(order as TOrderRequest)
   }

@@ -3,6 +3,7 @@ import { useStore } from '../../context/shopStore'
 import { numberWithCommas } from '../../utils/dataConverter'
 import { AuthModal } from './components/authModal'
 import { useNavigate } from 'react-router-dom'
+import toast from 'react-hot-toast'
 
 export function ShoppingCart() {
   const { items, cartQuantity, removeItem, updateItem } = useStore()
@@ -16,6 +17,9 @@ export function ShoppingCart() {
 
   const handleRemoveItem = (id: string) => {
     removeItem(id)
+    toast.error('محصول با موفقیت حذف شد', {
+      position: 'bottom-center',
+    })
   }
 
   const calculateTotalPrice = () => {
