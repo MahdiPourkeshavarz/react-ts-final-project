@@ -50,6 +50,7 @@ const Subcategories = () => {
         <Select
           value={selectedCategory}
           onChange={e => setSelectedCategory(e.target.value)}
+          required
         >
           {categoriesList?.data?.categories?.map(
             (category: CategoriesEntity) => (
@@ -67,6 +68,7 @@ const Subcategories = () => {
         value={subcategoryNameValue}
         onChange={e => setSubcategoryNameValue(e.target.value)}
         error={!isValid}
+        required
       />
       <Button
         variant='contained'

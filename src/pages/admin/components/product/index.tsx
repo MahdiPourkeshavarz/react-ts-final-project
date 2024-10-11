@@ -215,7 +215,6 @@ const Products = () => {
             onChange={e => setDiscount(e.target.value)}
             error={!isDiscountValid}
           />
-
           <div className='col-span-2'>
             <h4 className='mb-2 text-sm font-semibold text-gray-700'>
               توضیحات محصول
@@ -246,8 +245,6 @@ const Products = () => {
               }}
             />
           </div>
-
-          {/* Thumbnail Input */}
           <label
             htmlFor='thumbnail'
             className='flex cursor-pointer items-center gap-3 rounded-3xl border border-dashed border-gray-300 bg-gray-300 p-4'
@@ -267,6 +264,7 @@ const Products = () => {
               accept='image/png, image/jpg, image/webp'
               hidden
               onChange={handleThumbnailChange}
+              required
             />
           </label>
 
@@ -289,6 +287,7 @@ const Products = () => {
               accept='image/png, image/jpg, image/webp'
               multiple
               hidden
+              required
             />
           </label>
         </div>
