@@ -173,6 +173,7 @@ const Products = () => {
             value={productName}
             onChange={e => setProductName(e.target.value)}
             error={!isProductNameValid}
+            helperText='required'
           />
           <TextField
             dir='rtl'

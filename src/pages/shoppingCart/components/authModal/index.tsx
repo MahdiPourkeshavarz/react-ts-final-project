@@ -6,8 +6,9 @@ import { AuthForm, TResponseLogin } from '../../../../types'
 import { httpRequest } from '../../../../lib/axiosConfig'
 import { API_ROUTES } from '../../../../constants'
 import { useNavigate } from 'react-router-dom'
-import { LoadingSpinner } from '../../../../components/loadingSpinner'
+import SendIcon from '@mui/icons-material/Send'
 import toast from 'react-hot-toast'
+import LoadingButton from '@mui/lab/LoadingButton'
 
 interface AuthModalProps {
   isOpen: boolean
@@ -66,7 +67,7 @@ export function AuthModal({ isOpen, onClose }: AuthModalProps) {
         localStorage.setItem('accessToken', res.data.token.accessToken)
         localStorage.setItem('refreshToken', res.data.token.refreshToken)
         localStorage.setItem('user', res.data.data.user._id)
-        toast.success('ورود به پنل ادمین با موفقیت انجام شد', {
+        toast.success('شما با موفیقت وارد شدید', {
           position: 'bottom-center',
         })
 
@@ -187,19 +188,26 @@ export function AuthModal({ isOpen, onClose }: AuthModalProps) {
                 </div>
               </>
             )}
-            <button
+            <LoadingButton
               type='submit'
-              className='flex w-full items-center justify-center rounded-lg bg-blue-600 py-2 font-semibold text-white transition hover:bg-blue-700'
-              disabled={isLoading}
+              endIcon={<SendIcon />}
+              loading={isLoading}
+              loadingPosition='end'
+              variant='contained'
+              sx={{
+                backgroundColor: '#2563eb',
+                color: 'white',
+                width: '90%',
+                height: '48px',
+                fontSize: '22px',
+                '&:hover': {
+                  backgroundColor: '#1d4ed8',
+                },
+                marginLeft: '5%',
+              }}
             >
-              {isLoading ? (
-                <LoadingSpinner />
-              ) : isSignUp ? (
-                'ایجاد حساب'
-              ) : (
-                'ورود'
-              )}
-            </button>
+              {isSignUp ? 'ایجاد حساب' : 'ورود'}
+            </LoadingButton>
           </form>
           <p className='mt-4 text-center'>
             {isSignUp

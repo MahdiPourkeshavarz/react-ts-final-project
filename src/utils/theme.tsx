@@ -1,16 +1,19 @@
-import { createTheme } from "@mui/material/styles";
-import { CacheProvider } from "@emotion/react";
-import createCache from "@emotion/cache";
-import { prefixer } from "stylis";
-import rtlPlugin from "stylis-plugin-rtl";
-import { PropsWithChildren } from "react";
+import { createTheme } from '@mui/material/styles'
+import { CacheProvider } from '@emotion/react'
+import createCache from '@emotion/cache'
+import { prefixer } from 'stylis'
+import rtlPlugin from 'stylis-plugin-rtl'
+import { PropsWithChildren } from 'react'
 
-const defaultTheme = (theme: "dark" | "light") => {
+const defaultTheme = (theme: 'dark' | 'light') => {
   return createTheme({
+    typography: {
+      fontFamily: 'Nahid',
+    },
     palette: {
       primary: {
-        main: "#fff",
-        light: "#fff",
+        main: '#fff',
+        light: '#fff',
       },
       mode: theme, // 'light' or 'dark'
     },
@@ -18,21 +21,21 @@ const defaultTheme = (theme: "dark" | "light") => {
       MuiButton: {
         styleOverrides: {
           root: {
-            color: theme === "light" ? "black" : "white", // Button text color
+            color: theme === 'light' ? 'black' : 'white', // Button text color
           },
         },
       },
     },
-  });
-};
-
-const cacheRtl = createCache({
-  key: "muirtl",
-  stylisPlugins: [prefixer, rtlPlugin],
-});
-
-function Rtl(props: PropsWithChildren) {
-  return <CacheProvider value={cacheRtl}>{props.children}</CacheProvider>;
+  })
 }
 
-export { defaultTheme, Rtl };
+const cacheRtl = createCache({
+  key: 'muirtl',
+  stylisPlugins: [prefixer, rtlPlugin],
+})
+
+function Rtl(props: PropsWithChildren) {
+  return <CacheProvider value={cacheRtl}>{props.children}</CacheProvider>
+}
+
+export { defaultTheme, Rtl }

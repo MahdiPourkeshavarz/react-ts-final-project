@@ -19,12 +19,14 @@ interface Props {
   handleDelivered: (id: string) => void
 }
 
+
 export function EditOrderModal({
   open,
   handleState,
   order,
   handleDelivered,
 }: Props) {
+
   return (
     <Dialog open={open} onClose={handleState}>
       <DialogTitle style={{ textAlign: 'center' }}>جزئیات سفارش</DialogTitle>

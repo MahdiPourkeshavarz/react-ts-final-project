@@ -7,8 +7,9 @@ import { useQuery } from '@tanstack/react-query'
 import { getUserData } from '../../api/getUserData'
 import { numberWithCommas } from '../../utils/dataConverter'
 import { AuthForm } from '../../types'
-import { LoadingSpinner } from '../../components/loadingSpinner'
 import DatePicker from 'react-multi-date-picker'
+import LoadingButton from '@mui/lab/LoadingButton'
+import SendIcon from '@mui/icons-material/Send'
 
 const schema = yup.object({
   deliveryFirstName: yup.string().required('First name is required'),
@@ -290,15 +291,27 @@ export function OrderPage() {
           </div>
         </div>
 
-        <button
-          type='submit'
-          className='mt-6 flex w-full justify-center space-x-2 rounded-lg bg-blue-600 py-3 text-lg font-semibold text-white transition-colors hover:bg-blue-700'
-          disabled={isWaiting}
-          onClick={onSubmit}
-        >
-          برو به صفحه پرداخت
-          {isWaiting && <LoadingSpinner />}
-        </button>
+        <div className='mt-6 flex w-full justify-center'>
+          <LoadingButton
+            onClick={onSubmit}
+            endIcon={<SendIcon />}
+            loading={isWaiting}
+            loadingPosition='end'
+            variant='contained'
+            sx={{
+              backgroundColor: '#2563eb',
+              color: 'white',
+              width: '90%',
+              height: '48px',
+              fontSize: '22px',
+              '&:hover': {
+                backgroundColor: '#1d4ed8',
+              },
+            }}
+          >
+            برو به صفحه پرداخت
+          </LoadingButton>
+        </div>
       </div>
     </div>
   )
