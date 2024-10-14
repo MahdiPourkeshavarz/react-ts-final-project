@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import {
   Button,
   Dialog,
@@ -10,6 +10,7 @@ import {
 import { GeneralProductsEntity } from '../../../../../types'
 import { CKEditor } from '@ckeditor/ckeditor5-react'
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic'
+import { useFieldValidation } from '../../../../../hooks/useFieldValidation'
 
 interface Props {
   open: boolean
@@ -25,13 +26,48 @@ export function EditModal({
   handleEditProduct,
 }: Props) {
   const [imagePreviews, setImagePreviews] = useState<string[]>([])
-  const [description, setDescription] = useState(product?.description || '')
+
+  const {
+    value: productName,
+    isValid: isProductNameValid,
+    setValue: setProductName,
+  } = useFieldValidation('', 'persianAndEnglish')
+  const {
+    value: price,
+    isValid: isPriceValid,
+    setValue: setPrice,
+  } = useFieldValidation('', 'number')
+  const { value: description, setValue: setDescription } = useFieldValidation(
+    '',
+    'persianAndEnglish',
+  )
+  const {
+    value: discount,
+    isValid: isDiscountValid,
+    setValue: setDiscount,
+  } = useFieldValidation('', 'number')
+  const {
+    value: quantity,
+    isValid: isQuantityValid,
+    setValue: setQuantity,
+  } = useFieldValidation('', 'number')
+  const {
+    value: brand,
+    isValid: isBrandValid,
+    setValue: setBrand,
+  } = useFieldValidation('', 'english')
 
   useEffect(() => {
     if (product?.images && product?.images.length > 0) {
       setImagePreviews(product.images.map(img => `http://${img}`))
+      setProductName(product?.name)
+      setBrand(product?.brand)
+      setDescription(product?.description)
+      setDiscount(String(product?.discount))
+      setQuantity(String(product?.quantity))
+      setPrice(String(product?.price))
+      setDescription(product?.description)
     }
-    setDescription(product?.description || '')
   }, [product])
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -94,7 +130,7 @@ export function EditModal({
               className='mx-auto rounded-lg'
               width='100px'
               src={`http://${product?.images[0]}`}
-              alt={product.name} // Better to use a descriptive alt text
+              alt={product.name}
             />
           ) : (
             <img
@@ -107,7 +143,6 @@ export function EditModal({
 
           <input
             id='img'
-            required
             name='images'
             accept='image/*'
             type='file'
@@ -127,7 +162,10 @@ export function EditModal({
           type='text'
           fullWidth
           variant='standard'
-          defaultValue={product?.name}
+          value={productName}
+          error={!isProductNameValid}
+          onChange={e => setProductName(e.target.value)}
+          helperText='لطفا نام را بطور صحیح وارد کنید'
         />
         <TextField
           dir='ltr'
@@ -139,7 +177,10 @@ export function EditModal({
           type='number'
           fullWidth
           variant='standard'
-          defaultValue={product?.price}
+          value={price}
+          error={!isPriceValid}
+          onChange={e => setPrice(e.target.value)}
+          helperText='لطفا قیمت را بطور صحیح وارد کنید'
         />
         <TextField
           dir='ltr'
@@ -151,7 +192,10 @@ export function EditModal({
           type='number'
           fullWidth
           variant='standard'
-          defaultValue={product?.quantity}
+          value={quantity}
+          error={!isQuantityValid}
+          onChange={e => setQuantity(e.target.value)}
+          helperText='لطفا مقدار را بصورت عدد کامل وارد کنید'
         />
         <TextField
           margin='dense'
@@ -162,7 +206,10 @@ export function EditModal({
           type='text'
           fullWidth
           variant='standard'
-          defaultValue={product?.brand}
+          value={brand}
+          error={!isBrandValid}
+          onChange={e => setBrand(e.target.value)}
+          helperText='لطفا برند را بصورت انگلیسی وراد کنید'
         />
         <TextField
           dir='ltr'
@@ -174,13 +221,14 @@ export function EditModal({
           type='number'
           fullWidth
           variant='standard'
-          defaultValue={product?.discount}
+          value={discount}
+          error={!isDiscountValid}
+          onChange={e => setDiscount(e.target.value)}
+          helperText='لطفا تخفیف را بصورت عدد کامل وارد کنید'
         />
 
         <div className='mt-2'>
-          <h4 className='mb-2 text-sm font-semibold text-gray-700'>
-            Description
-          </h4>
+          <h4 className='mb-2 text-sm font-semibold text-gray-700'>توضیحات</h4>
           <CKEditor
             editor={ClassicEditor}
             data={description}
