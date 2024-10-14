@@ -31,7 +31,7 @@ const schema = yup.object({
 })
 
 export function OrderPage() {
-  const [dateValue, setDateValue] = useState()
+  const [dateValue, setDateValue] = useState<string>()
   const {
     register,
     handleSubmit,
@@ -236,7 +236,7 @@ export function OrderPage() {
               value={dateValue}
               onChange={date => {
                 const newdate = new Date(date.unix * 1000).toISOString()
-                setDateValue(newdate)
+                setDateValue(newdate as string)
                 setNewDate(newdate)
               }}
             />

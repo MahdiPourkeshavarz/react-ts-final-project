@@ -242,6 +242,7 @@ const Products = () => {
               }}
               onChange={(event, editor) => {
                 const data = editor.getData()
+                console.log(event)
                 setDescription(data)
               }}
             />
