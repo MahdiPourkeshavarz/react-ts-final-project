@@ -89,13 +89,6 @@ export function OrderStatusPage() {
             >
               برو به فروشگاه
             </LoadingButton>
-            {/* <button
-              onClick={() => navigate('/home')}
-              className='mx-auto mt-6 flex justify-center rounded-lg bg-blue-600 px-6 py-3 text-lg font-semibold text-white transition-colors hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600'
-            >
-              برو به فروشگاه
-              {isLoading && <LoadingSpinner />}
-            </button> */}
           </>
         ) : (
           <>
@@ -125,7 +118,7 @@ export function OrderStatusPage() {
             </p>
             <button
               onClick={() => {
-                window.location.href = 'http://localhost:3001/paymentLink'
+                navigate('/home/cart/order')
               }}
               className='mt-6 rounded-lg bg-red-600 px-6 py-3 text-lg font-semibold text-white transition-colors hover:bg-red-700 dark:bg-red-500 dark:hover:bg-red-600'
             >
