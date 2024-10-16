@@ -2,9 +2,12 @@ import { useLoaderData } from 'react-router-dom'
 import { useNavigate } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 import { useStore } from '../../context/shopStore'
-import { LoadingSpinner } from '../../components/loadingSpinner'
 import { TOrderRequest } from '../../types'
 import { createOrder } from '../../api/createOrder'
+import SendIcon from '@mui/icons-material/Send'
+import LoadingButton from '@mui/lab/LoadingButton'
+import { useMutation } from '@tanstack/react-query'
+import toast from 'react-hot-toast'
 
 export function OrderStatusPage() {
   const isPaymentSuccessful = useLoaderData() as boolean
@@ -26,6 +29,15 @@ export function OrderStatusPage() {
     }
   }, [isPaymentSuccessful, navigate])
 
+  const createOrderMutation = useMutation({
+    mutationFn: (order: TOrderRequest) => createOrder(order),
+    onSuccess: () => {
+      toast.success('سفارش شما با موفقیت ثبت شد', {
+        position: 'bottom-center',
+      })
+    },
+  })
+
   function submitOrder() {
     const products = items.map(item => {
       return { product: item._id, count: item.quantity }
@@ -36,7 +48,7 @@ export function OrderStatusPage() {
       deliveryStatus: true,
       deliveryDate: orderDate,
     }
-    createOrder(order as TOrderRequest)
+    createOrderMutation.mutate(order as TOrderRequest)
   }
 
   return (
@@ -58,13 +70,32 @@ export function OrderStatusPage() {
             <p className='mt-2 text-sm text-gray-500 dark:text-gray-400'>
               شما به صفحه اصلی فروشگاه منتقل میشوید.
             </p>
-            <button
+            <LoadingButton
+              onClick={() => navigate('/home')}
+              endIcon={<SendIcon />}
+              loading={isLoading}
+              loadingPosition='end'
+              variant='contained'
+              sx={{
+                backgroundColor: '#2563eb',
+                color: 'white',
+                width: '90%',
+                height: '48px',
+                fontSize: '22px',
+                '&:hover': {
+                  backgroundColor: '#1d4ed8',
+                },
+              }}
+            >
+              برو به فروشگاه
+            </LoadingButton>
+            {/* <button
               onClick={() => navigate('/home')}
               className='mx-auto mt-6 flex justify-center rounded-lg bg-blue-600 px-6 py-3 text-lg font-semibold text-white transition-colors hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600'
             >
               برو به فروشگاه
               {isLoading && <LoadingSpinner />}
-            </button>
+            </button> */}
           </>
         ) : (
           <>
