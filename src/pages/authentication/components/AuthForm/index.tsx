@@ -2,12 +2,15 @@ import { useForm } from 'react-hook-form'
 import { AuthformData } from '../../../../types'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { AuthSchemaType, formSchema } from '../../schema/authFormSchema'
+import LoadingButton from '@mui/lab/LoadingButton'
+import SendIcon from '@mui/icons-material/Send'
 
 interface Props {
+  isLoading: boolean
   onSubmit: (data: AuthformData) => void
 }
 
-export const AuthenticationForm = ({ onSubmit }: Props) => {
+export const AuthenticationForm = ({ onSubmit, isLoading }: Props) => {
   const {
     register,
     handleSubmit,
@@ -41,12 +44,25 @@ export const AuthenticationForm = ({ onSubmit }: Props) => {
         </div>
       </div>
       <div className='mt-6 flex justify-center'>
-        <button
-          className='w-full rounded bg-blue-600 py-2 font-semibold text-white transition duration-300 hover:bg-blue-700'
+        <LoadingButton
           type='submit'
+          endIcon={<SendIcon />}
+          loading={isLoading}
+          loadingPosition='end'
+          variant='contained'
+          sx={{
+            backgroundColor: '#2563eb',
+            color: 'white',
+            width: '90%',
+            height: '48px',
+            fontSize: '22px',
+            '&:hover': {
+              backgroundColor: '#1d4ed8',
+            },
+          }}
         >
-          ورود
-        </button>
+          ورود به پنل ادمین
+        </LoadingButton>
       </div>
     </form>
   )

@@ -7,7 +7,7 @@ export function useFieldValidation(
   const [value, setValue] = useState(initialValue)
   const [isValid, setIsValid] = useState(false)
 
-  const validate = input => {
+  function validate(input: string) {
     let regex
 
     switch (validationType) {
@@ -15,7 +15,7 @@ export function useFieldValidation(
         regex = /^[\u0600-\u06FF\s]+$/
         break
       case 'persianAndEnglish':
-        regex = /^[\u0600-\u06FFa-zA-Z\s]+$/
+        regex = /^[\u0600-\u06FFa-zA-Z0-9\s]+$/
         break
       case 'number':
         regex = /^\d+(\.\d+)?$/

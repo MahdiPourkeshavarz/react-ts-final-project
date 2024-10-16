@@ -3,17 +3,22 @@ import { submitUser } from '../../api/getAccess'
 import { AuthformData } from '../../types'
 import { AuthenticationForm } from './components/AuthForm'
 import toast from 'react-hot-toast'
+import { useState } from 'react'
 
 export function AuthenticationPage() {
+  const [isLoading, setIsLoading] = useState(false)
+
   const navigate = useNavigate()
 
   async function onSubmit(data: AuthformData) {
+    setIsLoading(true)
     const isActionSuccessful = await submitUser(data)
     if (isActionSuccessful) {
       toast.success('ورود به پنل ادمین با موفقیت انجام شد', {
         position: 'bottom-center',
       })
       setTimeout(() => {
+        setIsLoading(false)
         navigate('/admin')
       }, 1000)
     } else {
@@ -38,7 +43,7 @@ export function AuthenticationPage() {
             </header>
             <section className='form-block h-fit transition-transform duration-500 ease-in-out'>
               <h2 className='mb-4 text-center text-xl font-semibold'>ورود</h2>
-              <AuthenticationForm onSubmit={onSubmit} />
+              <AuthenticationForm isLoading={isLoading} onSubmit={onSubmit} />
             </section>
           </div>
         </div>

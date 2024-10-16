@@ -173,6 +173,7 @@ const Products = () => {
             value={productName}
             onChange={e => setProductName(e.target.value)}
             error={!isProductNameValid}
+            helperText='required'
           />
           <TextField
             dir='rtl'
@@ -241,6 +242,7 @@ const Products = () => {
               }}
               onChange={(event, editor) => {
                 const data = editor.getData()
+                console.log(event)
                 setDescription(data)
               }}
             />
