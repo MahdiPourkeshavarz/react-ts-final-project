@@ -293,7 +293,7 @@ export function OrderPage() {
           </div>
         </div>
 
-        <div className='mt-6 flex w-full justify-center'>
+        <div className='mx-auto mt-6 flex w-80 justify-center'>
           <LoadingButton
             onClick={onSubmit}
             endIcon={<SendIcon />}

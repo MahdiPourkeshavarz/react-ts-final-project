@@ -45,6 +45,7 @@ export function Header() {
     localStorage.removeItem('accessToken')
     localStorage.removeItem('refreshToken')
     localStorage.removeItem('user')
+    localStorage.removeItem('role')
     clearCart()
     setActiveNav('')
     toast.success('شما از حساب خود خارج شدید', {

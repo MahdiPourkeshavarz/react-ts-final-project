@@ -56,6 +56,9 @@ export const useStore = create<StoreState>(
           return {
             items: [],
             cartQuantity: 0,
+            sort: '',
+            activeNav: '',
+            orderDate: '',
           }
         }),
 

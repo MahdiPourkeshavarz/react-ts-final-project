@@ -10,6 +10,7 @@ import Subcategories from './components/subcategory'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
+import toast from 'react-hot-toast'
 
 export function AdminPage() {
   const navigate = useNavigate()
@@ -17,6 +18,9 @@ export function AdminPage() {
   useEffect(() => {
     const role = localStorage.getItem('role')
     if (!role || role !== 'ADMIN') {
+      toast.error('عدم دسترسی مجاز!', {
+        position: 'bottom-center',
+      })
       navigate('/')
     }
   }, [])
