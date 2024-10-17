@@ -88,7 +88,7 @@ export function ShoppingCart() {
             ))}
           </ul>
 
-          <div className='mt-10 flex flex-col justify-center px-16'>
+          <div className='mt-10 flex flex-col justify-center'>
             <div className='flex justify-between'>
               <p className='mb-6 text-xl text-gray-800 dark:text-white'>
                 تعداد اغلام شما:
@@ -115,7 +115,7 @@ export function ShoppingCart() {
             </div>
             <button
               onClick={handleProceedToCheckout}
-              className='mt-8 rounded-lg bg-blue-600 py-4 font-semibold text-white transition-colors duration-300 hover:bg-blue-700'
+              className='mx-auto mt-8 w-52 rounded-lg bg-blue-600 py-4 font-semibold text-white transition-colors duration-300 hover:bg-blue-700'
             >
               تکمیل سفارش
             </button>
