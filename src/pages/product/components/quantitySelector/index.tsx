@@ -17,6 +17,9 @@ export function QuantitySelector({
   const { updateItem } = useStore()
 
   function increment() {
+    if (value === 4) {
+      return
+    }
     setValue(prevValue => {
       const newValue = prevValue + 1
       updateItem(product?._id as string, {

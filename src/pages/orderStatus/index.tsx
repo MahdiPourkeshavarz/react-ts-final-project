@@ -21,9 +21,9 @@ export function OrderStatusPage() {
   useEffect(() => {
     if (isPaymentSuccessful) {
       setIsLoading(true)
-      submitOrder()
       setTimeout(() => {
         clearCart()
+        submitOrder()
         navigate('/')
       }, 3000)
     }

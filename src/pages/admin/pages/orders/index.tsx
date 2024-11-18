@@ -7,6 +7,7 @@ import { useSearchParams } from 'react-router-dom'
 import { EditOrderModal } from './components/editModal'
 import { useEditOrderMutation } from '../../../../hooks/useEditOrderMutation'
 import toast from 'react-hot-toast'
+import { PaginationButtons } from '../../../../components/pagination/PaginationButtons'
 
 export function OrdersPage() {
   const [searchParams, setSearchParams] = useSearchParams()
@@ -66,62 +67,6 @@ export function OrdersPage() {
 
   function handlePageChange(page: number) {
     setPage(page)
-  }
-
-  const generatePaginationButtons = (totalPages: number) => {
-    const visiblePages = 5
-    const currentPageIndex = (page as number) - 1
-    let startPage = Math.max(0, currentPageIndex - Math.floor(visiblePages / 2))
-    let endPage = Math.min(totalPages - 1, startPage + visiblePages - 1)
-
-    if (startPage < 0) {
-      endPage = Math.min(totalPages - 1, visiblePages - 1)
-      startPage = 0
-    }
-    if (endPage >= totalPages) {
-      startPage = Math.max(0, totalPages - visiblePages)
-      endPage = totalPages - 1
-    }
-
-    const buttons = []
-
-    if (startPage > 1) {
-      buttons.push(
-        <button
-          key='start-ellipsis'
-          className='mx-1 rounded-full border border-blue-600 bg-white px-4 py-2 text-blue-600'
-        >
-          ...
-        </button>,
-      )
-    }
-
-    for (let i = startPage; i <= endPage; i++) {
-      buttons.push(
-        <button
-          key={i + 1}
-          className={`ml-4 px-4 py-2 ${
-            page === i + 1 ? 'bg-blue-600 text-white' : 'bg-white text-blue-600'
-          } rounded-full border border-blue-600`}
-          onClick={() => handlePageChange(i + 1)}
-        >
-          {i + 1}
-        </button>,
-      )
-    }
-
-    if (endPage < totalPages - 2) {
-      buttons.push(
-        <button
-          key='end-ellipsis'
-          className='mx-1 rounded-full border border-blue-600 bg-white px-4 py-2 text-blue-600'
-        >
-          ...
-        </button>,
-      )
-    }
-
-    return buttons
   }
 
   return (
@@ -203,7 +148,13 @@ export function OrdersPage() {
         </table>
       </div>
       <div className='mt-4 flex justify-center'>
-        {data && generatePaginationButtons(data?.total_pages as number)}
+        {data && (
+          <PaginationButtons
+            totalPages={data?.total_pages as number}
+            currentPage={page as number}
+            onPageChange={handlePageChange}
+          />
+        )}
       </div>
     </div>
   )
